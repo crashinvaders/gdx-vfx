@@ -1,0 +1,40 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'org.wisepersist:gwt-gradle-plugin:1.0.6'
+        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.5'
+    }
+}
+
+subprojects {
+    apply plugin: "java"
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    compileJava.options.encoding = 'UTF-8'
+
+    sourceSets.main.java.srcDirs = ["src"]
+    sourceSets.main.resources.srcDirs = ["src"]
+
+    version = '1.0'
+    ext {
+        appName = "gdx-vfx"
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+}

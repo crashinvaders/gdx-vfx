@@ -1,0 +1,19 @@
+apply plugin: "java"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+}
+
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs += [ "src/" ]
+sourceSets.main.resources.srcDirs += ['assets/']
+
+dependencies {
+    compile project(':gdx-vfx:core')
+}

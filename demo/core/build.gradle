@@ -1,0 +1,8 @@
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+dependencies {
+    compile project(':gdx-vfx:core')
+    compile project(':gdx-vfx:effects')
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.github.czyzby:gdx-lml:$lmlVersion"
+}

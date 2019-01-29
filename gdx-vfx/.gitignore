@@ -1,0 +1,7 @@
+## Gradle
+/local.properties
+.gradle/
+gradle-app.setting
+/build/
+/core/build/
+/effects/build/
