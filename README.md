@@ -25,7 +25,7 @@ cd gdx-vfx
 #### A. Local JAR artifacts.
 The library is not yet available on any public maven repository,
 so the simplest way is to download JAR artifacts from [releases page](https://github.com/crashinvaders/gdx-vfx/releases) and attach them to the project.
-Put the downloaded `gdx-vfx-core.jar` and `gdx-vfx-effects.jar` the `/core/libs` dir of the project.
+Put the downloaded `gdx-vfx-core.jar` and `gdx-vfx-effects.jar` into the `/core/libs` dir and add them as dependencies.
 
 _/core/build.gradle_:
 ```gradle
