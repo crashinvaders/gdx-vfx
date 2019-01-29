@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 //TODO Replace with unified provider.
 public final class ShaderLoader {
-	public static String basePath = "";
+	public static String basePath = "shaders/";
 	public static boolean pedantic = true;
 
 	public static ShaderProgram fromFile(String vertexFileName, String fragmentFileName ) {

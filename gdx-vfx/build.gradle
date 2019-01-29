@@ -1,0 +1,4 @@
+subprojects {
+    group = "com.crashinvaders.vfx"
+    version = '0.1'
+}

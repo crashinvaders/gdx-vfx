@@ -12,10 +12,10 @@ public class App extends Game {
 
 	private static App instance;
 
-	static {
-		ShaderLoader.basePath = "shaders/";
-		ShaderLoader.pedantic = true;
-	}
+//	static {
+//		ShaderLoader.basePath = "shaders/";
+//		ShaderLoader.pedantic = true;
+//	}
 
 	private final PrioritizedInputMultiplexer inputMultiplexer;
 

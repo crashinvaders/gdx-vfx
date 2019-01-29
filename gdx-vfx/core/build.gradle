@@ -1,4 +1,5 @@
 apply plugin: "java"
+apply plugin: "maven"
 
 repositories {
     mavenLocal()
@@ -12,8 +13,6 @@ sourceCompatibility = 1.7
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
-
-version = '0.1'
 
 dependencies {
     compile "com.badlogicgames.gdx:gdx:$gdxVersion"
