@@ -138,8 +138,8 @@ public class PostProcessorExample extends ApplicationAdapter {
 		// it should be disposed manually.
 		postProcessorEffect.dispose();
 
-		// Any PostProcessorEffect instances also may hold internal resources
-		// that should be free, thus disposed manually.
+		// PostProcessorEffect instances may also hold internal resources
+		// that should be freed, thus disposed manually.
 		postProcessor.dispose();
 
 		shapeRenderer.dispose();
