@@ -6,23 +6,23 @@
  *  (generated empty #resize(int, int) method should be implemented).
  *
  *  [UP TO DATE]
+ *  Bias
  *  Blur
  *  Combine
  *  Convolve1D
  *  Convolve2D
  *  Copy
- *  MotionFilter
- *  Threshold
- *  RadialDistortion
  *  LensFlare
  *  LensFlare2
+ *  MotionFilter
+ *  MultipassFilter
  *  RadialBlur
+ *  RadialDistortion
+ *  Threshold
  *  Vignetting
  *  Zoom
- *  MultipassFilter
  *
  *  [OUTDATED / NOT TESTED]
- *  Bias
  *  CameraBlur
  *  FxaaFilter
  *  NfaaFilter
