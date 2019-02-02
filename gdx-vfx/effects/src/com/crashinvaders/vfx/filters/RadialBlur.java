@@ -21,7 +21,7 @@ import com.crashinvaders.vfx.utils.ShaderLoader;
 
 public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 	// ctrl quality
-	private int blur_len;
+	private int blurLen;
 
 	// ctrl quantity
 	private float strength, x, y;
@@ -68,9 +68,10 @@ public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 	}
 
 	public RadialBlur (Quality quality) {
-		super(ShaderLoader.fromFile("radial-blur", "radial-blur", "#define BLUR_LENGTH " + quality.length
-			+ "\n#define ONE_ON_BLUR_LENGTH " + 1f / (float)quality.length));
-		this.blur_len = quality.length;
+		super(ShaderLoader.fromFile("radial-blur", "radial-blur",
+				"#define BLUR_LENGTH " + quality.length +
+				"\n#define ONE_ON_BLUR_LENGTH " + 1f / (float)quality.length));
+		this.blurLen = quality.length;
 		rebind();
 		setOrigin(0.5f, 0.5f);
 		setStrength(0.5f);
@@ -91,7 +92,7 @@ public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 
 	public void setStrength (float strength) {
 		this.strength = strength;
-		setParam(Param.BlurDiv, strength / (float)blur_len);
+		setParam(Param.BlurDiv, strength / (float) blurLen);
 	}
 
 	public void setZoom (float zoom) {
@@ -122,13 +123,13 @@ public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 
     @Override
     public void resize(int width, int height) {
-
+		// Do nothing.
     }
 
     @Override
 	public void rebind () {
 		setParams(Param.Texture, u_texture0);
-		setParams(Param.BlurDiv, this.strength / (float)blur_len);
+		setParams(Param.BlurDiv, this.strength / (float) blurLen);
 
 		// being explicit (could call setOrigin that will call endParams)
 		setParams(Param.OffsetX, x);

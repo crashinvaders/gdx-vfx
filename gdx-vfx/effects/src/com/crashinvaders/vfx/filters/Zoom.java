@@ -24,7 +24,10 @@ public final class Zoom extends PostProcessorFilter<Zoom> {
 
 	public enum Param implements Parameter {
 		// @formatter:off
-		Texture("u_texture0", 0), OffsetX("offset_x", 0), OffsetY("offset_y", 0), Zoom("zoom", 0), ;
+		Texture("u_texture0", 0),
+		OffsetX("offset_x", 0),
+		OffsetY("offset_y", 0),
+		Zoom("zoom", 0), ;
 		// @formatter:on
 
 		private String mnemonic;
@@ -81,7 +84,7 @@ public final class Zoom extends PostProcessorFilter<Zoom> {
 
     @Override
     public void resize(int width, int height) {
-
+		// Do nothing.
     }
 
     @Override

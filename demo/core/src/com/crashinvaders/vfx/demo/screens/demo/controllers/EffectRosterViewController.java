@@ -19,6 +19,7 @@ import com.crashinvaders.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.PostProcessor;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.effects.*;
+import com.crashinvaders.vfx.filters.RadialBlur;
 import com.github.czyzby.lml.parser.LmlParser;
 
 public class EffectRosterViewController extends LmlViewController {
@@ -46,9 +47,11 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
                 new EffectEntryModel("Film Grain", new FilmGrainEffect()),
                 new EffectEntryModel("Motion Blur", new MotionBlurEffect(Pixmap.Format.RGBA8888, 0.85f)),
+                new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlur.Quality.High)),
                 new EffectEntryModel("Curvature", new CurvatureEffect()),
                 new EffectEntryModel("Lens Flare", new LensFlareEffect()),
-                new EffectEntryModel("Vignette", new VignetteEffect(false))
+                new EffectEntryModel("Vignette", new VignetteEffect(false)),
+                new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f))
         );
 
         postProcessor = getController(PostProcessorViewController.class).getPostProcessor();

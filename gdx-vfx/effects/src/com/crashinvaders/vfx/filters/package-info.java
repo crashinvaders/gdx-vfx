@@ -16,15 +16,15 @@
  *  RadialDistortion
  *  LensFlare
  *  LensFlare2
+ *  RadialBlur
+ *  Vignetting
+ *  Zoom
+ *  MultipassFilter
  *
  *  [OUTDATED / NOT TESTED]
  *  Bias
  *  CameraBlur
  *  FxaaFilter
- *  MultipassFilter
  *  NfaaFilter
- *  RadialBlur
- *  Vignetting
- *  Zoom
  */
 package com.crashinvaders.vfx.filters;
