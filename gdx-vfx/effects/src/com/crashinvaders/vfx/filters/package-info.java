@@ -23,7 +23,6 @@
  *  Zoom
  *
  *  [OUTDATED / NOT TESTED]
- *  CameraBlur
  *  FxaaFilter
  *  NfaaFilter
  */
