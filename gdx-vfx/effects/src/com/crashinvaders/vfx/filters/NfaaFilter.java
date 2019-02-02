@@ -22,11 +22,13 @@ import com.crashinvaders.vfx.utils.ShaderLoader;
 /** Normal filtered anti-aliasing filter.
  * @author Toni Sagrista */
 public final class NfaaFilter extends PostProcessorFilter<NfaaFilter> {
-	private Vector2 viewportInverse;
+
+	private final Vector2 viewportInverse = new Vector2();
 
 	public enum Param implements Parameter {
 		// @formatter:off
-		Texture("u_texture0", 0), ViewportInverse("u_viewportInverse", 2);
+		Texture("u_texture0", 0),
+		ViewportInverse("u_viewportInverse", 2);
 		// @formatter:on
 
 		private String mnemonic;
@@ -48,31 +50,14 @@ public final class NfaaFilter extends PostProcessorFilter<NfaaFilter> {
 		}
 	}
 
-	public NfaaFilter (int viewportWidth, int viewportHeight) {
-		this(new Vector2(viewportWidth, viewportHeight));
-	}
-
-	public NfaaFilter (Vector2 viewportSize) {
+	public NfaaFilter () {
 		super(ShaderLoader.fromFile("screenspace", "nfaa"));
-		this.viewportInverse = viewportSize;
-		this.viewportInverse.x = 1f / this.viewportInverse.x;
-		this.viewportInverse.y = 1f / this.viewportInverse.y;
-
-		rebind();
-	}
-
-	public void setViewportSize (float width, float height) {
-		this.viewportInverse.set(1f / width, 1f / height);
-		setParam(Param.ViewportInverse, this.viewportInverse);
-	}
-
-	public Vector2 getViewportSize () {
-		return viewportInverse;
 	}
 
     @Override
     public void resize(int width, int height) {
-
+		this.viewportInverse.set(1f / width, 1f / height);
+		setParam(Param.ViewportInverse, this.viewportInverse);
     }
 
     @Override

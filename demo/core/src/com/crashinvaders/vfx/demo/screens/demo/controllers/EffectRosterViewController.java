@@ -50,9 +50,11 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlur.Quality.High)),
                 new EffectEntryModel("Curvature", new CurvatureEffect()),
                 new EffectEntryModel("Lens Flare", new LensFlareEffect()),
-                new EffectEntryModel("Lens Flare (Advanced)", new LensFlareEffect2(Pixmap.Format.RGBA8888)),
+                new EffectEntryModel("Lens Flare (Adv)", new LensFlareEffect2(Pixmap.Format.RGBA8888)),
                 new EffectEntryModel("Vignette", new VignetteEffect(false)),
-                new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f))
+                new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
+                new EffectEntryModel("FXAA", new FxaaEffect()),
+                new EffectEntryModel("NFAA", new NfaaEffect())
         );
 
         postProcessor = getController(PostProcessorViewController.class).getPostProcessor();

@@ -37,12 +37,12 @@ public class CanvasContentViewController extends LmlViewController {
         container.setFillParent(true);
         canvasRoot.addActor(container);
 
-        image.addAction(Actions.forever(Actions.parallel(
-                Actions.rotateBy(360f, 3f),
-                Actions.sequence(
-                        Actions.scaleTo(1.25f, 1.25f),
-                        Actions.scaleTo(0.75f, 0.75f, 1.5f, Interpolation.pow2),
-                        Actions.scaleTo(1.25f, 1.25f, 1.5f, Interpolation.pow2))
-        )));
+//        image.addAction(Actions.forever(Actions.parallel(
+//                Actions.rotateBy(360f, 3f),
+//                Actions.sequence(
+//                        Actions.scaleTo(1.25f, 1.25f),
+//                        Actions.scaleTo(0.75f, 0.75f, 1.5f, Interpolation.pow2),
+//                        Actions.scaleTo(1.25f, 1.25f, 1.5f, Interpolation.pow2))
+//        )));
     }
 }

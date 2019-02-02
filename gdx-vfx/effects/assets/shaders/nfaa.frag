@@ -15,14 +15,13 @@ uniform vec2 u_viewportInverse;
 
 varying vec2 v_texCoords;
 
-float lumRGB(vec3 v)
-    {
+float lumRGB(vec3 v) {
     return dot(v, vec3(0.212, 0.716, 0.072));
-    }
+}
 
 const float fScale = 1.0;
 
-vec4 nfaa(sampler2D texture, vec2 texCoords, vec2 viewportInverse){
+vec4 nfaa(sampler2D texture, vec2 texCoords, vec2 viewportInverse) {
     // Offset coordinates
     vec2 upOffset = vec2(0.0, viewportInverse.y) * fScale;
     vec2 rightOffset = vec2(viewportInverse.x, 0.0) * fScale;
@@ -56,16 +55,12 @@ vec4 nfaa(sampler2D texture, vec2 texCoords, vec2 viewportInverse){
     
     // Final color
     return vec4((Scene0.rgb + Scene1.rgb + Scene2.rgb + Scene3.rgb + Scene4.rgb) * 0.2, 1.0);
-    
-    // Debug
-    //return vec4(normalize(vec3(vect1, vect2 , 1.0) * 0.5 + 0.5), 1.0);
-	    
 }
 
-float GetColorLuminance(vec3 i_vColor){
+float GetColorLuminance(vec3 i_vColor) {
     return dot(i_vColor, vec3(0.2126, 0.7152, 0.0722));
 }
 
-void main(){  
+void main() {
     gl_FragColor = nfaa(u_texture0, v_texCoords, u_viewportInverse);
 }

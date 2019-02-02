@@ -14,45 +14,39 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.effects.unstable;
+package com.crashinvaders.vfx.effects;
 
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.bitfire.postprocessing.filters.NfaaFilter;
+import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.filters.NfaaFilter;
 
 /** Implements the normal filter anti-aliasing. Very fast and useful for combining with other post-processing effects.
  * @author Toni Sagrista */
-public final class Nfaa extends Antialiasing {
-	private NfaaFilter nfaaFilter = null;
+public final class NfaaEffect extends PostProcessorEffect {
 
-	/** Create a NFAA with the viewport size */
-	public Nfaa (int viewportWidth, int viewportHeight) {
-		setup(viewportWidth, viewportHeight);
-	}
+	private final NfaaFilter nfaaFilter;
 
-	private void setup (int viewportWidth, int viewportHeight) {
-		nfaaFilter = new NfaaFilter(viewportWidth, viewportHeight);
-	}
-
-	public void setViewportSize (int width, int height) {
-		nfaaFilter.setViewportSize(width, height);
+	public NfaaEffect() {
+		nfaaFilter = new NfaaFilter();
 	}
 
 	@Override
-	public void dispose () {
-		if (nfaaFilter != null) {
-			nfaaFilter.dispose();
-			nfaaFilter = null;
-		}
+	public void dispose() {
+		nfaaFilter.dispose();
 	}
 
 	@Override
-	public void rebind () {
+	public void rebind() {
 		nfaaFilter.rebind();
 	}
 
 	@Override
-	public void render (FrameBuffer src, FrameBuffer dest) {
-		restoreViewport(dest);
+	public void resize(int width, int height) {
+		nfaaFilter.resize(width, height);
+	}
+
+	@Override
+	public void render(FboWrapper src, FboWrapper dest) {
 		nfaaFilter.setInput(src).setOutput(dest).render();
 	}
 }

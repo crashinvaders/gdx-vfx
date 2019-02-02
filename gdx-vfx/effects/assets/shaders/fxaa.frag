@@ -12,9 +12,9 @@ uniform sampler2D u_texture0;
 
 // The inverse of the viewport dimensions along X and Y
 uniform vec2 u_viewportInverse;
-uniform float FXAA_REDUCE_MIN;
-uniform float FXAA_REDUCE_MUL;
-uniform float FXAA_SPAN_MAX;
+uniform float u_fxaaReduceMin;
+uniform float u_fxaaReduceMul;
+uniform float u_fxaaSpanMax;
 
 varying vec2 v_texCoords;
 
@@ -44,13 +44,13 @@ vec4 fxaa(sampler2D texture, vec2 texCoords, vec2 viewportInv) {
 	dir.y = ((lumaNW + lumaSW) - (lumaNE + lumaSE));
 
 	float dirReduce = max(
-			(lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL),
-			FXAA_REDUCE_MIN);
+			(lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * u_fxaaReduceMul),
+			u_fxaaReduceMin);
 
 	float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);
 
-	dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),
-			max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin))
+	dir = min(vec2(u_fxaaSpanMax, u_fxaaSpanMax),
+			max(vec2(-u_fxaaSpanMax, -u_fxaaSpanMax), dir * rcpDirMin))
 			* viewportInv;
 
 	vec3 rgbA =

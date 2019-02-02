@@ -3,7 +3,8 @@
 LibGDX flexible post processing visual effects. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), 
 with lots of improvements, aim on stability and to provide lightweight integration with comfortable effect extensions.
 
-Work is in progress, some effects are not ready to be used yet. Check out [this file](https://github.com/crashinvaders/gdx-vfx/blob/master/gdx-vfx/effects/src/com/crashinvaders/vfx/filters/package-info.java) for the status.
+Work is in progress, some official backends are still not tested/not supported.
+More effects to be implemented and included in the standard library package. 
 
 
 # Demo
