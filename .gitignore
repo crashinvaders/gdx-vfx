@@ -63,6 +63,16 @@ com_crashlytics_export_strings.xml
 /demo/ios/build/
 /demo/ios-moe/build/
 
+/out/
+/gdx-vfx/core/bin/out/
+/gdx-vfx/effects/bin/out/
+/demo/android/out/
+/demo/core/out/
+/demo/desktop/out/
+/demo/html/out/
+/demo/ios/out/
+/demo/ios-moe/out/
+
 /nbbuild/
 /gdx-vfx/core/bin/nbbuild/
 /gdx-vfx/effects/bin/nbbuild/
