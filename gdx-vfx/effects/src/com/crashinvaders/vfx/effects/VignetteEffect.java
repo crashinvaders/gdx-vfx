@@ -14,28 +14,42 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.effects.unstable;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.bitfire.postprocessing.PostProcessorEffect;
-import com.bitfire.postprocessing.filters.Vignetting;
+import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.filters.Vignetting;
 
-public final class Vignette extends PostProcessorEffect {
+public final class VignetteEffect extends PostProcessorEffect {
 	private Vignetting vignetting;
 	private boolean controlSaturation;
-	private float oneOnW, oneOnH;
 
-	public Vignette (int viewportWidth, int viewportHeight, boolean controlSaturation) {
+	public VignetteEffect(boolean controlSaturation) {
 		this.controlSaturation = controlSaturation;
-		oneOnW = 1f / (float)viewportWidth;
-		oneOnH = 1f / (float)viewportHeight;
 		vignetting = new Vignetting(controlSaturation);
 	}
 
 	@Override
 	public void dispose () {
 		vignetting.dispose();
+	}
+
+	@Override
+	public void rebind () {
+		vignetting.rebind();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		vignetting.resize(width, height);
+	}
+
+	@Override
+	public void render(FboWrapper src, FboWrapper dest) {
+//		restoreViewport(dest);
+		vignetting.setInput(src).setOutput(dest).render();
 	}
 
 	public boolean doesSaturationControl () {
@@ -82,9 +96,9 @@ public final class Vignette extends PostProcessorEffect {
 		vignetting.setLutIndexOffset(value);
 	}
 
-	/** Specify the center, in screen coordinates. */
+	/** Specify the center, in factor coordinates [0..1]. */
 	public void setCenter (float x, float y) {
-		vignetting.setCenter(x * oneOnW, 1f - y * oneOnH);
+		vignetting.setCenter(x, y);
 	}
 
 	public float getIntensity () {
@@ -130,15 +144,4 @@ public final class Vignette extends PostProcessorEffect {
 	public boolean isGradientMappingEnabled () {
 		return vignetting.isGradientMappingEnabled();
 	}
-
-	@Override
-	public void rebind () {
-		vignetting.rebind();
-	}
-
-	@Override
-	public void render (FrameBuffer src, FrameBuffer dest) {
-		restoreViewport(dest);
-		vignetting.setInput(src).setOutput(dest).render();
-	};
 }

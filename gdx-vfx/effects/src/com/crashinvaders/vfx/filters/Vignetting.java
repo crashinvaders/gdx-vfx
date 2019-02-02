@@ -72,7 +72,9 @@ public final class Vignetting extends PostProcessorFilter<Vignetting> {
 
 	public Vignetting (boolean controlSaturation) {
 		super(ShaderLoader.fromFile("screenspace", "vignetting",
-			(controlSaturation ? "#define CONTROL_SATURATION\n#define ENABLE_GRADIENT_MAPPING" : "#define ENABLE_GRADIENT_MAPPING")));
+			(controlSaturation ?
+					"#define CONTROL_SATURATION\n#define ENABLE_GRADIENT_MAPPING" :
+					"#define ENABLE_GRADIENT_MAPPING")));
 		dolut = false;
 		dosat = controlSaturation;
 
