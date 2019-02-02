@@ -54,8 +54,8 @@ com_crashlytics_export_strings.xml
 /demo/ios-moe/nbproject/private/
 
 /build/
-/gdx-vfx/core/bin/build/
-/gdx-vfx/effects/bin/build/
+/gdx-vfx/core/build/
+/gdx-vfx/effects/build/
 /demo/android/build/
 /demo/core/build/
 /demo/desktop/build/
@@ -64,8 +64,8 @@ com_crashlytics_export_strings.xml
 /demo/ios-moe/build/
 
 /out/
-/gdx-vfx/core/bin/out/
-/gdx-vfx/effects/bin/out/
+/gdx-vfx/core/out/
+/gdx-vfx/effects/out/
 /demo/android/out/
 /demo/core/out/
 /demo/desktop/out/
