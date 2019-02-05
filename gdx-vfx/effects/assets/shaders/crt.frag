@@ -7,8 +7,8 @@
 
 const float SCANLINE_FACTOR_0 = 1.3;
 const float SCANLINE_FACTOR_1 = 0.5;
-const float SCANLINE_F_BASELINE = min(SCANLINE_FACTOR_0, SCANLINE_FACTOR_1);
-const float SCANLINE_F_DIF = max(SCANLINE_FACTOR_0, SCANLINE_FACTOR_1) - SCANLINE_F_BASELINE;
+const float SCANLINE_F_BASELINE = SCANLINE_FACTOR_1;
+const float SCANLINE_F_DIF = SCANLINE_FACTOR_0 - SCANLINE_F_BASELINE;
 
 uniform sampler2D u_texture0;
 uniform vec2 u_resolution;
