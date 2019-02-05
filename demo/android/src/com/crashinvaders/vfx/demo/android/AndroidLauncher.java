@@ -1,4 +1,4 @@
-package com.crashinvaders.vfx.demo;
+package com.crashinvaders.vfx.demo.android;
 
 import android.os.Bundle;
 

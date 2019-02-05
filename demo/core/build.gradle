@@ -1,4 +1,14 @@
+apply plugin: 'java'
+
 sourceSets.main.java.srcDirs = [ "src/" ]
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+}
 
 dependencies {
     compile project(':gdx-vfx:core')

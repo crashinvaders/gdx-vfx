@@ -14,21 +14,9 @@ buildscript {
     }
 }
 
-subprojects {
-    apply plugin: "java"
-
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-
-    compileJava.options.encoding = 'UTF-8'
-
-    sourceSets.main.java.srcDirs = ["src"]
-    sourceSets.main.resources.srcDirs = ["src"]
-
-    version = '1.0'
-    ext {
-        appName = "gdx-vfx"
-    }
+allprojects {
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
 
     repositories {
         mavenLocal()
@@ -37,4 +25,20 @@ subprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
+}
+
+configure(subprojects - project(':demo:android')) {
+    apply plugin: 'java'
+    sourceCompatibility = 1.7
+
+    compileJava.options.encoding = 'UTF-8'
+
+    sourceSets.main.java.srcDirs = ["src"]
+    sourceSets.main.resources.srcDirs = ["src"]
+}
+
+
+subprojects {
+    version = '1.0'
+    ext.appName = "gdx-vfx"
 }

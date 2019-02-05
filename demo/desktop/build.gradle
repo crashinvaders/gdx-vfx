@@ -1,8 +1,19 @@
+apply plugin: 'java'
+//apply plugin: 'application'
+
 sourceSets.main.java.srcDirs = ['src/']
 sourceSets.main.resources.srcDirs += ['../assets/']
 
-project.ext.mainClassName = "com.crashinvaders.vfx.demo.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../assets")
+ext.mainClassName = "com.crashinvaders.vfx.demo.desktop.DesktopLauncher"
+ext.assetsDir = new File("../assets")
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+}
 
 dependencies {
     compile project(':demo:core')

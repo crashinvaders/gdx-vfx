@@ -3,6 +3,6 @@ include ':gdx-vfx:effects'
 
 include ':demo:core'
 include ':demo:desktop'
-//include ':demo:android'
+include ':demo:android'
 //include ':demo:ios'
 //include ':demo:html'
