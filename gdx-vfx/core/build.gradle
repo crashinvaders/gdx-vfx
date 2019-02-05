@@ -1,14 +1,6 @@
 apply plugin: "java"
 apply plugin: "maven"
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    google()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-}
-
 sourceCompatibility = 1.7
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 

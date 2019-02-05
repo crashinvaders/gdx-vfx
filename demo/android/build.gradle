@@ -35,14 +35,6 @@ android {
 
 configurations { natives }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    google()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-}
-
 dependencies {
     compile project(":demo:core")
     compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"

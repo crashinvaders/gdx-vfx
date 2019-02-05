@@ -2,10 +2,10 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
         google()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.6'
@@ -17,14 +17,6 @@ buildscript {
 allprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        google()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    }
 }
 
 configure(subprojects - project(':demo:android')) {
