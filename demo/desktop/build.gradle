@@ -1,13 +1,14 @@
 apply plugin: 'java'
-//apply plugin: 'application'
 
 sourceSets.main.java.srcDirs = ['src/']
-sourceSets.main.resources.srcDirs += ['../assets/']
+sourceSets.main.resources.srcDirs += ['resources/']
+sourceSets.main.resources.srcDirs += ["$rootDir/demo/assets/"]
 
 ext.mainClassName = "com.crashinvaders.vfx.demo.desktop.DesktopLauncher"
 ext.assetsDir = new File("../assets")
 
 dependencies {
+    runtime files('resources')
     compile project(':demo:core')
     compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"

@@ -51,19 +51,21 @@ public final class LensFlareEffect extends PostProcessorEffect {
         return lensFlare.getIntensity();
     }
 
-    public void setIntensity(float intensity) {
+    public LensFlareEffect setIntensity(float intensity) {
         lensFlare.setIntensity(intensity);
+        return this;
     }
 
-    public void setColor(float r, float g, float b) {
+    public LensFlareEffect setColor(float r, float g, float b) {
         lensFlare.setColor(r, g, b);
+        return this;
     }
 
-    /** Sets the light position in screen coordinates [-1..1].
-     *
+    /** Sets the light position in screen normalized coordinates [0..1].
      * @param x Light position x screen coordinate,
      * @param y Light position y screen coordinate. */
-    public void setLightPosition(float x, float y) {
+    public LensFlareEffect setLightPosition(float x, float y) {
         lensFlare.setLightPosition(x, y);
+        return this;
     }
 }

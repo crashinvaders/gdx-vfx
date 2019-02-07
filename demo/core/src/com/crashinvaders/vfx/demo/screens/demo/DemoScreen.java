@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,7 +27,7 @@ import com.crashinvaders.vfx.demo.screens.demo.controllers.EffectRosterViewContr
 import com.crashinvaders.vfx.demo.screens.demo.controllers.PostProcessorViewController;
 
 public class DemoScreen extends ScreenAdapter {
-    private static final Color clearColor = new Color(0x808080ff);
+    private static final Color clearColor = new Color(0x006ba6ff);
 
     private final AssetManager assets;
     private final Batch batch;
@@ -39,7 +40,25 @@ public class DemoScreen extends ScreenAdapter {
         {
             assets = new AssetManager();
             assets.load("skin/uiskin.json", Skin.class, null);
-            assets.load("gdx-vfx.png", Texture.class, null);
+
+            // Textures
+            {
+                TextureLoader.TextureParameter paramsRegular = new TextureLoader.TextureParameter();
+                paramsRegular.minFilter = Texture.TextureFilter.Nearest;
+                paramsRegular.magFilter = Texture.TextureFilter.Nearest;
+                paramsRegular.wrapU = Texture.TextureWrap.ClampToEdge;
+                paramsRegular.wrapV = Texture.TextureWrap.ClampToEdge;
+
+                TextureLoader.TextureParameter paramsRepeat = new TextureLoader.TextureParameter();
+                paramsRepeat.minFilter = Texture.TextureFilter.Nearest;
+                paramsRepeat.magFilter = Texture.TextureFilter.Nearest;
+                paramsRepeat.wrapU = Texture.TextureWrap.Repeat;
+                paramsRepeat.wrapV = Texture.TextureWrap.Repeat;
+
+                assets.load("gdx-vfx-logo.png", Texture.class, paramsRegular);
+                assets.load("bg-pattern.png", Texture.class, paramsRepeat);
+            }
+
             assets.finishLoading();
         }
 
@@ -55,7 +74,7 @@ public class DemoScreen extends ScreenAdapter {
                 .build();
 
         viewControllers = new ViewControllerManager(stage);
-        viewControllers.add(new PostProcessorViewController(viewControllers, lmlParser));
+        viewControllers.add(new PostProcessorViewController(viewControllers, lmlParser, clearColor));
         viewControllers.add(new CanvasContentViewController(viewControllers, lmlParser, assets));
         viewControllers.add(new EffectRosterViewController(viewControllers, lmlParser));
 

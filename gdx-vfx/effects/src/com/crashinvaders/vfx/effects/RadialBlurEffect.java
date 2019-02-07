@@ -19,7 +19,6 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.RadialBlur;
-import com.crashinvaders.vfx.filters.Zoom;
 
 /**
  * Implements a zooming effect: either a radial blur filter.
@@ -57,23 +56,26 @@ public final class RadialBlurEffect extends PostProcessorEffect {
     /**
      * Specify the zoom origin, in screen normalized coordinates.
      */
-    public void setOrigin(float x, float y) {
+    public RadialBlurEffect setOrigin(float x, float y) {
         radialBlur.setOrigin(x, y);
+        return this;
     }
 
     public float getZoom() {
         return 1f / radialBlur.getZoom();
     }
 
-    public void setZoom(float zoom) {
+    public RadialBlurEffect setZoom(float zoom) {
         radialBlur.setZoom(1f / zoom);
+        return this;
     }
 
     public float getBlurStrength() {
         return radialBlur.getStrength();
     }
 
-    public void setBlurStrength(float strength) {
+    public RadialBlurEffect setBlurStrength(float strength) {
         radialBlur.setStrength(strength);
+        return this;
     }
 }

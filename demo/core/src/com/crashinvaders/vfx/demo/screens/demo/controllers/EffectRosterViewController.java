@@ -43,13 +43,14 @@ public class EffectRosterViewController extends LmlViewController {
         effectsRoster.addAll(
                 new EffectEntryModel("Bloom", new BloomEffect()),
                 new EffectEntryModel("CRT", new CrtEffect()),
-                new EffectEntryModel("CRT (Old TV)", new OldTvEffect()),
+                new EffectEntryModel("Old TV", new OldTvEffect()),
                 new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
                 new EffectEntryModel("Film Grain", new FilmGrainEffect()),
                 new EffectEntryModel("Motion Blur", new MotionBlurEffect(Pixmap.Format.RGBA8888, 0.85f)),
                 new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlur.Quality.High)),
                 new EffectEntryModel("Curvature", new CurvatureEffect()),
-                new EffectEntryModel("Lens Flare", new LensFlareEffect()),
+                new EffectEntryModel("Lens Flare", new LensFlareEffect()
+                        .setIntensity(10f)),
                 new EffectEntryModel("Lens Flare (Adv)", new LensFlareEffect2(Pixmap.Format.RGBA8888)),
                 new EffectEntryModel("Vignette", new VignetteEffect(false)),
                 new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
@@ -61,7 +62,7 @@ public class EffectRosterViewController extends LmlViewController {
                         .setBrightness(0.1f)
                         .setSaturation(1.8f)
                         .setContrast(1.5f)
-                        .setHue(1.2f)
+                        .setHue(0.9f)
                         .setGamma(1.0f))
         );
 

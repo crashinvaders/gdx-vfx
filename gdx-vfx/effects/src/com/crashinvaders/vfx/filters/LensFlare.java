@@ -70,7 +70,7 @@ public final class LensFlare extends PostProcessorFilter<LensFlare> {
         setLightPosition(lightPosition.x, lightPosition.y);
     }
 
-    /** Sets the light position in screen coordinates [-1..1]. */
+    /** Sets the light position in screen normalized coordinates [0..1]. */
     public void setLightPosition(float x, float y) {
         lightPosition.set(x, y);
         rebind();

@@ -20,13 +20,12 @@ import com.crashinvaders.vfx.PostProcessorFilter;
 import com.crashinvaders.vfx.utils.ShaderLoader;
 
 public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
-	// ctrl quality
+
 	private int blurLen;
-
-	// ctrl quantity
-	private float strength, x, y;
-
-	private float zoom;
+	private float strength = 0.2f;
+	private float x = 0.5f;
+	private float y = 0.5f;
+	private float zoom = 1f;
 
 	public enum Quality {
 		VeryHigh(16), High(8), Normal(5), Medium(4), Low(2);
@@ -73,9 +72,6 @@ public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 				"\n#define ONE_ON_BLUR_LENGTH " + 1f / (float)quality.length));
 		this.blurLen = quality.length;
 		rebind();
-		setOrigin(0.5f, 0.5f);
-		setStrength(0.5f);
-		setZoom(1f);
 	}
 
 	public RadialBlur () {

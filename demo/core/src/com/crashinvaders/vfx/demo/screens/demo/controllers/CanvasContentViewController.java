@@ -3,6 +3,7 @@ package com.crashinvaders.vfx.demo.screens.demo.controllers;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.common.lml.CommonLmlParser;
+import com.crashinvaders.common.scene2d.RepeatTextureDrawable;
 import com.crashinvaders.common.scene2d.actions.ActionsExt;
 import com.crashinvaders.common.viewcontroller.LmlViewController;
 import com.crashinvaders.common.viewcontroller.ViewControllerManager;
@@ -30,28 +32,73 @@ public class CanvasContentViewController extends LmlViewController {
         super.onViewCreated(sceneRoot);
         canvasRoot = sceneRoot.findActor("canvasRoot");
 
-        Texture texture = assets.get("gdx-vfx.png");
-        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        Image image = new Image(texture);
-        image.setOrigin(Align.center);
-        Container<Image> container = new Container<>(image);
-        container.setFillParent(true);
-        canvasRoot.addActor(container);
+        // Background
+        {
+            final RepeatTextureDrawable backgroundDrawable = new RepeatTextureDrawable(
+                    assets.get("bg-pattern.png", Texture.class));
+            backgroundDrawable.setShift(0.0f, 0.0f);
+            Image imgBackground = new Image(backgroundDrawable);
+            imgBackground.setFillParent(true);
+//            imgBackground.setScale(3f);
+            canvasRoot.addActor(imgBackground);
 
-        image.addAction(ActionsExt.post(5, Actions.sequence(
-                Actions.moveBy(-100f, -50f),
-                Actions.parallel(
-                        Actions.forever(Actions.sequence(
-                                Actions.rotateBy(720f, 4f, Interpolation.pow3),
-                                Actions.rotateBy(-720f, 4f, Interpolation.pow3))),
-                        Actions.forever(Actions.sequence(
-                                Actions.moveBy(+200f, +100f, 0.8f, Interpolation.sine),
-                                Actions.moveBy(-200f, -100f, 0.8f, Interpolation.sine))),
-                        Actions.forever(Actions.sequence(
-                                Actions.scaleTo(1.25f, 1.25f),
-                                Actions.scaleTo(0.75f, 0.75f, 1.5f, Interpolation.pow2),
-                                Actions.scaleTo(1.25f, 1.25f, 1.5f, Interpolation.pow2)))
-                )
-        )));
+            imgBackground.addAction(new Action() {
+                private static final float SPEED_MAX = 0.5f;
+
+                float progress = 0.0f;
+                float speedX = 0.0f;
+                float speedY = 0.5f;
+                float shiftFactorX = 0.0f;
+                float shiftFactorY = 0.5f;
+
+                @Override
+                public boolean act(float delta) {
+                    progress = (progress + 0.3f * delta) % 1f;
+
+                    float progressX = Math.abs(progress * 2f - 1f);
+                    speedX = progressX * SPEED_MAX;
+
+                    float progressY = Math.abs(((progress + 0.5f) % 1f) * 2f - 1f);
+                    speedY = progressY * SPEED_MAX;
+
+                    shiftFactorX -= speedX * delta;
+                    shiftFactorY += speedY * delta;
+
+                    backgroundDrawable.setShift(shiftFactorX, shiftFactorY);
+                    return false;
+                }
+            });
+        }
+
+        // Logo
+        {
+            Texture texture = assets.get("gdx-vfx-logo.png");
+            Image imageLogo = new Image(texture);
+            imageLogo.setOrigin(Align.center);
+            // Wrap into first container to setup size.
+            Container containerImage = new Container<>(imageLogo);
+//            containerImage.size(308f, 252f);
+            // Wrap into an another container to always keep composition at center of the screen.
+            Container containerHolder = new Container<>(containerImage);
+            containerHolder.setFillParent(true);
+            canvasRoot.addActor(containerHolder);
+
+            imageLogo.addAction(ActionsExt.post(Actions.sequence(
+                    ActionsExt.origin(Align.center),
+                    Actions.moveBy(-100f, -50f),
+                    Actions.parallel(
+                            Actions.forever(Actions.sequence(
+                                    Actions.rotateBy(720f, 4f, Interpolation.pow3),
+                                    Actions.rotateBy(-720f, 4f, Interpolation.pow3))),
+                            Actions.forever(Actions.sequence(
+                                    Actions.moveBy(+200f, +100f, 0.8f, Interpolation.sine),
+                                    Actions.moveBy(-200f, -100f, 0.8f, Interpolation.sine))),
+                            Actions.forever(Actions.sequence(
+                                    Actions.scaleTo(1.25f, 1.25f),
+                                    Actions.scaleTo(0.75f, 0.75f, 1.5f, Interpolation.pow2),
+                                    Actions.scaleTo(1.25f, 1.25f, 1.5f, Interpolation.pow2)))
+                    )
+            )));
+        }
     }
 }

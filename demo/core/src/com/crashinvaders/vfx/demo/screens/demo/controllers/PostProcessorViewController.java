@@ -1,5 +1,6 @@
 package com.crashinvaders.vfx.demo.screens.demo.controllers;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -14,11 +15,14 @@ import com.github.czyzby.lml.annotation.LmlAction;
 
 public class PostProcessorViewController extends LmlViewController {
 
+    private final Color clearColor;
+
     private PostProcessor postProcessor;
     private WidgetGroup canvasRoot;
 
-    public PostProcessorViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser) {
+    public PostProcessorViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser, Color clearColor) {
         super(viewControllers, lmlParser);
+        this.clearColor = clearColor;
     }
 
     @Override
@@ -50,7 +54,7 @@ public class PostProcessorViewController extends LmlViewController {
         postProcessor = postProcessingGroup.getPostProcessor();
         postProcessor.setBlendingEnabled(false);
         postProcessor.setCleanUpBuffers(true);
-        postProcessor.setClearColor(0x808080ff);
+        postProcessor.setClearColor(clearColor);
         postProcessingGroup.addActor(canvasRoot);
 
         IntegerRoundFillContainer postProcessorContainer = new IntegerRoundFillContainer(postProcessingGroup);
