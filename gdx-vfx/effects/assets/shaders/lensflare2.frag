@@ -49,19 +49,17 @@ void main() {
     // sample ghosts:  
     vec4 result = vec4(0.0);
     for (int i = 0; i < u_ghosts; ++i) { 
-	vec2 offset = fract(texcoord + ghostVec * float(i));
-	
-	float weight = length(vec2(0.5) - offset) / length(vec2(0.5));
-	weight = pow(1.0 - weight, 2.0);
-	
-	result += textureDistorted(
-				u_texture0,
-				offset,
-				normalize(ghostVec),
-				distortion
-			) * weight;
-	
-	
+        vec2 offset = fract(texcoord + ghostVec * float(i));
+
+        float weight = length(vec2(0.5) - offset) / length(vec2(0.5));
+        weight = pow(1.0 - weight, 2.0);
+
+        result += textureDistorted(
+                    u_texture0,
+                    offset,
+                    normalize(ghostVec),
+                    distortion
+                ) * weight;
     }
     result *= texture2D(u_texture1, vec2(length(vec2(0.5) - texcoord) / length(vec2(0.5))));
   

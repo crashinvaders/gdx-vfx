@@ -107,8 +107,6 @@ public final class PingPongBuffer {
 
     /**
      * Starts and/or continue ping-ponging, begin capturing on the next available buffer, returns the result of the previous
-     * {@link #capture()} call.
-     *
      * @return the Texture containing the result.
      */
     public Texture capture() {

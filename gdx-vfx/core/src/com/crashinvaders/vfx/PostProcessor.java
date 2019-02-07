@@ -115,6 +115,7 @@ public final class PostProcessor implements Disposable {
     public void setCleanUpBuffers(boolean cleanUpBuffers) {
         this.cleanUpBuffers = cleanUpBuffers;
     }
+
     public boolean isBlendingEnabled() {
         return blendingEnabled;
     }

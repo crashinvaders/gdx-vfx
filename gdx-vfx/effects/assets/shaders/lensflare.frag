@@ -15,8 +15,7 @@ uniform vec3 u_color;
 
 varying vec2 v_texCoords;
 
-vec3 lensflare(vec2 uv,vec2 pos)
-{
+vec3 lensflare(vec2 uv,vec2 pos) {
 	vec2 main = uv-pos;
 	vec2 uvd = uv*(length(uv));
 	
@@ -55,14 +54,13 @@ vec3 lensflare(vec2 uv,vec2 pos)
 	return c * u_intensity;
 }
 
-vec3 cc(vec3 color, float factor,float factor2) // color modifier
-{
+// color modifier
+vec3 cc(vec3 color, float factor,float factor2) {
 	float w = color.x+color.y+color.z;
 	return mix(color,vec3(w)*factor,w*factor2);
 }
 
-void main(void)
-{
+void main(void) {
 	vec2 uv = v_texCoords - 0.5;
 	uv.x *= u_viewport.x / u_viewport.y;
 	vec2 lpos = u_lightPosition;
