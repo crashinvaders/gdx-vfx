@@ -54,7 +54,8 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("Vignette", new VignetteEffect(false)),
                 new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
                 new EffectEntryModel("FXAA", new FxaaEffect()),
-                new EffectEntryModel("NFAA", new NfaaEffect())
+                new EffectEntryModel("NFAA", new NfaaEffect()),
+                new EffectEntryModel("Fisheye", new FisheyeEffect())
         );
 
         postProcessor = getController(PostProcessorViewController.class).getPostProcessor();

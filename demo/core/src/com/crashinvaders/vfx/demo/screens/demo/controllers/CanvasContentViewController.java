@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.common.lml.CommonLmlParser;
+import com.crashinvaders.common.scene2d.actions.ActionsExt;
 import com.crashinvaders.common.viewcontroller.LmlViewController;
 import com.crashinvaders.common.viewcontroller.ViewControllerManager;
 
@@ -37,12 +38,20 @@ public class CanvasContentViewController extends LmlViewController {
         container.setFillParent(true);
         canvasRoot.addActor(container);
 
-        image.addAction(Actions.forever(Actions.parallel(
-                Actions.rotateBy(360f, 3f),
-                Actions.sequence(
-                        Actions.scaleTo(1.25f, 1.25f),
-                        Actions.scaleTo(0.75f, 0.75f, 1.5f, Interpolation.pow2),
-                        Actions.scaleTo(1.25f, 1.25f, 1.5f, Interpolation.pow2))
+        image.addAction(ActionsExt.post(5, Actions.sequence(
+                Actions.moveBy(-100f, -50f),
+                Actions.parallel(
+                        Actions.forever(Actions.sequence(
+                                Actions.rotateBy(720f, 4f, Interpolation.pow3),
+                                Actions.rotateBy(-720f, 4f, Interpolation.pow3))),
+                        Actions.forever(Actions.sequence(
+                                Actions.moveBy(+200f, +100f, 0.8f, Interpolation.sine),
+                                Actions.moveBy(-200f, -100f, 0.8f, Interpolation.sine))),
+                        Actions.forever(Actions.sequence(
+                                Actions.scaleTo(1.25f, 1.25f),
+                                Actions.scaleTo(0.75f, 0.75f, 1.5f, Interpolation.pow2),
+                                Actions.scaleTo(1.25f, 1.25f, 1.5f, Interpolation.pow2)))
+                )
         )));
     }
 }
