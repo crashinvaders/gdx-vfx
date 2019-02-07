@@ -51,6 +51,7 @@ public class MotionBlurEffect extends PostProcessorEffect {
 	@Override
 	public void rebind () {
 		motionFilter.rebind();
+		copyFilter.rebind();
 	}
 
 	@Override

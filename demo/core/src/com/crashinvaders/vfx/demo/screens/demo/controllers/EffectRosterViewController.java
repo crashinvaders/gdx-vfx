@@ -56,7 +56,13 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("FXAA", new FxaaEffect()),
                 new EffectEntryModel("NFAA", new NfaaEffect()),
                 new EffectEntryModel("Fisheye", new FisheyeEffect()),
-                new EffectEntryModel("HDR", new HdrEffect(3.0f, 2.2f))
+                new EffectEntryModel("HDR", new HdrEffect(3.0f, 2.2f)),
+                new EffectEntryModel("Levels", new LevelsEffect()
+                        .setBrightness(0.1f)
+                        .setSaturation(1.8f)
+                        .setContrast(1.5f)
+                        .setHue(1.2f)
+                        .setGamma(1.0f))
         );
 
         postProcessor = getController(PostProcessorViewController.class).getPostProcessor();
