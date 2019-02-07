@@ -5,11 +5,11 @@ precision mediump int;
 
 uniform sampler2D u_texture0;
 
-uniform float u_brightness = 0.0;
-uniform float u_contrast = 1.0;
-uniform float u_saturation = 1.0;
-uniform float u_hue = 1.0;
-uniform float u_gamma = 2.2;
+uniform float u_brightness;
+uniform float u_contrast;
+uniform float u_saturation;
+uniform float u_hue;
+uniform float u_gamma;
 
 varying vec2 v_texCoords;
 
