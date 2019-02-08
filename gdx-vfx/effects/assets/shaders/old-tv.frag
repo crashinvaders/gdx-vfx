@@ -37,7 +37,7 @@ vec3 channelSplit(sampler2D tex, vec2 coord) {
     const float spread = 0.008;
 	vec3 frag;
 	frag.r = texture2D(tex, vec2(coord.x - spread * sin(u_time), coord.y)).r;
-	frag.g = texture2D(tex, vec2(coord.x, 					     coord.y)).g;
+	frag.g = texture2D(tex, vec2(coord.x, 					       coord.y)).g;
 	frag.b = texture2D(tex, vec2(coord.x + spread * sin(u_time), coord.y)).b;
 	return frag;
 }

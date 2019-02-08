@@ -12,6 +12,10 @@ public class CrtEffect extends PostProcessorEffect {
         crtFilter = new CrtFilter();
     }
 
+    public CrtEffect(CrtFilter.Style style, float scanLineBrightness0, float scanLineBrightness1) {
+        crtFilter = new CrtFilter(style, scanLineBrightness0, scanLineBrightness1);
+    }
+
     @Override
     public void resize(int width, int height) {
         crtFilter.resize(width, height);

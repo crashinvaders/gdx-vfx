@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.PostProcessorFilter;
 import com.crashinvaders.vfx.utils.ShaderLoader;
 
+import java.text.NumberFormat;
+
 public class CrtFilter extends PostProcessorFilter<CrtFilter> {
 
     public enum Param implements Parameter {
@@ -30,10 +32,26 @@ public class CrtFilter extends PostProcessorFilter<CrtFilter> {
         }
     }
 
-    private Vector2 resolution = new Vector2();
+    public enum Style {
+        CROSSLINE_HARD,
+        VERTICAL_HARD,
+        HORIZONTAL_HARD,
+        VERTICAL_SMOOTH,
+        HORIZONTAL_SMOOTH,
+    }
+
+    private final Vector2 resolution = new Vector2();
 
     public CrtFilter() {
-        super(ShaderLoader.fromFile("screenspace", "crt"));
+        this(Style.HORIZONTAL_HARD, 1.3f, 0.5f);
+    }
+
+    /** Brightness is a value between [0..2] (default is 1.0). */
+    public CrtFilter(Style style, float brightnessMin, float brightnessMax) {
+        super(ShaderLoader.fromFile("screenspace", "crt",
+                "#define SL_BRIGHTNESS_MIN " + brightnessMin + "\n" +
+                "#define SL_BRIGHTNESS_MAX " + brightnessMax + "\n" +
+                "#define " + style.name()));
         rebind();
     }
 
