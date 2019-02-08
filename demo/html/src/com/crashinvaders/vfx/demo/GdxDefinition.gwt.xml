@@ -3,8 +3,16 @@
 <module rename-to="html">
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 
-	<inherits name='App' />
-	<entry-point class='com.crashinvaders.vfx.demo.client.HtmlLauncher' />
+	<inherits name='GdxVfxCore' />
+	<inherits name='GdxVfxEffects' />
+	<inherits name='GdxVfxGwt' />
+	<inherits name='DemoCore' />
+
+	<entry-point class='com.crashinvaders.vfx.demo.html.HtmlLauncher' />
+
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
 	<set-configuration-property name="gdx.assetpath" value="../assets" />
+
+	<!--This will turn logger window on/off-->
+	<inherits name="com.google.gwt.logging.Logging"/>
 </module>

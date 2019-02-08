@@ -2,7 +2,7 @@ package com.crashinvaders.common.gl;
 
 /** The interface lets to customize some extra OpenGL functionality
  * (methods yet not implemented/unsupported by official LibGDX backends).*/
-public interface GLExtMethods {
+public interface GLExtCalls {
     int getBoundFboHandle();
     Viewport getViewport();
 

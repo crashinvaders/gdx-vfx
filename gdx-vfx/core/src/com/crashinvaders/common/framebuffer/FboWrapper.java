@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import com.crashinvaders.common.gl.GLExtMethods;
+import com.crashinvaders.common.gl.GLExtCalls;
 import com.crashinvaders.common.gl.GLUtils;
 
 /**
@@ -39,7 +39,7 @@ public class FboWrapper implements Disposable {
 
     private final RendererManager renderers = new RendererManager();
 
-    private final GLExtMethods.Viewport preservedViewport = new GLExtMethods.Viewport();
+    private final GLExtCalls.Viewport preservedViewport = new GLExtCalls.Viewport();
     private final Pixmap.Format pixelFormat;
     private int preservedFboHandle;
 
@@ -169,8 +169,8 @@ public class FboWrapper implements Disposable {
 //        return intBuf.get(0);
     }
 
-    protected GLExtMethods.Viewport getViewport() {
-        GLExtMethods.Viewport viewport = GLUtils.getViewport();
+    protected GLExtCalls.Viewport getViewport() {
+        GLExtCalls.Viewport viewport = GLUtils.getViewport();
 //        Gdx.app.log("FboWrapper", "Current viewport is " + viewport);
         return viewport;
 

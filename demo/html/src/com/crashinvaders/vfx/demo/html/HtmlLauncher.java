@@ -1,9 +1,10 @@
-package com.crashinvaders.vfx.demo.client;
+package com.crashinvaders.vfx.demo.html;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 import com.crashinvaders.vfx.demo.App;
+import com.crashinvaders.vfx.gwt.GwtGLExtCalls;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -46,6 +47,7 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
+                GwtGLExtCalls.initialize();
                 return new App();
         }
 }

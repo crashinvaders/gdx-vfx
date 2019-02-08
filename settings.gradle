@@ -1,8 +1,9 @@
 include ':gdx-vfx:core'
 include ':gdx-vfx:effects'
+include ':gdx-vfx:gwt'
 
 include ':demo:core'
 include ':demo:desktop'
 include ':demo:android'
 //include ':demo:ios'
-//include ':demo:html'
+include ':demo:html'
