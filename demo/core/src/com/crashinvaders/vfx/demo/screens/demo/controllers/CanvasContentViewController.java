@@ -10,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Align;
-import com.crashinvaders.common.lml.CommonLmlParser;
-import com.crashinvaders.common.scene2d.RepeatTextureDrawable;
-import com.crashinvaders.common.scene2d.actions.ActionsExt;
-import com.crashinvaders.common.viewcontroller.LmlViewController;
-import com.crashinvaders.common.viewcontroller.ViewControllerManager;
+import com.crashinvaders.vfx.common.lml.CommonLmlParser;
+import com.crashinvaders.vfx.common.scene2d.RepeatTextureDrawable;
+import com.crashinvaders.vfx.common.scene2d.actions.ActionsExt;
+import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
+import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 
 public class CanvasContentViewController extends LmlViewController {
 

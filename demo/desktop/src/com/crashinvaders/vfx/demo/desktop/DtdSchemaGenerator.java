@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.crashinvaders.common.lml.CommonLmlSyntax;
-import com.crashinvaders.common.lml.LmlUtils;
+import com.crashinvaders.vfx.common.lml.CommonLmlSyntax;
+import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.github.czyzby.lml.parser.impl.DefaultLmlData;
 import com.github.czyzby.lml.util.LmlParserBuilder;
 

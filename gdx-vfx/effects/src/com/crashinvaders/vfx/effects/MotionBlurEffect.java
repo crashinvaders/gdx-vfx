@@ -3,7 +3,7 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.Copy;
 import com.crashinvaders.vfx.filters.MotionFilter;

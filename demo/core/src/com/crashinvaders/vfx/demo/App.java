@@ -4,9 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.crashinvaders.common.PrioritizedInputMultiplexer;
+import com.crashinvaders.vfx.common.PrioritizedInputMultiplexer;
 import com.crashinvaders.vfx.demo.screens.demo.DemoScreen;
-import com.crashinvaders.vfx.utils.ShaderLoader;
 
 public class App extends Game {
 
