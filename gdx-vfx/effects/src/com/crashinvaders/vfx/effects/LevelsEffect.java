@@ -68,4 +68,24 @@ public final class LevelsEffect extends PostProcessorEffect {
         filter.setGamma(value);
         return this;
     }
+
+    public float getBrightness() {
+        return filter.getBrightness();
+    }
+
+    public float getContrast() {
+        return filter.getContrast();
+    }
+
+    public float getSaturation() {
+        return filter.getSaturation();
+    }
+
+    public float getHue() {
+        return filter.getHue();
+    }
+
+    public float getGamma() {
+        return filter.getGamma();
+    }
 }

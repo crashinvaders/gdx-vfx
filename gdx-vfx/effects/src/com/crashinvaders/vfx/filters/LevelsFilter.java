@@ -127,4 +127,24 @@ public final class LevelsFilter extends PostProcessorFilter<LevelsFilter> {
         this.gamma = gamma;
         setParam(Param.Gamma, this.gamma);
     }
+
+    public float getBrightness() {
+        return brightness;
+    }
+
+    public float getContrast() {
+        return contrast;
+    }
+
+    public float getSaturation() {
+        return saturation;
+    }
+
+    public float getHue() {
+        return hue;
+    }
+
+    public float getGamma() {
+        return gamma;
+    }
 }
