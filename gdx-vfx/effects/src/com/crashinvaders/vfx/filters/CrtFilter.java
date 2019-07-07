@@ -1,12 +1,12 @@
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.PostProcessorFilter;
 import com.crashinvaders.vfx.utils.ShaderLoader;
 
-import java.text.NumberFormat;
-
 public class CrtFilter extends PostProcessorFilter<CrtFilter> {
+    private static final Vector2 tmpVec = new Vector2();
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
@@ -32,7 +32,7 @@ public class CrtFilter extends PostProcessorFilter<CrtFilter> {
         }
     }
 
-    public enum Style {
+    public enum LineStyle {
         CROSSLINE_HARD,
         VERTICAL_HARD,
         HORIZONTAL_HARD,
@@ -40,31 +40,64 @@ public class CrtFilter extends PostProcessorFilter<CrtFilter> {
         HORIZONTAL_SMOOTH,
     }
 
-    private final Vector2 resolution = new Vector2();
+    /** Shader resolution parameter source. */
+    public enum SizeSource {
+        /** Resolution will be defined by the application internal viewport. */
+        VIEWPORT,
+        /** Resolution will be defined by the application window size. */
+        SCREEN,
+    }
+
+    private final Vector2 viewportSize = new Vector2();
+    private SizeSource sizeSource = SizeSource.VIEWPORT;
 
     public CrtFilter() {
-        this(Style.HORIZONTAL_HARD, 1.3f, 0.5f);
+        this(LineStyle.HORIZONTAL_HARD, 1.3f, 0.5f);
     }
 
     /** Brightness is a value between [0..2] (default is 1.0). */
-    public CrtFilter(Style style, float brightnessMin, float brightnessMax) {
+    public CrtFilter(LineStyle lineStyle, float brightnessMin, float brightnessMax) {
         super(ShaderLoader.fromFile("screenspace", "crt",
                 "#define SL_BRIGHTNESS_MIN " + brightnessMin + "\n" +
                 "#define SL_BRIGHTNESS_MAX " + brightnessMax + "\n" +
-                "#define " + style.name()));
+                "#define " + lineStyle.name()));
+        rebind();
+    }
+
+    public SizeSource getSizeSource() {
+        return sizeSource;
+    }
+
+    /** Set shader resolution parameter source.
+     * @see SizeSource */
+    public void setSizeSource(SizeSource sizeSource) {
+        if (sizeSource == null) {
+            throw new IllegalArgumentException("Size source cannot be null.");
+        }
+        if (this.sizeSource == sizeSource) {
+            return;
+        }
+        this.sizeSource = sizeSource;
         rebind();
     }
 
     @Override
     public void resize(int width, int height) {
-        this.resolution.set(width, height);
+        this.viewportSize.set(width, height);
         rebind();
     }
 
     @Override
     public void rebind () {
         setParam(Param.Texture0, u_texture0);
-        setParam(Param.Resolution, resolution);
+        switch (sizeSource) {
+            case VIEWPORT:
+                setParam(Param.Resolution, viewportSize);
+                break;
+            case SCREEN:
+                setParam(Param.Resolution, tmpVec.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+                break;
+        }
         endParams();
     }
 
