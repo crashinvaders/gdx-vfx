@@ -17,7 +17,7 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.common.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.PostProcessorFilter;
 
 /**

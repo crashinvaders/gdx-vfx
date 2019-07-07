@@ -59,7 +59,7 @@ public final class ShaderLoader {
         if (!shader.isCompiled()) {
             Gdx.app.error(TAG, "Compile error: " + vertexName + "/" + fragmentName);
             Gdx.app.error(TAG, shader.getLog());
-            System.exit(-1);
+            Gdx.app.exit();
         }
         return shader;
     }

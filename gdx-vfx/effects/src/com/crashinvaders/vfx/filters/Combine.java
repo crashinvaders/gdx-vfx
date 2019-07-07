@@ -17,7 +17,7 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorFilter;
 import com.crashinvaders.vfx.utils.ShaderLoader;
 

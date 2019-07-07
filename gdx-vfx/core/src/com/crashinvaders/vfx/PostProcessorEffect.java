@@ -17,7 +17,7 @@
 package com.crashinvaders.vfx;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 
 /**
  * This interface defines the base class for the concrete implementation of post-processor effects. An effect is considered

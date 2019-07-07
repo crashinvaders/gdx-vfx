@@ -16,7 +16,7 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.FxaaFilter;
 

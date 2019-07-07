@@ -2,15 +2,15 @@ package com.crashinvaders.vfx.demo.desktop;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.crashinvaders.common.lml.CommonLmlSyntax;
-import com.crashinvaders.common.lml.LmlUtils;
+import com.crashinvaders.vfx.common.lml.CommonLmlSyntax;
+import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.github.czyzby.lml.parser.impl.DefaultLmlData;
 import com.github.czyzby.lml.util.LmlParserBuilder;
 
@@ -20,14 +20,13 @@ import com.github.czyzby.lml.util.LmlParserBuilder;
  */
 public class DtdSchemaGenerator {
     public static void main(String[] args) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        LwjglApplicationConfiguration.disableAudio = true;
-        config.width = 1;
-        config.height = 1;
-        config.title = "";
-        config.initialBackgroundColor = Color.VIOLET;
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.disableAudio(true);
+        config.setWindowedMode(1, 1);
+        config.setTitle("");
+        config.setInitialBackgroundColor(Color.VIOLET);
 
-        new LwjglApplication(new ApplicationAdapter() {
+        new Lwjgl3Application(new ApplicationAdapter() {
             private Skin skin;
 
             @Override

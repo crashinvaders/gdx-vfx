@@ -1,6 +1,6 @@
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.CrtFilter;
 
@@ -12,8 +12,8 @@ public class CrtEffect extends PostProcessorEffect {
         crtFilter = new CrtFilter();
     }
 
-    public CrtEffect(CrtFilter.Style style, float scanLineBrightness0, float scanLineBrightness1) {
-        crtFilter = new CrtFilter(style, scanLineBrightness0, scanLineBrightness1);
+    public CrtEffect(CrtFilter.LineStyle lineStyle, float scanLineBrightness0, float scanLineBrightness1) {
+        crtFilter = new CrtFilter(lineStyle, scanLineBrightness0, scanLineBrightness1);
     }
 
     @Override
@@ -34,5 +34,13 @@ public class CrtEffect extends PostProcessorEffect {
     @Override
     public void dispose() {
         crtFilter.dispose();
+    }
+
+    public CrtFilter.SizeSource getSizeSource() {
+        return crtFilter.getSizeSource();
+    }
+
+    public void setSizeSource(CrtFilter.SizeSource sizeSource) {
+        crtFilter.setSizeSource(sizeSource);
     }
 }

@@ -10,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Align;
-import com.crashinvaders.common.lml.CommonLmlParser;
-import com.crashinvaders.common.scene2d.RepeatTextureDrawable;
-import com.crashinvaders.common.scene2d.actions.ActionsExt;
-import com.crashinvaders.common.viewcontroller.LmlViewController;
-import com.crashinvaders.common.viewcontroller.ViewControllerManager;
+import com.crashinvaders.vfx.common.lml.CommonLmlParser;
+import com.crashinvaders.vfx.common.scene2d.RepeatTextureDrawable;
+import com.crashinvaders.vfx.common.scene2d.actions.ActionsExt;
+import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
+import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 
 public class CanvasContentViewController extends LmlViewController {
 
@@ -43,23 +43,25 @@ public class CanvasContentViewController extends LmlViewController {
             canvasRoot.addActor(imgBackground);
 
             imgBackground.addAction(new Action() {
-                private static final float SPEED_MAX = 0.5f;
+                private static final float SPEED_MIN = 0.1f;
+                private static final float SPEED_MAX = 0.3f;
+                private static final float SPEED_DELTA = SPEED_MAX - SPEED_MIN;
 
-                float progress = 0.0f;
-                float speedX = 0.0f;
-                float speedY = 0.5f;
-                float shiftFactorX = 0.0f;
-                float shiftFactorY = 0.5f;
+                float progress;
+                float speedX;
+                float speedY;
+                float shiftFactorX;
+                float shiftFactorY;
 
                 @Override
                 public boolean act(float delta) {
                     progress = (progress + 0.3f * delta) % 1f;
 
                     float progressX = Math.abs(progress * 2f - 1f);
-                    speedX = progressX * SPEED_MAX;
+                    speedX = SPEED_MIN + progressX * SPEED_DELTA;
 
                     float progressY = Math.abs(((progress + 0.5f) % 1f) * 2f - 1f);
-                    speedY = progressY * SPEED_MAX;
+                    speedY = SPEED_MIN + progressY * SPEED_DELTA;
 
                     shiftFactorX -= speedX * delta;
                     shiftFactorY += speedY * delta;

@@ -1,3 +1,4 @@
+apply plugin: 'java'
 apply plugin: "gwt"
 apply plugin: "war"
 
@@ -6,8 +7,8 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs += ['../assets']
 
 gwt {
-    gwtVersion = "$gwtVersion"     // Should match the gwt version used for building the gwt backend
-    maxHeapSize = "1G"              // Default 256m is not enough for gwt compiler. GWT is HUNGRY
+    gwtVersion = '2.8.0'    // Should match the gwt version used for building the gwt backend
+    maxHeapSize = "1G"      // Default 256m is not enough for gwt compiler. GWT is HUNGRY
     minHeapSize = "1G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
@@ -16,24 +17,22 @@ gwt {
     project.webAppDirName = 'webapp'
 
     compiler {
-        strict = true;
-        disableCastChecking = true;
+        strict = true
+        disableCastChecking = true
     }
 }
 
 dependencies {
     compile project(":demo:core")
     compile project(":gdx-vfx:gwt")
-    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
     compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+    compile "com.github.czyzby:gdx-lml:$lmlVersion:sources"
+    compile "com.github.czyzby:gdx-kiwi:$lmlVersion:sources"
 }
 
 import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
-
-def HttpFileServer server = null
-def httpFilePort = 8080
 
 task startHttpServer () {
     dependsOn draftCompileGwt
@@ -51,7 +50,7 @@ task startHttpServer () {
             into output
         }
 
-        server = new SimpleHttpFileServerFactory().start(new File(output), httpFilePort)
+        HttpFileServer server = new SimpleHttpFileServerFactory().start(new File(output), 22088)
 
         println "Server started in directory " + server.getContentRoot() + ", http://localhost:" + server.getPort()
     }
@@ -84,9 +83,11 @@ task dist(dependsOn: [clean, compileGwt]) {
 
 task addSource {
     doLast {
+        sourceSets.main.compileClasspath += files(project(':gdx-vfx:core').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':gdx-vfx:effects').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':gdx-vfx:gwt').sourceSets.main.allJava.srcDirs)
         sourceSets.main.compileClasspath += files(project(':demo:core').sourceSets.main.allJava.srcDirs)
     }
 }
-
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)

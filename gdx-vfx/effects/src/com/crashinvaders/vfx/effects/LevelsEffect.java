@@ -1,6 +1,6 @@
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.LevelsFilter;
 
@@ -67,5 +67,25 @@ public final class LevelsEffect extends PostProcessorEffect {
     public LevelsEffect setGamma(float value) {
         filter.setGamma(value);
         return this;
+    }
+
+    public float getBrightness() {
+        return filter.getBrightness();
+    }
+
+    public float getContrast() {
+        return filter.getContrast();
+    }
+
+    public float getSaturation() {
+        return filter.getSaturation();
+    }
+
+    public float getHue() {
+        return filter.getHue();
+    }
+
+    public float getGamma() {
+        return filter.getGamma();
     }
 }

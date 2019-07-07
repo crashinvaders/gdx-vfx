@@ -16,7 +16,7 @@
 
 package com.crashinvaders.vfx.filters;
 
-import com.crashinvaders.common.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 
 /**
  * Encapsulates a separable 2D convolution kernel filter
