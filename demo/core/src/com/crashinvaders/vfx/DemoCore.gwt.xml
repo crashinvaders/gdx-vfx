@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://www.gwtproject.org/doctype/2.8.0/gwt-module.dtd">
 <module>
-	<source path="com/badlogic/gdx/scenes/scene2d" />
-	<source path="com/crashinvaders/common" />
-	<source path="com/crashinvaders/vfx/demo" />
+	<source path="common">
+		<include name="**/*"/>
+	</source>
+	<source path="demo">
+		<include name="**/*"/>
+	</source>
 
+	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.common.scene2d.actions" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.common.viewcontroller.LmlViewController" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.CanvasContentViewController" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.EffectRosterViewController" />

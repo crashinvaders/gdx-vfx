@@ -32,7 +32,7 @@ public class PrioritizedArray<T> implements Iterable<T> {
     }
 
     public void add(T item, int priority) {
-        items.put(item, Pools.obtain(Wrapper.class).initialize(item, priority));
+        items.put(item, Wrapper.pool.obtain().initialize(item, priority));
         items.sort(comparator);
     }
 
@@ -44,7 +44,7 @@ public class PrioritizedArray<T> implements Iterable<T> {
     public void remove(T item) {
         Wrapper<T> wrapper = items.remove(item);
         if (wrapper != null) {
-            Pools.free(wrapper);
+            Wrapper.pool.free(wrapper);
         }
     }
 
@@ -55,7 +55,7 @@ public class PrioritizedArray<T> implements Iterable<T> {
     public void clear() {
         for (int i = 0; i < items.size(); i++) {
             Wrapper<T> wrapper = items.getValueAt(i);
-            Pools.free(wrapper);
+            Wrapper.pool.free(wrapper);
         }
         items.clear();
     }
@@ -85,7 +85,14 @@ public class PrioritizedArray<T> implements Iterable<T> {
         return items.toString(separator);
     }
 
-    static class Wrapper<T> implements Pool.Poolable {
+    private static class Wrapper<T> implements Pool.Poolable {
+        private static final Pool<Wrapper> pool = new Pool<Wrapper>() {
+            @Override
+            protected Wrapper newObject() {
+                return new Wrapper();
+            }
+        };
+
         T item;
         int priority;
 

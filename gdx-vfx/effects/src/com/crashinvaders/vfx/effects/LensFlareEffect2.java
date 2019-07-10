@@ -40,26 +40,25 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
     private final Blur blur;
     private final Bias bias;
     private final Combine combine;
-    private Settings settings;
     private boolean blending = false;
     private int sfactor, dfactor;
 
     private boolean ownsLensColorTexture = false;
     private Texture lensColorTexture = null;
 
-    public LensFlareEffect2(Pixmap.Format fboFormat) {
-        this(fboFormat, null);
+    public LensFlareEffect2(Settings settings, Pixmap.Format fboFormat) {
+        this(settings, fboFormat, null);
     }
 
-    public LensFlareEffect2(Pixmap.Format fboFormat, Texture texture) {
+    public LensFlareEffect2(Settings settings, Pixmap.Format fboFormat, Texture texture) {
         pingPongBuffer = new PingPongBuffer(fboFormat);
 
-        lens = new LensFlare2();
+        lens = new LensFlare2(settings.ghosts);
         blur = new Blur();
         bias = new Bias();
         combine = new Combine();
 
-        setSettings(new Settings("default", 2, -0.9f, 1f, 1f, 0.7f, 1f, 8, 0.5f));
+        applySettings(settings);
 
         if (texture != null) {
             setLensColorTexture(texture);
@@ -196,14 +195,6 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         combine.setSource2Saturation(saturation);
     }
 
-    public int getGhosts() {
-        return (int) lens.getGhosts();
-    }
-
-    public void setGhosts(int ghosts) {
-        lens.setGhosts(ghosts);
-    }
-
     public boolean isBlendingEnabled() {
         return blending;
     }
@@ -224,13 +215,7 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         blur.setType(type);
     }
 
-    public Settings getSettings() {
-        return settings;
-    }
-
-    public void setSettings(Settings settings) {
-        this.settings = settings;
-
+    public void applySettings(Settings settings) {
         // setup threshold filter
         setBias(settings.flareBias);
 
@@ -244,8 +229,6 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         setBlurPasses(settings.blurPasses);
         setBlurAmount(settings.blurAmount);
         setBlurType(settings.blurType);
-
-        setGhosts(settings.ghosts);
     }
 
     public int getBlurPasses() {
@@ -295,6 +278,10 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
 
             this.ghosts = ghosts;
             this.haloWidth = haloWidth;
+        }
+
+        public Settings() {
+            this("default", 2, -0.9f, 1f, 1f, 0.7f, 1f, 8, 0.5f);
         }
 
         // simple blur

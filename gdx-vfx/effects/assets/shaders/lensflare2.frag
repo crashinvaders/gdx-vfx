@@ -17,7 +17,6 @@ uniform sampler2D u_texture1;
 varying vec2 v_texCoords;
 
 uniform vec2 u_viewportInverse;
-uniform int u_ghosts; // number of ghost samples
 uniform float u_haloWidth;
 
 /*----------------------------------------------------------------------------*/
@@ -48,7 +47,7 @@ void main() {
     
     // sample ghosts:  
     vec4 result = vec4(0.0);
-    for (int i = 0; i < u_ghosts; ++i) { 
+    for (int i = 0; i < GHOSTS; ++i) {
         vec2 offset = fract(texcoord + ghostVec * float(i));
 
         float weight = length(vec2(0.5) - offset) / length(vec2(0.5));

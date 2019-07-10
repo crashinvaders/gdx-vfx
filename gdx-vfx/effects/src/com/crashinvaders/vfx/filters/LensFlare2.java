@@ -37,7 +37,6 @@ public final class LensFlare2 extends PostProcessorFilter<LensFlare2> {
         Texture("u_texture0", 0),
         LensColor("u_texture1", 0),
         ViewportInverse("u_viewportInverse", 2),
-        Ghosts("u_ghosts", 0),
         HaloWidth("u_haloWidth", 0);
         // @formatter:on
 
@@ -60,18 +59,10 @@ public final class LensFlare2 extends PostProcessorFilter<LensFlare2> {
         }
     }
 
-    public LensFlare2() {
-        super(ShaderLoader.fromFile("screenspace", "lensflare2"));
+    public LensFlare2(int ghostAmount) {
+        super(ShaderLoader.fromFile("screenspace", "lensflare2",
+                "#define GHOSTS " + ghostAmount));
         rebind();
-    }
-
-    public int getGhosts() {
-        return ghosts;
-    }
-
-    public void setGhosts(int ghosts) {
-        this.ghosts = ghosts;
-        setParam(Param.Ghosts, ghosts);
     }
 
     public float getHaloWidth() {
@@ -100,7 +91,6 @@ public final class LensFlare2 extends PostProcessorFilter<LensFlare2> {
         setParams(Param.Texture, u_texture0);
         setParams(Param.LensColor, u_texture1);
         setParams(Param.ViewportInverse, viewportInverse);
-        setParams(Param.Ghosts, ghosts);
         setParams(Param.HaloWidth, haloWidth);
         endParams();
     }

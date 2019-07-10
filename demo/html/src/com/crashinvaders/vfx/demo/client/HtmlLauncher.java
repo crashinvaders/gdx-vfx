@@ -1,4 +1,4 @@
-package com.crashinvaders.vfx.demo.html;
+package com.crashinvaders.vfx.demo.client;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;

@@ -51,7 +51,7 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("Curvature", new CurvatureEffect()),
                 new EffectEntryModel("Lens Flare", new LensFlareEffect()
                         .setIntensity(10f)),
-                new EffectEntryModel("Lens Flare (Adv)", new LensFlareEffect2(Pixmap.Format.RGBA8888)),
+                new EffectEntryModel("Lens Flare (Adv)", new LensFlareEffect2(new LensFlareEffect2.Settings(), Pixmap.Format.RGBA8888)),
                 new EffectEntryModel("Vignette", new VignetteEffect(false)),
                 new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
                 new EffectEntryModel("FXAA", new FxaaEffect()),

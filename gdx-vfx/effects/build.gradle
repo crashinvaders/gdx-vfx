@@ -4,10 +4,16 @@ apply plugin: "maven"
 sourceCompatibility = 1.7
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs += [ "src/" ]
+sourceSets.main.java.srcDirs += ['src/']
 sourceSets.main.resources.srcDirs += ['assets/']
 
 dependencies {
     compile project(':gdx-vfx:core')
     runtime files('assets')
+}
+
+jar {
+    from('assets') {
+        include '**/*'
+    }
 }
