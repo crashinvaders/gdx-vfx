@@ -23,10 +23,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.PostProcessorEffect;
-import com.crashinvaders.vfx.filters.Bias;
-import com.crashinvaders.vfx.filters.Blur;
-import com.crashinvaders.vfx.filters.Combine;
-import com.crashinvaders.vfx.filters.LensFlare2;
+import com.crashinvaders.vfx.filters.*;
 
 /**
  * Pseudo lens flare implementation. This is a post-processing effect entirely, no need for light positions or anything. It
@@ -37,9 +34,9 @@ import com.crashinvaders.vfx.filters.LensFlare2;
 public final class LensFlareEffect2 extends PostProcessorEffect {
     private final PingPongBuffer pingPongBuffer;
     private final LensFlare2 lens;
-    private final Blur blur;
+    private final BlurFilter blur;
     private final Bias bias;
-    private final Combine combine;
+    private final CombineFilter combine;
     private boolean blending = false;
     private int sfactor, dfactor;
 
@@ -54,9 +51,9 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         pingPongBuffer = new PingPongBuffer(fboFormat);
 
         lens = new LensFlare2(settings.ghosts);
-        blur = new Blur();
+        blur = new BlurFilter();
         bias = new Bias();
-        combine = new Combine();
+        combine = new CombineFilter();
 
         applySettings(settings);
 
@@ -207,11 +204,11 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         return dfactor;
     }
 
-    public Blur.BlurType getBlurType() {
+    public BlurFilter.BlurType getBlurType() {
         return blur.getType();
     }
 
-    public void setBlurType(Blur.BlurType type) {
+    public void setBlurType(BlurFilter.BlurType type) {
         blur.setType(type);
     }
 
@@ -250,7 +247,7 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
     public static class Settings {
         public final String name;
 
-        public final Blur.BlurType blurType;
+        public final BlurFilter.BlurType blurType;
         public final int blurPasses; // simple blur
         public final float blurAmount; // normal blur (1 pass)
         public final float flareBias;
@@ -263,7 +260,7 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         public final int ghosts;
         public final float haloWidth;
 
-        public Settings(String name, Blur.BlurType blurType, int blurPasses, float blurAmount, float flareBias, float baseIntensity,
+        public Settings(String name, BlurFilter.BlurType blurType, int blurPasses, float blurAmount, float flareBias, float baseIntensity,
                         float baseSaturation, float flareIntensity, float flareSaturation, int ghosts, float haloWidth) {
             this.name = name;
             this.blurType = blurType;
@@ -287,7 +284,7 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         // simple blur
         public Settings(String name, int blurPasses, float flareBias, float baseIntensity, float baseSaturation,
                         float flareIntensity, float flareSaturation, int ghosts, float haloWidth) {
-            this(name, Blur.BlurType.Gaussian5x5b, blurPasses, 0, flareBias, baseIntensity, baseSaturation, flareIntensity,
+            this(name, BlurFilter.BlurType.Gaussian5x5b, blurPasses, 0, flareBias, baseIntensity, baseSaturation, flareIntensity,
                     flareSaturation, ghosts, haloWidth);
         }
 

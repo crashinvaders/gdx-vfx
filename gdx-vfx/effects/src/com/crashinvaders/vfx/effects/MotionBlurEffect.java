@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.common.framebuffer.FboWrapperQueue;
-import com.crashinvaders.vfx.filters.Copy;
+import com.crashinvaders.vfx.filters.CopyFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter.BlurFunction;
 
@@ -16,14 +16,14 @@ import com.crashinvaders.vfx.filters.MotionBlurFilter.BlurFunction;
  * @author Toni Sagrista */
 public class MotionBlurEffect extends PostProcessorEffect {
 	private final MotionBlurFilter motionBlurFilter;
-	private final Copy copyFilter;
+	private final CopyFilter copyFilter;
 	private final FboWrapperQueue localBuffer;
 
 	public MotionBlurEffect(Pixmap.Format pixelFormat, BlurFunction blurFunction, float blurOpacity) {
 		motionBlurFilter = new MotionBlurFilter(blurFunction);
 		motionBlurFilter.setBlurOpacity(blurOpacity);
 
-		copyFilter = new Copy();
+		copyFilter = new CopyFilter();
 
 		localBuffer = new FboWrapperQueue(pixelFormat,
 				// On WebGL (GWT) we cannot render from/into the same texture simultaneously.

@@ -19,6 +19,7 @@ import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.PostProcessor;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.effects.*;
+import com.crashinvaders.vfx.filters.BlurFilter;
 import com.crashinvaders.vfx.filters.CrtFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter;
 import com.crashinvaders.vfx.filters.RadialBlurFilter;
@@ -49,6 +50,7 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("Old TV", new OldTvEffect()),
                 new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
                 new EffectEntryModel("Film Grain", new FilmGrainEffect()),
+                new EffectEntryModel("Gaussian Blur", new BlurEffect(10, BlurFilter.BlurType.Gaussian5x5)),
                 new EffectEntryModel("Motion Blur (MAX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MAX, 0.75f)),
                 new EffectEntryModel("Motion Blur (MIX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MIX, 0.75f)),
                 new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlurFilter.Quality.High)),

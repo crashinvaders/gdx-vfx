@@ -24,9 +24,9 @@ import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.PostProcessorUtils;
-import com.crashinvaders.vfx.filters.Blur;
-import com.crashinvaders.vfx.filters.Blur.BlurType;
-import com.crashinvaders.vfx.filters.Combine;
+import com.crashinvaders.vfx.filters.BlurFilter;
+import com.crashinvaders.vfx.filters.BlurFilter.BlurType;
+import com.crashinvaders.vfx.filters.CombineFilter;
 import com.crashinvaders.vfx.filters.Threshold;
 
 public final class BloomEffect extends PostProcessorEffect {
@@ -80,9 +80,9 @@ public final class BloomEffect extends PostProcessorEffect {
 
     private final PingPongBuffer pingPongBuffer;
 
-    private final Blur blur;
+    private final BlurFilter blur;
     private final Threshold threshold;
-    private final Combine combine;
+    private final CombineFilter combine;
 
     private Settings settings;
 
@@ -92,9 +92,9 @@ public final class BloomEffect extends PostProcessorEffect {
     public BloomEffect() {
         pingPongBuffer = new PingPongBuffer(Pixmap.Format.RGBA8888);
 
-        blur = new Blur();
+        blur = new BlurFilter();
         threshold = new Threshold();
-        combine = new Combine();
+        combine = new CombineFilter();
 
         setSettings(new Settings("default", 2, 0.277f, 1f, .85f, 1.1f, .85f));
     }
@@ -250,8 +250,6 @@ public final class BloomEffect extends PostProcessorEffect {
             // TODO support for Gdx.gl.glBlendFuncSeparate(sfactor, dfactor, GL20.GL_ONE, GL20.GL_ONE );
             Gdx.gl.glBlendFunc(sfactor, dfactor);
         }
-
-//		restoreViewport(dest);
 
         // mix original scene and blurred threshold, modulate via
         // set(Base|BloomEffect)(Saturation|Intensity)

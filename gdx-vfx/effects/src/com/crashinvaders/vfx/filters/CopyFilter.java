@@ -19,7 +19,7 @@ package com.crashinvaders.vfx.filters;
 import com.crashinvaders.vfx.PostProcessorFilter;
 import com.crashinvaders.vfx.utils.ShaderLoader;
 
-public class Copy extends PostProcessorFilter<Copy> {
+public class CopyFilter extends PostProcessorFilter<CopyFilter> {
 	public enum Param implements Parameter {
 		Texture0("u_texture0", 0);
 
@@ -42,7 +42,7 @@ public class Copy extends PostProcessorFilter<Copy> {
 		}
 	}
 
-	public Copy () {
+	public CopyFilter() {
 		super(ShaderLoader.fromFile("screenspace", "copy"));
 	}
 

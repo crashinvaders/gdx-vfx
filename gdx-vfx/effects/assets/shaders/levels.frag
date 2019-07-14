@@ -3,6 +3,8 @@ precision mediump float;
 precision mediump int;
 #endif
 
+varying vec2 v_texCoords;
+
 uniform sampler2D u_texture0;
 
 uniform float u_brightness;
@@ -10,8 +12,6 @@ uniform float u_contrast;
 uniform float u_saturation;
 uniform float u_hue;
 uniform float u_gamma;
-
-varying vec2 v_texCoords;
 
 vec3 rgb2hsv(vec3 c) {
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);

@@ -19,10 +19,11 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.utils.IntMap;
 import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 
-public final class Blur extends MultipassFilter {
-    // @formatter:off
+public final class BlurFilter extends MultipassFilter {
+
     private enum Tap {
-        Tap3x3(1), Tap5x5(2),
+        Tap3x3(1),
+        Tap5x5(2),
         // Tap7x7( 3 )
         ;
 
@@ -40,12 +41,10 @@ public final class Blur extends MultipassFilter {
 
         public final Tap tap;
 
-        private BlurType(Tap tap) {
+        BlurType(Tap tap) {
             this.tap = tap;
         }
     }
-
-    // @formatter:on
 
     // blur
     private BlurType type = BlurType.Gaussian5x5;
@@ -56,7 +55,7 @@ public final class Blur extends MultipassFilter {
     private float invWidth, invHeight;
     private final IntMap<Convolve2D> convolve = new IntMap<Convolve2D>(Tap.values().length);
 
-    public Blur() {
+    public BlurFilter() {
         // create filters
         for (Tap tap : Tap.values()) {
             convolve.put(tap.radius, new Convolve2D(tap.radius));

@@ -31,7 +31,7 @@ public class OldTvFilter extends PostProcessorFilter<OldTvFilter> {
         }
     }
 
-    private Vector2 resolution = new Vector2();
+    private final Vector2 resolution = new Vector2();
     private float time = 0f;
 
     public OldTvFilter() {

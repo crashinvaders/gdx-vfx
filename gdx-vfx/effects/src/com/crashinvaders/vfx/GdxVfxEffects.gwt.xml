@@ -22,6 +22,7 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare2.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/levels.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/mix.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-max.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-mix.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/nfaa.frag" />
