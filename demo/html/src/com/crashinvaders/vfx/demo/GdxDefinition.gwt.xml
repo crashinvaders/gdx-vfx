@@ -11,7 +11,7 @@
 	<inherits name='com.crashinvaders.vfx.DemoCore' />
 
 	<source path="client">
-		<include name="GwtConsoleLogger.java"/>
+		<include name="**/*"/>
 	</source>
 
 	<entry-point class='com.crashinvaders.vfx.demo.client.HtmlLauncher' />
