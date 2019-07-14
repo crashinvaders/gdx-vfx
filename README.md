@@ -9,7 +9,9 @@ More effects to be implemented and included in the standard library package.
 
 # Demo
 
-Clone and play with the demo:
+Visit https://crashinvaders.github.io/gdx-vfx
+
+Or clone and play with the demo locally:
 ```
 git clone https://github.com/crashinvaders/gdx-vfx.git
 cd gdx-vfx
