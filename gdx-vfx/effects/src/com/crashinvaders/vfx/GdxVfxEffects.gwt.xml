@@ -5,7 +5,6 @@
 		<include name="**/*"/>
 	</source>
 
-	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/astral-ambient.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/bias.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/blur.frag" />
@@ -36,7 +35,8 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare2.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/levels.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-max.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-mix.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/nfaa.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/old-tv.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/pink-ambient.frag" />

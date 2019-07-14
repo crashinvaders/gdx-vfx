@@ -18,19 +18,19 @@ package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
-import com.crashinvaders.vfx.filters.RadialBlur;
+import com.crashinvaders.vfx.filters.RadialBlurFilter;
 
 /**
  * Implements a zooming effect: either a radial blur filter.
  */
 public final class RadialBlurEffect extends PostProcessorEffect {
-    private final RadialBlur radialBlur;
+    private final RadialBlurFilter radialBlur;
 
     /**
      * Creating a Zoomer specifying the radial blur quality will enable radial blur
      */
-    public RadialBlurEffect(RadialBlur.Quality quality) {
-        radialBlur = new RadialBlur(quality);
+    public RadialBlurEffect(RadialBlurFilter.Quality quality) {
+        radialBlur = new RadialBlurFilter(quality);
     }
 
     @Override

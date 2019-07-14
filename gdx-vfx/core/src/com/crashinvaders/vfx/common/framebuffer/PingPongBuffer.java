@@ -60,7 +60,7 @@ public final class PingPongBuffer {
     }
 
     /**
-     * <b>WARNING:</b> you will have to call {@link #resize(int, int)} manually before use this instance
+     * <b>WARNING:</b> You have to call {@link #resize(int, int)} manually before using this instance.
      */
     public PingPongBuffer(Format fbFormat) {
         this.buffer1 = new FboWrapper(fbFormat);
@@ -80,7 +80,7 @@ public final class PingPongBuffer {
 
     /** When needed graphics memory could be invalidated so buffers should be rebuilt. */
     public void rebind() {
-        // FBOs might be null if instance wasn't initialized with #resize(int, int) yet
+        // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
         if (buffer1.getFbo() != null) {
             texture1 = buffer1.getFbo().getColorBufferTexture();
             texture1.setWrap(wrapU, wrapV);
@@ -106,7 +106,9 @@ public final class PingPongBuffer {
     }
 
     /**
-     * Starts and/or continue ping-ponging, begin capturing on the next available buffer, returns the result of the previous
+     * Starts and/or continue ping-ponging,
+     * begin capturing on the next available buffer,
+     * returns the result of the previous.
      * @return the Texture containing the result.
      */
     public Texture capture() {

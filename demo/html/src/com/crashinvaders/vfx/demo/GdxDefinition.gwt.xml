@@ -10,6 +10,10 @@
 	<inherits name='com.badlogic.gdx.backends.gwt.GdxVfxGwtExt' />
 	<inherits name='com.crashinvaders.vfx.DemoCore' />
 
+	<source path="client">
+		<include name="GwtConsoleLogger.java"/>
+	</source>
+
 	<entry-point class='com.crashinvaders.vfx.demo.client.HtmlLauncher' />
 
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>

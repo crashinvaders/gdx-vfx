@@ -19,7 +19,7 @@ package com.crashinvaders.vfx.filters;
 import com.crashinvaders.vfx.PostProcessorFilter;
 import com.crashinvaders.vfx.utils.ShaderLoader;
 
-public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
+public final class RadialBlurFilter extends PostProcessorFilter<RadialBlurFilter> {
 
 	private int blurLen;
 	private float strength = 0.2f;
@@ -66,7 +66,7 @@ public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 		}
 	}
 
-	public RadialBlur (Quality quality) {
+	public RadialBlurFilter(Quality quality) {
 		super(ShaderLoader.fromFile("radial-blur", "radial-blur",
 				"#define BLUR_LENGTH " + quality.length +
 				"\n#define ONE_ON_BLUR_LENGTH " + 1f / (float)quality.length));
@@ -74,7 +74,7 @@ public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 		rebind();
 	}
 
-	public RadialBlur () {
+	public RadialBlurFilter() {
 		this(Quality.Low);
 	}
 
@@ -127,7 +127,7 @@ public final class RadialBlur extends PostProcessorFilter<RadialBlur> {
 		setParams(Param.Texture, u_texture0);
 		setParams(Param.BlurDiv, this.strength / (float) blurLen);
 
-		// being explicit (could call setOrigin that will call endParams)
+		// Being explicit (could call setOrigin that will call endParams)
 		setParams(Param.OffsetX, x);
 		setParams(Param.OffsetY, y);
 

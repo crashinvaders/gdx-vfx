@@ -1,64 +1,69 @@
 
 package com.crashinvaders.vfx.effects;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.common.framebuffer.FboWrapperQueue;
 import com.crashinvaders.vfx.filters.Copy;
-import com.crashinvaders.vfx.filters.MotionFilter;
+import com.crashinvaders.vfx.filters.MotionBlurFilter;
+import com.crashinvaders.vfx.filters.MotionBlurFilter.BlurFunction;
 
 /** A motion blur effect which draws the last frame with a lower opacity. The result is then stored as the next last frame to
  * create the trail effect.
  * @author Toni Sagrista */
 public class MotionBlurEffect extends PostProcessorEffect {
-	private final MotionFilter motionFilter;
+	private final MotionBlurFilter motionBlurFilter;
 	private final Copy copyFilter;
-	private FboWrapper localFbo;
+	private final FboWrapperQueue localBuffer;
 
-	public MotionBlurEffect(Pixmap.Format pixelFormat, float blurOpacity) {
-		motionFilter = new MotionFilter();
+	public MotionBlurEffect(Pixmap.Format pixelFormat, BlurFunction blurFunction, float blurOpacity) {
+		motionBlurFilter = new MotionBlurFilter(blurFunction);
+		motionBlurFilter.setBlurOpacity(blurOpacity);
+
 		copyFilter = new Copy();
-		localFbo = new FboWrapper(pixelFormat);
 
-		motionFilter.setBlurOpacity(blurOpacity);
+		localBuffer = new FboWrapperQueue(pixelFormat,
+				// On WebGL (GWT) we cannot render from/into the same texture simultaneously.
+				// Will use ping-pong approach to avoid "writing into itself".
+				Gdx.app.getType() == Application.ApplicationType.WebGL ? 2 : 1
+		);
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		motionFilter.resize(width, height);
+		motionBlurFilter.resize(width, height);
 		copyFilter.resize(width, height);
-
-		localFbo.initialize(width, height);
-		localFbo.getFbo().getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+		localBuffer.resize(width, height);
 	}
 
 	public MotionBlurEffect blurOpacity(float blurOpacity) {
-		motionFilter.setBlurOpacity(blurOpacity);
+		motionBlurFilter.setBlurOpacity(blurOpacity);
 		return this;
 	}
 
 	@Override
-	public void dispose () {
-		motionFilter.dispose();
+	public void dispose() {
+		motionBlurFilter.dispose();
 		copyFilter.dispose();
-
-		if (localFbo != null) {
-			localFbo.dispose();
-		}
+		localBuffer.dispose();
 	}
 
 	@Override
-	public void rebind () {
-		motionFilter.rebind();
+	public void rebind() {
+		motionBlurFilter.rebind();
 		copyFilter.rebind();
+		localBuffer.rebind();
 	}
 
 	@Override
 	public void render(FboWrapper src, FboWrapper dest) {
-		motionFilter.setInput(src).setOutput(localFbo).render();
-		motionFilter.setLastFrameTexture(localFbo.getFbo().getColorBufferTexture());
-		copyFilter.setInput(localFbo).setOutput(dest).render();
+		FboWrapper prevFrame = this.localBuffer.changeToNext();
+		motionBlurFilter.setInput(src).setOutput(prevFrame).render();
+		motionBlurFilter.setLastFrameTexture(prevFrame.getFbo().getColorBufferTexture());
+		copyFilter.setInput(prevFrame).setOutput(dest).render();
 	}
 
 }

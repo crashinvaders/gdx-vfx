@@ -40,7 +40,8 @@ public class CrtEffect extends PostProcessorEffect {
         return crtFilter.getSizeSource();
     }
 
-    public void setSizeSource(CrtFilter.SizeSource sizeSource) {
+    public CrtEffect setSizeSource(CrtFilter.SizeSource sizeSource) {
         crtFilter.setSizeSource(sizeSource);
+        return this;
     }
 }

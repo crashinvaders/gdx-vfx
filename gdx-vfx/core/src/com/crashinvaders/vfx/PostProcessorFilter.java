@@ -35,6 +35,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         int arrayElementSize();
     }
 
+    //TODO Make not static or move out of this class.
     protected static final FullscreenQuad quad = new FullscreenQuad();
 
     protected static final int u_texture0 = 0;
@@ -42,9 +43,11 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
     protected static final int u_texture2 = 2;
     protected static final int u_texture3 = 3;
 
+    protected final ShaderProgram program;
+
     protected Texture inputTexture = null;
     protected FboWrapper outputBuffer = null;
-    protected ShaderProgram program = null;
+
     private boolean programBegan = false;
 
     public PostProcessorFilter(ShaderProgram program) {
@@ -53,7 +56,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
 
     public T setInput(Texture input) {
         this.inputTexture = input;
-        return (T) this; // assumes T extends PostProcessorFilter
+        return (T)this; // Assumes T extends PostProcessorFilter
     }
 
     public T setInput(FboWrapper input) {
@@ -62,7 +65,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
 
     public T setOutput(FboWrapper output) {
         this.outputBuffer = output;
-        return (T) this;
+        return (T)this; // Assumes T extends PostProcessorFilter
     }
 
     @Override
@@ -87,35 +90,52 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
 	 * and unbound once per call: for a batch-ready version of this fuction see and use setParams instead.
 	 */
 
-    // int
+    public final void render() {
+        boolean manualBufferBind = outputBuffer != null && !outputBuffer.isDrawing();
+        if (manualBufferBind) { outputBuffer.begin(); }
+
+        // Gives a chance to filters to perform needed operations just before the rendering operation takes place.
+        onBeforeRender();
+
+        program.begin();
+        quad.render(program);
+        program.end();
+
+        if (manualBufferBind) { outputBuffer.end(); }
+    }
+
+    /** This method gets called just before rendering. */
+    protected abstract void onBeforeRender();
+
+    /** int */
     protected void setParam(Parameter param, int value) {
         program.begin();
         program.setUniformi(param.mnemonic(), value);
         program.end();
     }
 
-    // float
+    /** float */
     protected void setParam(Parameter param, float value) {
         program.begin();
         program.setUniformf(param.mnemonic(), value);
         program.end();
     }
 
-    // vec2
+    /** vec2 */
     protected void setParam(Parameter param, Vector2 value) {
         program.begin();
         program.setUniformf(param.mnemonic(), value);
         program.end();
     }
 
-    // vec3
+    /** vec3 */
     protected void setParam(Parameter param, Vector3 value) {
         program.begin();
         program.setUniformf(param.mnemonic(), value);
         program.end();
     }
 
-    // mat3
+    /** mat3 */
     protected T setParam(Parameter param, Matrix3 value) {
         program.begin();
         program.setUniformMatrix(param.mnemonic(), value);
@@ -123,7 +143,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // mat4
+    /** mat4 */
     protected T setParam(Parameter param, Matrix4 value) {
         program.begin();
         program.setUniformMatrix(param.mnemonic(), value);
@@ -131,7 +151,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // float[], vec2[], vec3[], vec4[]
+    /** float[], vec2[], vec3[], vec4[] */
     protected T setParamv(Parameter param, float[] values, int offset, int length) {
         program.begin();
 
@@ -155,12 +175,12 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    /**
-     * Sets the parameter to the specified value for this filter. When you are finished building the batch you shall signal it by
-     * invoking endParams().
-     */
+    //region
+    // Utility methods to set the parameter to the specified value for the filter.
+    // When you are finished building the batch you shall signal it by invoking endParams().
+    //TODO Rename/move the methods under a subclass to avoid naming ambiguity between setParam/setParams.
 
-    // float
+    /** float */
     protected T setParams(Parameter param, float value) {
         if (!programBegan) {
             programBegan = true;
@@ -170,7 +190,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // int version
+    /** int */
     protected T setParams(Parameter param, int value) {
         if (!programBegan) {
             programBegan = true;
@@ -180,7 +200,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // vec2 version
+    /** vec2 */
     protected T setParams(Parameter param, Vector2 value) {
         if (!programBegan) {
             programBegan = true;
@@ -190,7 +210,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // vec3 version
+    /** vec3 */
     protected T setParams(Parameter param, Vector3 value) {
         if (!programBegan) {
             programBegan = true;
@@ -200,7 +220,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // mat3
+    /** mat3 */
     protected T setParams(Parameter param, Matrix3 value) {
         if (!programBegan) {
             programBegan = true;
@@ -210,7 +230,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // mat4
+    /** mat4 */
     protected T setParams(Parameter param, Matrix4 value) {
         if (!programBegan) {
             programBegan = true;
@@ -220,7 +240,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
         return (T) this;
     }
 
-    // float[], vec2[], vec3[], vec4[]
+    /** float[], vec2[], vec3[], vec4[] */
     protected T setParamsv(Parameter param, float[] values, int offset, int length) {
         if (!programBegan) {
             programBegan = true;
@@ -242,7 +262,6 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
                 program.setUniform1fv(param.mnemonic(), values, offset, length);
                 break;
         }
-
         return (T) this;
     }
 
@@ -253,23 +272,5 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
             programBegan = false;
         }
     }
-
-    /** This method will get called just before a rendering operation occurs. */
-    protected abstract void onBeforeRender();
-
-    public final void render() {
-        boolean manualBufferBind = outputBuffer != null && !outputBuffer.isDrawing();
-        if (manualBufferBind) { outputBuffer.begin(); }
-        realRender();
-        if (manualBufferBind) { outputBuffer.end(); }
-    }
-
-    private void realRender() {
-        // gives a chance to filters to perform needed operations just before the rendering operation take place.
-        onBeforeRender();
-
-        program.begin();
-        quad.render(program);
-        program.end();
-    }
+    //endregion
 }

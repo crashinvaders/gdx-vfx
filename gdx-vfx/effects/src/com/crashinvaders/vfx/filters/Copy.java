@@ -21,14 +21,12 @@ import com.crashinvaders.vfx.utils.ShaderLoader;
 
 public class Copy extends PostProcessorFilter<Copy> {
 	public enum Param implements Parameter {
-		// @formatter:off
-		Texture0("u_texture0", 0), ;
-		// @formatter:on
+		Texture0("u_texture0", 0);
 
 		private final String mnemonic;
 		private int elementSize;
 
-		private Param (String m, int elementSize) {
+		Param (String m, int elementSize) {
 			this.mnemonic = m;
 			this.elementSize = elementSize;
 		}

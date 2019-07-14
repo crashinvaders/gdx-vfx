@@ -19,7 +19,9 @@ import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.PostProcessor;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.effects.*;
-import com.crashinvaders.vfx.filters.RadialBlur;
+import com.crashinvaders.vfx.filters.CrtFilter;
+import com.crashinvaders.vfx.filters.MotionBlurFilter;
+import com.crashinvaders.vfx.filters.RadialBlurFilter;
 import com.github.czyzby.lml.parser.LmlParser;
 
 public class EffectRosterViewController extends LmlViewController {
@@ -42,12 +44,14 @@ public class EffectRosterViewController extends LmlViewController {
 
         effectsRoster.addAll(
                 new EffectEntryModel("Bloom", new BloomEffect()),
-                new EffectEntryModel("CRT", new CrtEffect()),
+                new EffectEntryModel("CRT", new CrtEffect(CrtFilter.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f)
+                        .setSizeSource(CrtFilter.SizeSource.VIEWPORT)),
                 new EffectEntryModel("Old TV", new OldTvEffect()),
                 new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
                 new EffectEntryModel("Film Grain", new FilmGrainEffect()),
-                new EffectEntryModel("Motion Blur", new MotionBlurEffect(Pixmap.Format.RGBA8888, 0.85f)),
-                new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlur.Quality.High)),
+                new EffectEntryModel("Motion Blur (MAX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MAX, 0.75f)),
+                new EffectEntryModel("Motion Blur (MIX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MIX, 0.75f)),
+                new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlurFilter.Quality.High)),
                 new EffectEntryModel("Curvature", new CurvatureEffect()),
                 new EffectEntryModel("Lens Flare", new LensFlareEffect()
                         .setIntensity(10f)),

@@ -17,16 +17,17 @@ import com.crashinvaders.vfx.common.gl.GLUtils;
 
 /**
  * Wraps {@link FrameBuffer} and manages current OpenGL frame buffer.
- * So you can use multiple instances of this class to drawToScreen into one framebuffer while you drawing into another one.
+ * You can use multiple instances of this class to drawToScreen into one framebuffer while you drawing into another one.
  * <p>
- * {@link FboWrapper} internally switches GL viewport and between {@link #begin()} and {@link #end()}.
- * If you are using any kind of batch renders (e.g. {@link Batch} or {@link ShapeRenderer}),
- * then you are probably interested in updating their transform and projection matrices.
+ * {@link FboWrapper} internally switches GL viewport between {@link #begin()} and {@link #end()}.
+ * <p>
+ * If you use any kind of batch renders (e.g. {@link Batch} or {@link ShapeRenderer}),
+ * you are probably interested in updating their transform and projection matrices.
  * You can do this by registering {@link Renderer} using {@link #addRenderer(Renderer)} and {@link #removeRenderer(Renderer)}.
- * Registered renderers will be automatically switch their matrices back and forth prior to {@link #begin()} and {@link #end()} calls.
+ * The registered renderers will be automatically switch their matrices back and forth prior to {@link #begin()} and {@link #end()} calls.
  * They will also be flushed in the right time.
  * <p/>
- * <b>NOTE:</b> Depth and stencil buffers are not supported (yet?)
+ * <b>NOTE:</b> Depth and stencil buffers are not supported.
  */
 public class FboWrapper implements Disposable {
     private static final OrthographicCamera tmpCam = new OrthographicCamera();
@@ -41,7 +42,7 @@ public class FboWrapper implements Disposable {
 
     private final GLExtMethods.Viewport preservedViewport = new GLExtMethods.Viewport();
     private final Pixmap.Format pixelFormat;
-    private int preservedFboHandle;
+    private int previousFboHandle;
 
     private FrameBuffer fbo;
     private boolean initialized;
@@ -89,7 +90,7 @@ public class FboWrapper implements Disposable {
         return initialized;
     }
 
-    /** @return true means that {@link FboWrapper#begin()} was called */
+    /** @return true means {@link FboWrapper#begin()} was called */
     public boolean isDrawing() {
         return drawing;
     }
@@ -125,14 +126,13 @@ public class FboWrapper implements Disposable {
     public void begin() {
         bufferNesting++;
 
-//        System.out.println("FboWrapper.begin " + fbo.getFramebufferHandle());
         if (!initialized) throw new IllegalStateException("BatchedFboWrapper must be initialized first");
         if (drawing) throw new IllegalStateException("Already drawing");
 
         drawing = true;
 
         renderers.flush();
-        preservedFboHandle = getBoundFboHandle();
+        previousFboHandle = getBoundFboHandle();
         Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, fbo.getFramebufferHandle());
 
         preservedViewport.set(getViewport());
@@ -143,7 +143,6 @@ public class FboWrapper implements Disposable {
     public void end() {
         bufferNesting--;
 
-//        System.out.println("FboWrapper.end " + fbo.getFramebufferHandle());
         if (!initialized) throw new IllegalStateException("BatchedFboWrapper must be initialized first");
         if (!drawing) throw new IllegalStateException("Is not drawing");
 
@@ -154,29 +153,19 @@ public class FboWrapper implements Disposable {
         drawing = false;
 
         renderers.flush();
-        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, preservedFboHandle);
+        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, previousFboHandle);
         Gdx.gl20.glViewport(preservedViewport.x, preservedViewport.y, preservedViewport.width, preservedViewport.height);
         renderers.restoreOwnMatrices();
     }
 
     protected int getBoundFboHandle() {
         int boundFboHandle = GLUtils.getBoundFboHandle();
-//        Gdx.app.log("FboWrapper", "Bound frame buffer handle is " + String.valueOf(boundFboHandle));
         return boundFboHandle;
-
-//        IntBuffer intBuf = tmpIntBuf;
-//        Gdx.gl.glGetIntegerv(GL_FRAMEBUFFER_BINDING, intBuf);
-//        return intBuf.get(0);
     }
 
     protected GLExtMethods.Viewport getViewport() {
         GLExtMethods.Viewport viewport = GLUtils.getViewport();
-//        Gdx.app.log("FboWrapper", "Current viewport is " + viewport);
         return viewport;
-
-//        IntBuffer intBuf = tmpIntBuf;
-//        Gdx.gl.glGetIntegerv(GL20.GL_VIEWPORT, intBuf);
-//        return tmpViewport.set(intBuf.get(0), intBuf.get(1), intBuf.get(2), intBuf.get(3));
     }
 
     public static class RendererManager implements Renderer {
