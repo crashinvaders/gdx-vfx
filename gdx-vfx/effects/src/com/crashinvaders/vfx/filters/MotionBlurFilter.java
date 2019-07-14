@@ -84,24 +84,9 @@ public class MotionBlurFilter extends PostProcessorFilter<MotionBlurFilter> {
 
 	@Override
 	protected void onBeforeRender () {
-		Gdx.app.log("MotionBlurFilter", "onBeforeRender");
 		inputTexture.bind(u_texture0);
 		if (lastFrameTex != null) {
-			Gdx.app.log("MotionBlurFilter", "beforeBind");
 			lastFrameTex.bind(u_texture1);
-			Gdx.app.log("MotionBlurFilter", "afterBind");
 		}
-	}
-
-	@Override
-	public MotionBlurFilter setInput(FboWrapper input) {
-		Gdx.app.log("MotionBlurFilter", "setInput");
-		return super.setInput(input);
-	}
-
-	@Override
-	public MotionBlurFilter setOutput(FboWrapper output) {
-		Gdx.app.log("MotionBlurFilter", "setOutput");
-		return super.setOutput(output);
 	}
 }

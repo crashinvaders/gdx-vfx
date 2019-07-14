@@ -23,10 +23,10 @@
 
 uniform PRECISION sampler2D u_texture0;
 uniform PRECISION sampler2D u_texture1;
-uniform float Src1Intensity;
-uniform float Src2Intensity;
-uniform float Src1Saturation;
-uniform float Src2Saturation;
+uniform float u_src1Intensity;
+uniform float u_src2Intensity;
+uniform float u_src1Saturation;
+uniform float u_src2Saturation;
 
 varying vec2 v_texCoords;
 
@@ -50,12 +50,12 @@ vec3 adjustSaturation(vec3 color, float saturation)
 void main()
 {
 	// lookup inputs
-	vec4 src1 = texture2D(u_texture0, v_texCoords) * Src1Intensity;
-	vec4 src2 = texture2D(u_texture1, v_texCoords) * Src2Intensity;
+	vec4 src1 = texture2D(u_texture0, v_texCoords) * u_src1Intensity;
+	vec4 src2 = texture2D(u_texture1, v_texCoords) * u_src2Intensity;
 
 	// adjust color saturation and intensity
-	src1.rgb = adjustSaturation(src1.rgb,Src1Saturation);
-	src2.rgb = adjustSaturation(src2.rgb,Src2Saturation);
+	src1.rgb = adjustSaturation(src1.rgb,u_src1Saturation);
+	src2.rgb = adjustSaturation(src2.rgb,u_src2Saturation);
 
 	// darken the base image in areas where ther's a lot of bloom
 	// to prevent things looking excessively burned-out

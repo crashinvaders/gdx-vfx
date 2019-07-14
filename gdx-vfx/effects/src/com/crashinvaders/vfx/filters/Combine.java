@@ -26,10 +26,12 @@ public final class Combine extends PostProcessorFilter<Combine> {
     private float s1i, s1s, s2i, s2s;
 
     public enum Param implements Parameter {
-        // @formatter:off
-        Texture0("u_texture0", 0), Texture1("u_texture1", 0), Source1Intensity("Src1Intensity", 0), Source1Saturation(
-                "Src1Saturation", 0), Source2Intensity("Src2Intensity", 0), Source2Saturation("Src2Saturation", 0);
-        // @formatter:on
+        Texture0("u_texture0", 0),
+        Texture1("u_texture1", 0),
+        Source1Intensity("u_src1Intensity", 0),
+        Source1Saturation("u_src1Saturation", 0),
+        Source2Intensity("u_src2Intensity", 0),
+        Source2Saturation("u_src2Saturation", 0);
 
         private final String mnemonic;
         private int elementSize;

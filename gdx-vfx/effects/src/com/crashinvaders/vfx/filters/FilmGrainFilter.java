@@ -34,7 +34,7 @@ public class FilmGrainFilter extends PostProcessorFilter<FilmGrainFilter> {
     private float seed = 0f;
 
     public FilmGrainFilter() {
-        super(ShaderLoader.fromFile("screenspace", "film-grain1"));
+        super(ShaderLoader.fromFile("screenspace", "film-grain"));
         rebind();
     }
 

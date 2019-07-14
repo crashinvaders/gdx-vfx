@@ -60,7 +60,7 @@ public class CrtFilter extends PostProcessorFilter<CrtFilter> {
         super(ShaderLoader.fromFile("screenspace", "crt",
                 "#define SL_BRIGHTNESS_MIN " + brightnessMin + "\n" +
                 "#define SL_BRIGHTNESS_MAX " + brightnessMax + "\n" +
-                "#define " + lineStyle.name()));
+                "#define LINE_TYPE " + lineStyle.ordinal()));
         rebind();
     }
 

@@ -37,8 +37,7 @@ void main()
 	vec4 c = vec4(0);
 
 	// Combine a number of weighted image filter taps.
-	for (int i = 0; i < KERNEL_SIZE; i++)
-	{
+	for (int i = 0; i < KERNEL_SIZE; i++) {
 		c += texture2D(u_texture0, v_texCoord0 + SampleOffsets[i]) * SampleWeights[i];
 	}
 

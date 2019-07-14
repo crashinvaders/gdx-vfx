@@ -5,33 +5,20 @@
 		<include name="**/*"/>
 	</source>
 
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/astral-ambient.frag" />
+	<!-- Shader code -->
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/bias.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/blur.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/blur.vert" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/burning-border.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/camerablur.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/chromatic-aberration.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/color-ambient.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/color-border.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/color-index.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/color-index-alpha.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/color-index-dithering.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/combine.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/convolution.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/convolution.vert" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/convolve-1d.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/copy.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/crt.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/default.vert" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/distortion.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/electroshock.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/film-grain0.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/film-grain1.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/film-grain.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/fisheye.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/fxaa.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/hdr.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/heat_distortion.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare2.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/levels.frag" />
@@ -39,18 +26,16 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-mix.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/nfaa.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/old-tv.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/pink-ambient.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/radial-blur.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/radial-blur.vert" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/radial-distortion.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/screenspace.vert" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/shockwave.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/shockwave2.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/sunglasses.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/threshold.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/vignetting.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/water-drop.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/zoom.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/zoom.vert" />
+
+	<!-- Shader resources -->
 	<extend-configuration-property name="gdx.files.classpath" value="vfx-lens-color.png" />
+
 </module>
