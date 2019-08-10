@@ -27,7 +27,11 @@ public final class NfaaEffect extends PostProcessorEffect {
 	private final NfaaFilter nfaaFilter;
 
 	public NfaaEffect() {
-		nfaaFilter = new NfaaFilter();
+		this(false);
+	}
+
+	public NfaaEffect(boolean supportAlpha) {
+		nfaaFilter = new NfaaFilter(supportAlpha);
 	}
 
 	@Override

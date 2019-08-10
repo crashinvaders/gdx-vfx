@@ -56,12 +56,8 @@ public final class FxaaFilter extends PostProcessorFilter<FxaaFilter> {
 		}
 	}
 
-	public FxaaFilter () {
-		this(1f / 128f, 1f / 8f, 8f);
-	}
-
-	public FxaaFilter (float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax) {
-		super(ShaderLoader.fromFile("screenspace", "fxaa"));
+	public FxaaFilter (float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha) {
+		super(ShaderLoader.fromFile("screenspace", "fxaa", supportAlpha ? "#define SUPPORT_ALPHA" : ""));
 		this.fxaaReduceMin = fxaaReduceMin;
 		this.fxaaReduceMul = fxaaReduceMul;
 		this.fxaaSpanMax = fxaaSpanMax;

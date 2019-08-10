@@ -27,11 +27,11 @@ public final class FxaaEffect extends PostProcessorEffect {
 	private final FxaaFilter fxaaFilter;
 
     public FxaaEffect() {
-        fxaaFilter = new FxaaFilter();
+        this(1f/128f, 1f/8f, 8f, true);
     }
 
-    public FxaaEffect(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax) {
-        fxaaFilter = new FxaaFilter(fxaaReduceMin, fxaaReduceMul, fxaaSpanMax);
+    public FxaaEffect(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha) {
+        fxaaFilter = new FxaaFilter(fxaaReduceMin, fxaaReduceMul, fxaaSpanMax, supportAlpha);
     }
 
     @Override

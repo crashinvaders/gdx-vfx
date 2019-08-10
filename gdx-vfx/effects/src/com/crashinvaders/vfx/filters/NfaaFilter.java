@@ -50,8 +50,8 @@ public final class NfaaFilter extends PostProcessorFilter<NfaaFilter> {
 		}
 	}
 
-	public NfaaFilter () {
-		super(ShaderLoader.fromFile("screenspace", "nfaa"));
+	public NfaaFilter (boolean supportAlpha) {
+		super(ShaderLoader.fromFile("screenspace", "nfaa", supportAlpha ? "#define SUPPORT_ALPHA" : ""));
 	}
 
     @Override
