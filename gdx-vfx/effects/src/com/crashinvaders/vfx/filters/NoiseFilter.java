@@ -51,7 +51,6 @@ public class NoiseFilter extends PostProcessorFilter<NoiseFilter> {
     }
 
     public void setTime(float time) {
-        System.out.println("time = " + time);
         this.time = time;
         setParam(Param.Time, time);
     }
