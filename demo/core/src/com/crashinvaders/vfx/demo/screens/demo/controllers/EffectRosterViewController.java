@@ -48,6 +48,7 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("CRT", new CrtEffect(CrtFilter.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f)
                         .setSizeSource(CrtFilter.SizeSource.VIEWPORT)),
                 new EffectEntryModel("Old TV", new OldTvEffect()),
+                new EffectEntryModel("Noise", new NoiseEffect(0.35f, 2f)),
                 new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
                 new EffectEntryModel("Film Grain", new FilmGrainEffect()),
                 new EffectEntryModel("Gaussian Blur", new BlurEffect(10, BlurFilter.BlurType.Gaussian5x5)),
