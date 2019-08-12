@@ -163,7 +163,7 @@ In order to activate them for a GWT module, a specific method should be called p
 `gdx-vfx-gwt.jar` should be added as a dependecy to the respectful GWT module.
 
 #### B. Active GWT specific library code.
-Call `GwtGLExtCalls.initialize();` prior any library usage. The code best to be placed in GWT module launcher class (the one that extends `GwtApplication`).
+Call `GwtGLExtCalls.initialize();` prior any library usage. The code best to be placed in a GWT module launcher class (the one that extends `GwtApplication`).
 
 For example:
 ```java
