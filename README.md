@@ -3,9 +3,10 @@
 LibGDX flexible post processing visual effects. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), 
 with lots of improvements, aim on stability and to provide lightweight integration with comfortable effect extensions.
 
-Work is in progress, some official backends are still not tested/not supported.
-More effects to be implemented and included in the standard library package. 
+Work is in progress, some official backends are not stable yet.
+More effects to be implemented and included in the standard library package.
 
+_If you need GWT support, please [read this section](#gwt-integration)._
 
 # Demo
 
@@ -28,7 +29,7 @@ cd gdx-vfx
 #### A. Local JAR artifacts.
 The library is not yet available on any public maven repository,
 so the simplest way is to download JAR artifacts from [releases page](https://github.com/crashinvaders/gdx-vfx/releases) and attach them to the project.
-Put the downloaded `gdx-vfx-core.jar` and `gdx-vfx-effects.jar` into the `/core/libs` dir and add them as dependencies.
+Put the downloaded `gdx-vfx-core.jar` and `gdx-vfx-effects.jar` into `/core/libs` dir and add them as dependencies.
 
 _/core/build.gradle_:
 ```gradle
@@ -151,3 +152,38 @@ public class PostProcessorExample extends ApplicationAdapter {
 ```
 
 ![Result](https://i.imgur.com/qSaIEWD.png)
+
+
+### 3. HTML/GWT integration guide. <a name="gwt-integration"></a>
+
+The library uses extended set of OpenGL functions, that is not implemented for the official HTML/GWT LibGDX backend.
+In order to activate them for a GWT module, a specific method should be called prior any library usage.
+
+The library fully supports HTML/GWT backend, but requires a little extra in order to work right.
+An extended set of OpenGL functions, that is not implemented for the official HTML/GWT LibGDX backend.
+
+#### A. GWT lib dependency.
+`gdx-vfx-gwt.jar` should be added as a dependecy to the respectful GWT module.
+
+#### B. Active GWT specific library code.
+Call `GwtGLExtCalls.initialize();` prior any library usage. The code best to be placed in GWT module launcher class (the one that extends `GwtApplication`).
+
+For example:
+```java
+public class GwtLauncher extends GwtApplication {
+
+    @Override
+    public GwtApplicationConfiguration getConfig() {
+	// ...
+    }
+
+    @Override
+    public ApplicationListener createApplicationListener() {
+	// ...
+
+        GwtGLExtCalls.initialize();
+
+        return new MyApplication();
+    }
+}
+```
