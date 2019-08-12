@@ -28,7 +28,7 @@ b:shaders/crt.frag:2521:application/unknown
 b:shaders/default.vert:429:application/unknown
 b:shaders/film-grain.frag:552:application/unknown
 b:shaders/fisheye.frag:1535:application/unknown
-b:shaders/fxaa.frag:3315:application/unknown
+b:shaders/fxaa.frag:3404:application/unknown
 b:shaders/hdr.frag:615:application/unknown
 b:shaders/lensflare.frag:2049:application/unknown
 b:shaders/lensflare2.frag:2275:application/unknown
@@ -36,7 +36,8 @@ b:shaders/levels.frag:1453:application/unknown
 b:shaders/mix.frag:370:application/unknown
 b:shaders/motionblur-max.frag:486:application/unknown
 b:shaders/motionblur-mix.frag:485:application/unknown
-b:shaders/nfaa.frag:2784:application/unknown
+b:shaders/nfaa.frag:2897:application/unknown
+b:shaders/noise.frag:634:application/unknown
 b:shaders/old-tv.frag:1147:application/unknown
 b:shaders/radial-blur.frag:1681:application/unknown
 b:shaders/radial-blur.vert:1113:application/unknown

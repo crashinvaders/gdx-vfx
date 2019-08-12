@@ -47,14 +47,17 @@ vec4 nfaa(sampler2D texture, vec2 texCoords, vec2 viewportInverse) {
     vec2 Normal = vec2(vect1, vect2) * viewportInverse * fScale;
     
     // Color
-    vec4 Scene0 = texture2D(texture, texCoords.xy);
-    vec4 Scene1 = texture2D(texture, texCoords.xy + Normal.xy);
-    vec4 Scene2 = texture2D(texture, texCoords.xy - Normal.xy);
-    vec4 Scene3 = texture2D(texture, texCoords.xy + vec2(Normal.x, -Normal.y) * 0.5);
-    vec4 Scene4 = texture2D(texture, texCoords.xy - vec2(Normal.x, -Normal.y) * 0.5);
-    
-    // Final color
-    return vec4((Scene0.rgb + Scene1.rgb + Scene2.rgb + Scene3.rgb + Scene4.rgb) * 0.2, 1.0);
+    vec4 scene0 = texture2D(texture, texCoords.xy);
+    vec4 scene1 = texture2D(texture, texCoords.xy + Normal.xy);
+    vec4 scene2 = texture2D(texture, texCoords.xy - Normal.xy);
+    vec4 scene3 = texture2D(texture, texCoords.xy + vec2(Normal.x, -Normal.y) * 0.5);
+    vec4 scene4 = texture2D(texture, texCoords.xy - vec2(Normal.x, -Normal.y) * 0.5);
+
+#ifdef SUPPORT_ALPHA
+    return vec4((scene0.rgb + scene1.rgb + scene2.rgb + scene3.rgb + scene4.rgb) * 0.2, scene0.a);
+#else
+    return vec4((scene0.rgb + scene1.rgb + scene2.rgb + scene3.rgb + scene4.rgb) * 0.2, 1.0);
+#endif
 }
 
 float GetColorLuminance(vec3 i_vColor) {

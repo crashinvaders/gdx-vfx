@@ -74,7 +74,13 @@ vec4 fxaa(sampler2D texture, vec2 texCoords, vec2 viewportInv) {
 	} else {
 		color.xyz = rgbB;
 	}
+
+#ifdef SUPPORT_ALPHA
+	color.a = texture2D(texture, texCoords.xy).a;
+#else
 	color.a = 1.0;
+#endif
+
 	return color;
 }
 
