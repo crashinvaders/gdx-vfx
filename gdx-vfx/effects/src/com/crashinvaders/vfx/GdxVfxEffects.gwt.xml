@@ -26,6 +26,7 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-max.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-mix.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/nfaa.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/noise.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/old-tv.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/radial-blur.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/radial-blur.vert" />
