@@ -86,7 +86,7 @@ public class PostProcessorExample extends ApplicationAdapter {
 	private BloomEffect postProcessorEffect;
 
 	@Override
-	public void create () {
+	public void create() {
 		shapeRenderer = new ShapeRenderer();
 
 		// PostProcessor is a manager for the effects.
@@ -115,7 +115,7 @@ public class PostProcessorExample extends ApplicationAdapter {
 	}
 
 	@Override
-	public void render () {
+	public void render() {
 		// Clean up the screen.
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -139,7 +139,7 @@ public class PostProcessorExample extends ApplicationAdapter {
 	}
 	
 	@Override
-	public void dispose () {
+	public void dispose() {
 		// Since PostProcessor manages internal off-screen buffers,
 		// it should be disposed properly.
 		postProcessor.dispose();
