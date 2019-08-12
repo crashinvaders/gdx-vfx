@@ -62,7 +62,7 @@ public final class LensFlareEffect2 extends PostProcessorEffect {
         } else {
             // Load default lens color texture if none supplied.
             ownsLensColorTexture = true;
-            lensColorTexture = new Texture(Gdx.files.internal("vfx-lens-color.png"));
+            lensColorTexture = new Texture(Gdx.files.classpath("vfx-lens-color.png"));
             lens.setLensColorTexture(lensColorTexture);
         }
     }
