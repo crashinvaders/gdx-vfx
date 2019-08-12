@@ -139,12 +139,13 @@ public class PostProcessorExample extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		// Since PostProcessor manages internal off-screen buffers,
-		// it should be disposed manually.
-		postProcessorEffect.dispose();
-
-		// PostProcessorEffect instances may also hold internal resources
-		// that should be freed, thus disposed manually.
+		// it should be disposed properly.
 		postProcessor.dispose();
+
+		// *** PLEASE NOTE ***
+		// PostProcessor doesn't dispose attached PostProcessorEffects
+		// on its own, you should do it manually!
+		postProcessorEffect.dispose();
 
 		shapeRenderer.dispose();
 	}
