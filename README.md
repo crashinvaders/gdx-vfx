@@ -6,6 +6,8 @@ with lots of improvements, aim on stability and to provide lightweight integrati
 Work is in progress, some official backends are not stable yet.
 More effects to be implemented and included in the standard library package.
 
+_Current LibGDX target version is **1.9.8** (this will be changed soon)._
+
 _If you need GWT support, please [read this section](#gwt-integration)._
 
 # Demo
