@@ -159,9 +159,6 @@ public class PostProcessorExample extends ApplicationAdapter {
 The library uses extended set of OpenGL functions, that is not implemented for the official HTML/GWT LibGDX backend.
 In order to activate them for a GWT module, a specific method should be called prior any library usage.
 
-The library fully supports HTML/GWT backend, but requires a little extra in order to work right.
-An extended set of OpenGL functions, that is not implemented for the official HTML/GWT LibGDX backend.
-
 #### A. GWT lib dependency.
 `gdx-vfx-gwt.jar` should be added as a dependecy to the respectful GWT module.
 
