@@ -180,7 +180,7 @@ public class GwtLauncher extends GwtApplication {
 
         GwtGLExtCalls.initialize();
 
-        return new MyApplication();
+        return new MyApplicationListener();
     }
 }
 ```
