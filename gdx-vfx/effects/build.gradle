@@ -7,6 +7,8 @@ sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs += ['src/']
 sourceSets.main.resources.srcDirs += ['assets/']
 
+archivesBaseName = "gdx-vfx-$archivesBaseName"
+
 dependencies {
     compile project(':gdx-vfx:core')
     runtime files('assets')
@@ -16,4 +18,19 @@ jar {
     from('assets') {
         include '**/*'
     }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }

@@ -32,5 +32,5 @@ configure(subprojects - project(':demo:android')) {
 
 subprojects {
     version = '1.0'
-    ext.appName = "gdx-vfx"
+    ext.appName = 'gdx-vfx'
 }
