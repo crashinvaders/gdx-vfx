@@ -1,53 +1,7 @@
-apply plugin: "java"
-apply plugin: "maven"
-//apply plugin: "gwt"
-
-sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs += ['../assets']
-
-archivesBaseName = "gdx-vfx-$archivesBaseName"
-
-//gwt {
-//    gwtVersion = "$gwtVersion"     // Should match the gwt version used for building the gwt backend
-//    maxHeapSize = "1G"              // Default 256m is not enough for gwt compiler. GWT is HUNGRY
-//    minHeapSize = "1G"
-//
-//    src = files(file("src/")) // Needs to be in front of "modules" below.
-//    modules 'com.crashinvaders.vfx.demo.GdxDefinition'
-//    devModules 'com.crashinvaders.vfx.demo.GdxDefinitionSuperdev'
-//    project.webAppDirName = 'webapp'
-//
-//    compiler {
-//        strict = true;
-//        disableCastChecking = true;
-//    }
-//}
 
 dependencies {
     compile project(":demo:core")
     compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-}
-
-//task addSource {
-//    doLast {
-//        sourceSets.main.compileClasspath += files(project(':gdx-vfx:core').sourceSets.main.allJava.srcDirs)
-//    }
-//}
-//tasks.compileGwt.dependsOn(addSource)
-//tasks.draftCompileGwt.dependsOn(addSource)
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
 }

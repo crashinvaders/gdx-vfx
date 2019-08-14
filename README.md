@@ -62,8 +62,8 @@ repositories {
 
 dependencies {
     // ...
-    compile "com.crashinvaders.vfx:core:0.1"
-    compile "com.crashinvaders.vfx:effects:0.1"
+    compile "com.crashinvaders.vfx:gdx-vfx-core:0.+"
+    compile "com.crashinvaders.vfx:gdx-vfx-effects:0.+"
 }
 ```
 
