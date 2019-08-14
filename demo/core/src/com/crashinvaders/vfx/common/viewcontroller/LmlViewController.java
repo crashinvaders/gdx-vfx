@@ -55,7 +55,7 @@ public abstract class LmlViewController implements ViewController, LmlView, Acti
     }
 
     protected <T extends Actor> T parseLmlTemplate(FileHandle fileHandle) {
-        return LmlUtils.parseLmlTemplate(lmlParser, this, false, fileHandle);
+        return LmlUtils.parseLmlTemplate(lmlParser, this, fileHandle);
     }
 
     protected <T extends ViewController> T getController(Class<T> type) {

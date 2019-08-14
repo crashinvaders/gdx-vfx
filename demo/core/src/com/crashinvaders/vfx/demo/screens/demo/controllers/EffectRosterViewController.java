@@ -1,5 +1,6 @@
 package com.crashinvaders.vfx.demo.screens.demo.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.common.lml.CommonLmlParser;
+import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.PostProcessor;
@@ -23,6 +25,7 @@ import com.crashinvaders.vfx.filters.BlurFilter;
 import com.crashinvaders.vfx.filters.CrtFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter;
 import com.crashinvaders.vfx.filters.RadialBlurFilter;
+import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.LmlParser;
 
 public class EffectRosterViewController extends LmlViewController {
@@ -161,12 +164,11 @@ public class EffectRosterViewController extends LmlViewController {
 
     private static class EffectEntryViewController {
 
+        @LmlActor Label lblName;
+
         private final EffectEntryModel model;
-
-        private final Stack viewRoot;
-        private final Label lblName;
-
         private final UpdateableEffect updateableEffect;
+        private final Group viewRoot;
 
         public EffectEntryViewController(LmlParser lmlParser, EffectEntryModel model) {
             this.model = model;
@@ -178,14 +180,8 @@ public class EffectRosterViewController extends LmlViewController {
             }
 
             // Create view.
-            {
-                Skin skin = lmlParser.getData().getDefaultSkin();
-                lblName = new Label("", skin);
-                lblName.setAlignment(Align.left);
-                viewRoot = new Stack(lblName);
-                viewRoot.setUserObject(this);
-                viewRoot.setTouchable(Touchable.enabled);
-            }
+            viewRoot = LmlUtils.parseLmlTemplate(lmlParser, this, Gdx.files.internal("lml/screen-demo/effect-list-item.lml"));
+            viewRoot.setUserObject(this);
 
             updateViewFromModel();
         }

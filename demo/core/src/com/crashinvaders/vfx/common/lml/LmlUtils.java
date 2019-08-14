@@ -7,11 +7,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.czyzby.lml.parser.LmlParser;
 import com.github.czyzby.lml.parser.LmlView;
 import com.github.czyzby.lml.parser.action.ActionContainer;
+import com.github.czyzby.lml.parser.action.ActionContainerWrapper;
 import com.github.czyzby.lml.parser.impl.tag.Dtd;
 
 import java.io.Writer;
 
 public class LmlUtils {
+
     public static void saveDtdSchema(final LmlParser lmlParser, final FileHandle file) {
         try {
             final Writer appendable = file.writer(false, "UTF-8");
@@ -25,28 +27,39 @@ public class LmlUtils {
         }
     }
 
-    public static <T extends Actor> T parseLmlTemplate(LmlParser lmlParser, Object viewController, boolean registerActions, FileHandle fileHandle) {
-        ActionContainer actionContainer = null;
-        LmlView lmlView = null;
-        if (registerActions) {
-            if (viewController instanceof ActionContainer) actionContainer = (ActionContainer) viewController;
-            if (viewController instanceof LmlView) lmlView = (LmlView) viewController;
+    public static <T extends Actor> T parseLmlTemplate(LmlParser lmlParser, LmlView viewController, FileHandle fileHandle) {
+        // Check if the view controller was added as an action container already.
+        final ActionContainerWrapper acw = lmlParser.getData().getActionContainer(viewController.getViewId());
+        final ActionContainer actionContainer;
+        if (acw != null) {
+            actionContainer = acw.getActionContainer();
+        } else {
+            actionContainer = null;
         }
 
-        if (actionContainer != null && lmlView != null) {
-            lmlParser.getData().addActionContainer(lmlView.getViewId(), actionContainer);
-        }
         Array<Actor> actors = lmlParser.createView(viewController, fileHandle);
-        if (actionContainer != null && lmlView != null) {
-            lmlParser.getData().removeActionContainer(lmlView.getViewId());
+
+        if (actionContainer != null) {
+            // LmlParser removes action container after layout parsing. Let's add it back.
+            lmlParser.getData().addActionContainer(viewController.getViewId(), actionContainer);
         }
 
-        // LmlParser will add created actors directly to the stage after creation.
-        // Now we should remove them...
-        for (Actor actor : actors) {
-            actor.remove();
+        if (viewController.getStage() != null) {
+            // LmlParser adds created actors directly to the stage after layout parsing.
+            // Now we should remove them manually...
+            for (Actor actor : actors) {
+                actor.remove();
+            }
         }
 
         return (T) actors.first();
+    }
+
+    public static <T extends Actor> T parseLmlTemplate(LmlParser lmlParser, Object view, FileHandle fileHandle) {
+        return (T)lmlParser.createView(view, fileHandle).first();
+    }
+
+    public static <T extends Actor> T parseLmlTemplate(LmlParser lmlParser, FileHandle fileHandle) {
+        return (T)lmlParser.parseTemplate(fileHandle).first();
     }
 }
