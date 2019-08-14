@@ -49,7 +49,7 @@ git clone https://github.com/crashinvaders/gdx-vfx.git
 ```
 2. Install local maven archetype using gradle task (maven should be installed on the system and added to the PATH).
 ```
-./gradlew gdx-vfx:core:install gdx-vfx:effects:install
+./gradlew gdx-vfx:core:install gdx-vfx:effects:install gdx-vfx:gwt:install
 ```
 3. Include the library from a local maven repository.
 
