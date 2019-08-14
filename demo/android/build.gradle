@@ -113,7 +113,7 @@ eclipse {
 
     jdt {
         sourceCompatibility = 1.7
-        targetCompatibility = 1.6
+        targetCompatibility = 1.7
     }
 
     classpath {

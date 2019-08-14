@@ -162,7 +162,7 @@ public class EffectRosterViewController extends LmlViewController {
         }
     }
 
-    private static class EffectEntryViewController {
+    public static class EffectEntryViewController {
 
         @LmlActor Label lblName;
 
@@ -170,7 +170,7 @@ public class EffectRosterViewController extends LmlViewController {
         private final UpdateableEffect updateableEffect;
         private final Group viewRoot;
 
-        public EffectEntryViewController(LmlParser lmlParser, EffectEntryModel model) {
+        EffectEntryViewController(LmlParser lmlParser, EffectEntryModel model) {
             this.model = model;
 
             if (model.effect instanceof UpdateableEffect) {
