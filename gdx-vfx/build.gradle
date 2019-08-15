@@ -7,9 +7,16 @@ subprojects {
     targetCompatibility = 1.7
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+    ext {
+        projectVersion = '0.3.0'
+        isSnapshot = '-SNAPSHOT'
+        libVersion = "$projectVersion$isSnapshot"
+        isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
+    }
+
     group = "com.crashinvaders.vfx"
     archivesBaseName = projectName
-    version = '0.3.0'
+    version = libVersion
 
     task sourcesJar(type: Jar) {
         classifier = 'sources'
@@ -27,7 +34,7 @@ subprojects {
     }
 
     signing {
-//        required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+        required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
     }
 

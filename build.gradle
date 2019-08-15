@@ -21,3 +21,9 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
 }
+
+// Invokes 'build' and 'install' tasks on all projects in the correct order.
+// Prefer this over 'gradle build install' when changing the version of library.
+task installAll(dependsOn: ['gdx-vfx:core:build', 'gdx-vfx:core:install',
+                            'gdx-vfx:effects:build', 'gdx-vfx:effects:install',
+                            'gdx-vfx:gwt:build', 'gdx-vfx:gwt:install'])
