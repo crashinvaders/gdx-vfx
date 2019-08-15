@@ -1,14 +1,15 @@
 subprojects {
     apply plugin: "java"
     apply plugin: "maven"
+    apply plugin: 'signing'
 
-    group = "com.crashinvaders.vfx"
-    version = '0.3.0'
     sourceCompatibility = 1.7
+    targetCompatibility = 1.7
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-//    install.repositories.mavenInstaller.pom.artifactId = archivesBaseName
-    archivesBaseName = "gdx-vfx-$archivesBaseName"
+    group = "com.crashinvaders.vfx"
+    archivesBaseName = projectName
+    version = '0.3.0'
 
     task sourcesJar(type: Jar) {
         classifier = 'sources'
@@ -24,4 +25,60 @@ subprojects {
         archives sourcesJar
         archives javadocJar
     }
+
+    signing {
+//        required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name = projectName
+                    packaging 'jar'
+                    description = projectDesc
+                    url 'http://github.com/crashinvaders/gdx-vfx'
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    scm {
+                        connection 'scm:git:git@github.com:crashinvaders/gdx-vfx.git'
+                        developerConnection 'scm:git:git@github.com:crashinvaders/gdx-vfx.git'
+                        url 'http://github.com/crashinvaders/gdx-vfx/'
+
+                    }
+
+                    developers {
+                        developer {
+                            id 'metaphore'
+                            name 'Anton Chekulaev'
+                            email 'metaphore@crashinvaders.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+//    nexusStaging {
+//        packageGroup = 'com.crashinvaders.vfx'
+//        username = ossrhUsername
+//        password = ossrhPassword
+//    }
 }
