@@ -32,7 +32,7 @@ cd gdx-vfx
 ### 1. Add the library to the project
 
 #### A. Maven dependency
-The library currently is in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx/Tag) we still can reference the library as a maven dependecy.
+The library currently is in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#com.crashinvaders/gdx-vfx) we still can reference the library as a maven dependecy.
 
 Add it in your root build.gradle at the end of repositories:
 ```gradle
@@ -47,7 +47,9 @@ allprojects {
 Add the dependency:
 ```gradle
 dependencies {
-	implementation "com.crashinvaders:gdx-vfx:0.+"
+	// ...
+	compile "com.crashinvaders.gdx-vfx:core:0.+"
+	compile "com.crashinvaders.gdx-vfx:effects:0.+"
 }
 ```
 
