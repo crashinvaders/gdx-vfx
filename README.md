@@ -1,5 +1,7 @@
 # gdx-vfx
 
+[![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
+
 LibGDX flexible post processing visual effects. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), 
 with lots of improvements, aim on stability and to provide lightweight integration with comfortable effect extensions.
 
@@ -19,7 +21,7 @@ cd gdx-vfx
 ./gradlew demo:desktop:run
 ```
 
-![Alt Text](https://i.imgur.com/bHl3ADH.gif)
+![Alt Text](https://imgur.com/fJGZeiK.gif)
 
 
 # How to use
