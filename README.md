@@ -1,4 +1,6 @@
-# gdx-vfx
+![](https://i.imgur.com/Z512PcQ.png)
+
+# 
 
 [![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
 
