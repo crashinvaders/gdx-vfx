@@ -1,16 +1,23 @@
-language: java
+language: android
+android:
+  components:
+    - build-tools-20.0.0
+    - android-20
+jdk: oraclejdk8
+
 branches:
   only:
     - master
-jdk:
-  - openjdk8
-script:
-  - ./gradlew :installAll
-    
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+# Cache gradle dependencies (should be faster to download them from cache)
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+  - $HOME/.gradle/wrapper
+  - $HOME/.gradle/caches/modules-2/files-2.1
+
+# Setup environment
+before_install:
+- chmod +x gradlew
+
+# script:
+#   - ./gradlew --no-daemon :installAll
