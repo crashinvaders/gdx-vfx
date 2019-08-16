@@ -29,8 +29,10 @@ cd gdx-vfx
 
 # How to use
 
-### 1. Add through maven dependency
-The library is currently in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx/Tag) we still can reference the library as a maven dependecy.
+### 1. Add the library to the project
+
+#### A. Maven dependency
+The library currently is in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx/Tag) we still can reference the library as a maven dependecy.
 
 Add it in your root build.gradle at the end of repositories:
 ```gradle
@@ -49,12 +51,12 @@ dependencies {
 }
 ```
 
-### 2. Manually add the library into the project
+#### B. Manually add the library into the project
 
 <details>
 <summary>Click to expand!</summary>
 	
-#### A. Local JAR artifacts
+##### Option 1: Local JAR artifacts
 Download JAR artifacts from [releases page](https://github.com/crashinvaders/gdx-vfx/releases) and attach them to the project.
 Put the downloaded `gdx-vfx-core.jar` and `gdx-vfx-effects.jar` into `/core/libs` dir and add them as dependencies.
 
@@ -66,7 +68,7 @@ dependencies {
 }
 ```
 
-#### B. Local maven archetype (useful for local build/testing)
+##### Option 2: Local maven archetype (useful for local build/testing)
 
 1. Clone the repository into a local directory.
 ```
