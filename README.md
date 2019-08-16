@@ -23,7 +23,7 @@ cd gdx-vfx
 ./gradlew demo:desktop:run
 ```
 
-![Alt Text](https://imgur.com/fJGZeiK.gif)
+![Alt Text](https://imgur.com/dCsVhoo.gif)
 
 
 # How to use
