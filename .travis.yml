@@ -24,5 +24,6 @@ cache:
 before_install:
 - chmod +x gradlew
 
-# script:
-#   - ./gradlew --no-daemon :installAll
+script:
+  # Assemble only main libarary modules (ignore demo).
+  - ./gradlew --no-daemon clean installAll
