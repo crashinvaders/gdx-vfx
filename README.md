@@ -32,7 +32,7 @@ cd gdx-vfx
 ### 1. Add the library to the project
 
 #### A. Maven dependency
-The library currently is in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx) we still can reference the library as a maven dependecy.
+The library currently is in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx) we still can reference the library as a maven dependency.
 
 Add it in your root build.gradle at the end of repositories:
 ```gradle
@@ -193,7 +193,7 @@ The library uses extended set of OpenGL functions, that is not implemented for t
 In order to activate them for a GWT module, a specific method should be called prior any library usage.
 
 #### A. GWT jar dependency
-`gdx-vfx-gwt.jar` should be added as a dependecy to the respectful GWT module.
+`gdx-vfx-gwt.jar` should be added as a dependency to the respectful GWT module.
 
 #### B. Activate GWT specific library code
 Call `GwtGLExtCalls.initialize();` prior any library usage. The code best to be placed in a GWT module launcher class (the one that extends `GwtApplication`).
