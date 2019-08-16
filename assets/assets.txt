@@ -1,8 +1,9 @@
 d:assets:0:application/unknown
-i:bg-pattern.png:11310:image/png
-i:gdx-vfx-logo.png:43286:image/png
+i:bg-pattern.png:324:image/png
+i:gdx-vfx-logo.png:14738:image/png
 d:lml:0:application/unknown
 d:lml/screen-demo:0:application/unknown
+b:lml/screen-demo/effect-list-item.lml:265:application/unknown
 b:lml/screen-demo/root.lml:533:application/unknown
 d:skin:0:application/unknown
 t:skin/default.fnt:11630:application/unknown
@@ -11,8 +12,8 @@ t:skin/uiskin.json:3589:application/unknown
 i:skin/uiskin.png:28299:image/png
 t:com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl:859:application/unknown
 t:com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl:2996:application/unknown
-t:com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl:5350:application/unknown
-t:com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl:9159:application/unknown
+t:com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl:6084:application/unknown
+t:com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl:9441:application/unknown
 t:com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl:904:application/unknown
 t:com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl:3056:application/unknown
 t:com/badlogic/gdx/utils/arial-15.fnt:21743:application/unknown

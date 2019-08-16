@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!DOCTYPE container SYSTEM "/demo/dtd/common.dtd">
+
+<container padleft="4" padright="4" padtop="-1" padbottom="-1" touchable="enabled" align="left" minwidth="0">
+    <label id="lblName" textalign="left" touchable="disabled"/>
+</container>
