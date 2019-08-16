@@ -1,12 +1,14 @@
-# gdx-vfx
+![](https://i.imgur.com/Z512PcQ.png)
+
+# 
+
+[![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
 
 LibGDX flexible post processing visual effects. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), 
 with lots of improvements, aim on stability and to provide lightweight integration with comfortable effect extensions.
 
 Work is in progress, some official backends are not stable yet.
 More effects to be implemented and included in the standard library package.
-
-_Current LibGDX target version is **1.9.8** (this will be changed soon)._
 
 _If you need GWT support, please [read this section](#gwt-integration)._
 
@@ -21,7 +23,7 @@ cd gdx-vfx
 ./gradlew demo:desktop:run
 ```
 
-![Alt Text](https://i.imgur.com/bHl3ADH.gif)
+![Alt Text](https://imgur.com/dCsVhoo.gif)
 
 
 # How to use

@@ -1,0 +1,29 @@
+language: android
+android:
+  components:
+    - build-tools-28.0.3
+    - android-28
+  licenses:
+    - android-sdk-preview-license-.+
+    - android-sdk-license-.+
+    - google-gdk-license-.+
+  
+jdk: oraclejdk8
+
+branches:
+  only:
+    - master
+
+# Cache gradle dependencies (should be faster to download them from cache)
+cache:
+  directories:
+  - $HOME/.gradle/wrapper
+  - $HOME/.gradle/caches/modules-2/files-2.1
+
+# Setup environment
+before_install:
+- chmod +x gradlew
+
+script:
+  # Assemble only main libarary modules (ignore demo).
+  - ./gradlew --no-daemon clean installAll
