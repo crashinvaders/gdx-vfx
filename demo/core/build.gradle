@@ -6,8 +6,5 @@ dependencies {
     compile project(':gdx-vfx:core')
     compile project(':gdx-vfx:effects')
     compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-    //TODO Replace with Maven dependency when LML will officially support LibGDX 1.9.10.
-    compile fileTree(dir: '../libs', include: ['gdx-kiwi*.jar', 'gdx-lml*.jar'], exclude: '*-sources.jar')
-//    compile "com.github.czyzby:gdx-lml:$lmlVersion"
+    compile "com.github.czyzby:gdx-lml:$lmlVersion"
 }
