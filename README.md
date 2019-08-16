@@ -3,6 +3,7 @@
 # 
 
 [![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
+[![](https://jitpack.io/v/com.crashinvaders/gdx-vfx.svg)](https://jitpack.io/#com.crashinvaders/gdx-vfx)
 
 LibGDX flexible post processing visual effects. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), 
 with lots of improvements, aim on stability and to provide lightweight integration with comfortable effect extensions.
@@ -28,11 +29,33 @@ cd gdx-vfx
 
 # How to use
 
-### 1. Include the library into the project
+### 1. Add through maven dependency
+The library is currently in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx/Tag) we still can reference the library as a maven dependecy.
 
-#### A. Local JAR artifacts.
-The library is not yet available on any public maven repository,
-so the simplest way is to download JAR artifacts from [releases page](https://github.com/crashinvaders/gdx-vfx/releases) and attach them to the project.
+Add it in your root build.gradle at the end of repositories:
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+Add the dependency:
+```gradle
+dependencies {
+	implementation "com.crashinvaders:gdx-vfx:0.+"
+}
+```
+
+### 2. Manually add the library into the project
+
+<details>
+<summary>Click to expand!</summary>
+	
+#### A. Local JAR artifacts
+Download JAR artifacts from [releases page](https://github.com/crashinvaders/gdx-vfx/releases) and attach them to the project.
 Put the downloaded `gdx-vfx-core.jar` and `gdx-vfx-effects.jar` into `/core/libs` dir and add them as dependencies.
 
 _/core/build.gradle_:
@@ -43,7 +66,7 @@ dependencies {
 }
 ```
 
-#### B. Local maven archetype.
+#### B. Local maven archetype (useful for local build/testing)
 
 1. Clone the repository into a local directory.
 ```
@@ -68,6 +91,7 @@ dependencies {
     compile "com.crashinvaders.vfx:gdx-vfx-effects:0.+"
 }
 ```
+</details>
 
 ### 2. Sample code
 
@@ -159,15 +183,15 @@ public class PostProcessorExample extends ApplicationAdapter {
 ![Result](https://i.imgur.com/qSaIEWD.png)
 
 
-### 3. HTML/GWT integration guide. <a name="gwt-integration"></a>
+### 3. HTML/GWT integration guide <a name="gwt-integration"></a>
 
 The library uses extended set of OpenGL functions, that is not implemented for the official HTML/GWT LibGDX backend.
 In order to activate them for a GWT module, a specific method should be called prior any library usage.
 
-#### A. GWT jar dependency.
+#### A. GWT jar dependency
 `gdx-vfx-gwt.jar` should be added as a dependecy to the respectful GWT module.
 
-#### B. Activate GWT specific library code.
+#### B. Activate GWT specific library code
 Call `GwtGLExtCalls.initialize();` prior any library usage. The code best to be placed in a GWT module launcher class (the one that extends `GwtApplication`).
 
 For example:
