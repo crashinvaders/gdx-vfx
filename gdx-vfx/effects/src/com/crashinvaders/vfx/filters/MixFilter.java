@@ -16,11 +16,12 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class MixFilter extends PostProcessorFilter<MixFilter> {
 
@@ -52,7 +53,9 @@ public final class MixFilter extends PostProcessorFilter<MixFilter> {
     private float mix = 0.5f;
 
     public MixFilter() {
-        super(ShaderLoader.fromFile("screenspace", "mix"));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/mix.frag")));
 
         rebind();
     }

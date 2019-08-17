@@ -16,7 +16,8 @@
 
 package com.crashinvaders.vfx.filters;
 
-import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 
 public final class GaussianBlurFilter extends MultipassFilter {
 
@@ -81,9 +82,9 @@ public final class GaussianBlurFilter extends MultipassFilter {
     }
 
     @Override
-    public void render(PingPongBuffer buffer) {
+    public void render(ScreenQuadMesh mesh, PingPongBuffer buffer) {
         for (int i = 0; i < this.passes; i++) {
-            convolve.render(buffer);
+            convolve.render(mesh, buffer);
 
             if (i < this.passes - 1) {
                 buffer.swap();

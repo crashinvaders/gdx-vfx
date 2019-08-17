@@ -2,7 +2,7 @@ package com.crashinvaders.vfx.common.lml.attributes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.crashinvaders.vfx.common.CommonUtils;
+import com.crashinvaders.vfx.utils.CommonUtils;
 import com.github.czyzby.lml.parser.LmlParser;
 import com.github.czyzby.lml.parser.impl.attribute.ColorLmlAttribute;
 import com.github.czyzby.lml.parser.tag.LmlTag;

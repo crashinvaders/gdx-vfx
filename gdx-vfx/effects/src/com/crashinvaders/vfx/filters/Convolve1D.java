@@ -16,14 +16,16 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class Convolve1D extends PostProcessorFilter<Convolve1D> {
     public enum Param implements Parameter {
-        // @formatter:off
-        Texture("u_texture0", 0), SampleWeights("SampleWeights", 1), SampleOffsets("SampleOffsets", 2 /* vec2 */);
-        // @formatter:on
+        Texture("u_texture0", 0),
+        SampleWeights("SampleWeights", 1),
+        SampleOffsets("SampleOffsets", 2), // vec2
+        ;
 
         private String mnemonic;
         private int elementSize;
@@ -57,7 +59,10 @@ public final class Convolve1D extends PostProcessorFilter<Convolve1D> {
     }
 
     public Convolve1D(int length, float[] weights_data, float[] offsets) {
-        super(ShaderLoader.fromFile("screenspace", "convolve-1d", "#define LENGTH " + length));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/convolve-1d.frag"),
+                "#define LENGTH " + length));
         setWeights(length, weights_data, offsets);
         rebind();
     }

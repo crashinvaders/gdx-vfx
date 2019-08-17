@@ -1,8 +1,9 @@
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.OldTvFilter;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
 
 public class OldTvEffect extends PostProcessorEffect implements UpdateableEffect {
 
@@ -25,8 +26,8 @@ public class OldTvEffect extends PostProcessorEffect implements UpdateableEffect
     }
 
     @Override
-    public void render(FboWrapper src, FboWrapper dest) {
-        oldTvFilter.setInput(src).setOutput(dest).render();
+    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dest) {
+        oldTvFilter.setInput(src).setOutput(dest).render(mesh);
     }
 
     @Override

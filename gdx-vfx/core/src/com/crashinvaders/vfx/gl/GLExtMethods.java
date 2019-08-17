@@ -1,4 +1,4 @@
-package com.crashinvaders.vfx.common.gl;
+package com.crashinvaders.vfx.gl;
 
 /** The interface lets to customize some extra OpenGL functionality
  * (methods yet not implemented/unsupported by official LibGDX backends).*/

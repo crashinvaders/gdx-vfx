@@ -1,13 +1,13 @@
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public class ChromaticAberrationFilter extends PostProcessorFilter<ChromaticAberrationFilter> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
-//        Resolution("u_resolution", 2),
         ;
 
         private final String mnemonic;
@@ -29,23 +29,21 @@ public class ChromaticAberrationFilter extends PostProcessorFilter<ChromaticAber
         }
     }
 
-//    private final Vector2 resolution = new Vector2();
-
     public ChromaticAberrationFilter() {
-        super(ShaderLoader.fromFile("screenspace", "chromatic-aberration"));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/chromatic-aberration.frag")));
         rebind();
     }
 
     @Override
     public void resize(int width, int height) {
-//        this.resolution.set(width, height);
-//        rebind();
+
     }
 
     @Override
     public void rebind () {
         setParam(Param.Texture0, u_texture0);
-//        setParam(Param.Resolution, resolution);
         endParams();
     }
 

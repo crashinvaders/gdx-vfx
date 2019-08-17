@@ -4,8 +4,7 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Motion blur filter that draws the last frame (motion filter included) with a lower opacity.
  * @author Toni Sagrista */
@@ -51,7 +50,9 @@ public class MotionBlurFilter extends PostProcessorFilter<MotionBlurFilter> {
     }
 
 	public MotionBlurFilter(BlurFunction blurFunction) {
-		super(ShaderLoader.fromFile("screenspace", blurFunction.fragmentShaderName));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/" + blurFunction.fragmentShaderName + ".frag")));
 		rebind();
 	}
 

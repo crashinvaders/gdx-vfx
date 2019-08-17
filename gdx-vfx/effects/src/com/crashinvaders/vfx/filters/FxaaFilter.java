@@ -15,9 +15,10 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Fast approximate anti-aliasing filter.
  * @author Toni Sagrista */
@@ -57,7 +58,10 @@ public final class FxaaFilter extends PostProcessorFilter<FxaaFilter> {
 	}
 
 	public FxaaFilter (float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha) {
-		super(ShaderLoader.fromFile("screenspace", "fxaa", supportAlpha ? "#define SUPPORT_ALPHA" : ""));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/fxaa.frag"),
+				supportAlpha ? "#define SUPPORT_ALPHA" : ""));
 		this.fxaaReduceMin = fxaaReduceMin;
 		this.fxaaReduceMul = fxaaReduceMul;
 		this.fxaaSpanMax = fxaaSpanMax;

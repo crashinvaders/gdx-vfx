@@ -1,7 +1,8 @@
 package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.PostProcessorEffect;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.filters.NoiseFilter;
 
 public class NoiseEffect extends PostProcessorEffect implements UpdateableEffect {
@@ -45,8 +46,8 @@ public class NoiseEffect extends PostProcessorEffect implements UpdateableEffect
     }
 
     @Override
-    public void render(FboWrapper src, FboWrapper dest) {
-        filter.setInput(src).setOutput(dest).render();
+    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
+        filter.setInput(src).setOutput(dst).render(mesh);
     }
 
     @Override

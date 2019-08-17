@@ -16,7 +16,8 @@
 
 package com.crashinvaders.vfx.filters;
 
-import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 
 /**
  * Encapsulates a separable 2D convolution kernel filter
@@ -63,16 +64,16 @@ public final class Convolve2D extends MultipassFilter {
     }
 
     @Override
-    public void render(PingPongBuffer buffer) {
+    public void render(ScreenQuadMesh mesh, PingPongBuffer buffer) {
         hor.setInput(buffer.getSrcTexture())
             .setOutput(buffer.getDstBuffer())
-            .render();
+            .render(mesh);
 
         buffer.swap();
 
         vert.setInput(buffer.getSrcTexture())
             .setOutput(buffer.getDstBuffer())
-            .render();
+            .render(mesh);
     }
 
     public int getRadius() {

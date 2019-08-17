@@ -20,10 +20,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.PostProcessorEffect;
-import com.crashinvaders.vfx.PostProcessorUtils;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter.BlurType;
 import com.crashinvaders.vfx.filters.CombineFilter;
@@ -182,21 +183,21 @@ public final class BloomEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(final FboWrapper src, final FboWrapper dest) {
+    public void render(ScreenQuadMesh mesh, final FboWrapper src, final FboWrapper dst) {
         Texture texSrc = src.getFbo().getColorBufferTexture();
 
-        boolean blendingWasEnabled = PostProcessorUtils.isGlEnabled(GL20.GL_BLEND);
+        boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         pingPongBuffer.begin();
         {
             // Threshold / high-pass filter
             // Only areas with pixels >= threshold are blit to smaller FBO
-            threshold.setInput(texSrc).setOutput(pingPongBuffer.getDstBuffer()).render();
+            threshold.setInput(texSrc).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
             pingPongBuffer.swap();
 
             // Blur pass
-            blur.render(pingPongBuffer);
+            blur.render(mesh, pingPongBuffer);
         }
         pingPongBuffer.end();
 
@@ -211,8 +212,8 @@ public final class BloomEffect extends PostProcessorEffect {
 
         // Mix original scene and blurred threshold, modulate via set(Base|BloomEffect)(Saturation|Intensity)
         combine.setInput(texSrc, pingPongBuffer.getDstTexture())
-                .setOutput(dest)
-                .render();
+                .setOutput(dst)
+                .render(mesh);
     }
 
     @Override

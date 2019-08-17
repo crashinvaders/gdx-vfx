@@ -1,9 +1,8 @@
-package com.crashinvaders.vfx.common;
+package com.crashinvaders.vfx.utils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 
 import java.util.Comparator;
 import java.util.Iterator;

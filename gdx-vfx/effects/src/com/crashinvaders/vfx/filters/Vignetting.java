@@ -16,9 +16,10 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class Vignetting extends PostProcessorFilter<Vignetting> {
 
@@ -33,7 +34,6 @@ public final class Vignetting extends PostProcessorFilter<Vignetting> {
 	private float centerX, centerY;
 
 	public enum Param implements Parameter {
-		// @formatter:off
 		Texture0("u_texture0", 0),
 		TexLUT("u_texture1", 0),
 		VignetteIntensity("VignetteIntensity", 0),
@@ -48,13 +48,13 @@ public final class Vignetting extends PostProcessorFilter<Vignetting> {
 		LutStep("LutStep", 0),
 		LutStepOffset("LutStepOffset", 0),
 		CenterX("CenterX", 0),
-		CenterY("CenterY", 0);
-		// @formatter:on
+		CenterY("CenterY", 0),
+		;
 
 		private final String mnemonic;
 		private int elementSize;
 
-		private Param (String m, int elementSize) {
+		Param (String m, int elementSize) {
 			this.mnemonic = m;
 			this.elementSize = elementSize;
 		}
@@ -71,10 +71,12 @@ public final class Vignetting extends PostProcessorFilter<Vignetting> {
 	}
 
 	public Vignetting (boolean controlSaturation) {
-		super(ShaderLoader.fromFile("screenspace", "vignetting",
-			(controlSaturation ?
-					"#define CONTROL_SATURATION\n#define ENABLE_GRADIENT_MAPPING" :
-					"#define ENABLE_GRADIENT_MAPPING")));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/vignetting.frag"),
+				(controlSaturation ?
+						"#define CONTROL_SATURATION\n#define ENABLE_GRADIENT_MAPPING" :
+						"#define ENABLE_GRADIENT_MAPPING")));
 		dolut = false;
 		dosat = controlSaturation;
 

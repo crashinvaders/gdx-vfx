@@ -16,8 +16,9 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class RadialBlurFilter extends PostProcessorFilter<RadialBlurFilter> {
 
@@ -67,9 +68,11 @@ public final class RadialBlurFilter extends PostProcessorFilter<RadialBlurFilter
 	}
 
 	public RadialBlurFilter(Quality quality) {
-		super(ShaderLoader.fromFile("radial-blur", "radial-blur",
-				"#define BLUR_LENGTH " + quality.length +
-				"\n#define ONE_ON_BLUR_LENGTH " + 1f / (float)quality.length));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/radial-blur.vert"),
+				Gdx.files.classpath("shaders/radial-blur.frag"),
+				"#define BLUR_LENGTH " + quality.length + "\n" +
+				"#define ONE_ON_BLUR_LENGTH " + 1f / (float)quality.length));
 		this.blurLen = quality.length;
 		rebind();
 	}

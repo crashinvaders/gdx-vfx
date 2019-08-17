@@ -3,7 +3,7 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public class CrtFilter extends PostProcessorFilter<CrtFilter> {
     private static final Vector2 tmpVec = new Vector2();
@@ -57,7 +57,9 @@ public class CrtFilter extends PostProcessorFilter<CrtFilter> {
 
     /** Brightness is a value between [0..2] (default is 1.0). */
     public CrtFilter(LineStyle lineStyle, float brightnessMin, float brightnessMax) {
-        super(ShaderLoader.fromFile("screenspace", "crt",
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/crt.frag"),
                 "#define SL_BRIGHTNESS_MIN " + brightnessMin + "\n" +
                 "#define SL_BRIGHTNESS_MAX " + brightnessMax + "\n" +
                 "#define LINE_TYPE " + lineStyle.ordinal()));

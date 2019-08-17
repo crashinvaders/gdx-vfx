@@ -1,4 +1,4 @@
-package com.crashinvaders.vfx.common.framebuffer;
+package com.crashinvaders.vfx.gl.framebuffer;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;

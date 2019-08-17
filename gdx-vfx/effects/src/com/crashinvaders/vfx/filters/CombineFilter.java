@@ -16,10 +16,11 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class CombineFilter extends PostProcessorFilter<CombineFilter> {
 
@@ -55,7 +56,9 @@ public final class CombineFilter extends PostProcessorFilter<CombineFilter> {
     private Texture inputTexture2 = null;
 
     public CombineFilter() {
-        super(ShaderLoader.fromFile("screenspace", "combine"));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/combine.frag")));
         s1i = 1f;
         s2i = 1f;
         s1s = 1f;

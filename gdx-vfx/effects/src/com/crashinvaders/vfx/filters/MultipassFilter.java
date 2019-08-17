@@ -17,7 +17,8 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.PostProcessorFilter;
 
 /**
@@ -32,5 +33,5 @@ public abstract class MultipassFilter implements Disposable {
     /** @see PostProcessorFilter#rebind() */
     public abstract void rebind();
 
-    public abstract void render(PingPongBuffer pingPongBuffer);
+    public abstract void render(ScreenQuadMesh mesh, PingPongBuffer pingPongBuffer);
 }

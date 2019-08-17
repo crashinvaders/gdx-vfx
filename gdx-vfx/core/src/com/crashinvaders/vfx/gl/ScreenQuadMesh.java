@@ -1,20 +1,4 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
-package com.crashinvaders.vfx.utils;
+package com.crashinvaders.vfx.gl;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -23,28 +7,39 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-/** Encapsulates a fullscreen quad, geometry is aligned to the screen corners.
+/**
+ * Encapsulates a fullscreen quad mesh. Geometry is aligned to the screen corners.
  * 
- * @author bmanuel */
-public class FullscreenQuad {
+ * @author bmanuel
+ * @author metaphore
+ */
+public class ScreenQuadMesh {
 
-	private final Mesh quad;
+	private final Mesh mesh;
 
-	public FullscreenQuad () {
-		quad = new Mesh(VertexDataType.VertexArray, true, 4, 0,
-				new VertexAttribute(Usage.Position, 2, "a_position"),
+	public ScreenQuadMesh() {
+		this(new VertexAttribute(Usage.Position, 2, "a_position"),
 				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0"));
+	}
 
-		quad.setVertices(verts);
+	public ScreenQuadMesh(VertexAttribute... vertexAttributes) {
+		mesh = new Mesh(VertexDataType.VertexArray, true, 4, 0, vertexAttributes);
+		mesh.setVertices(verts);
 	}
 
 	public void dispose () {
-		quad.dispose();
+		mesh.dispose();
 	}
 
-	/** Renders the quad with the specified shader program. */
+	/**
+	 * Renders the quad with the specified shader program.
+	 */
 	public void render (ShaderProgram program) {
-		quad.render(program, GL20.GL_TRIANGLE_FAN, 0, 4);
+		mesh.render(program, GL20.GL_TRIANGLE_FAN, 0, 4);
+	}
+
+	public Mesh getMesh() {
+		return mesh;
 	}
 
 	private static final int VERT_SIZE = 16;

@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.crashinvaders.vfx.PostProcessorEffect;
-import com.crashinvaders.vfx.PostProcessorUtils;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.filters.*;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
+import com.crashinvaders.vfx.filters.CopyFilter;
+import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 
 public class GaussianBlurEffect extends PostProcessorEffect {
 
@@ -54,20 +56,20 @@ public class GaussianBlurEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(FboWrapper src, FboWrapper dest) {
+    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
         if (blur.getPasses() < 1) {
             // Do not apply blur filter.
-            copy.setInput(src).setOutput(dest).render();
+            copy.setInput(src).setOutput(dst).render(mesh);
             return;
         }
 
-        boolean blendingWasEnabled = PostProcessorUtils.isGlEnabled(GL20.GL_BLEND);
+        boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         pingPongBuffer.begin();
-        copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render();
+        copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
         pingPongBuffer.swap();
-        blur.render(pingPongBuffer);
+        blur.render(mesh, pingPongBuffer);
         pingPongBuffer.end();
 
         if (blending || blendingWasEnabled) {
@@ -80,8 +82,8 @@ public class GaussianBlurEffect extends PostProcessorEffect {
         }
 
         copy.setInput(pingPongBuffer.getDstTexture())
-                .setOutput(dest)
-                .render();
+                .setOutput(dst)
+                .render(mesh);
     }
 
     public GaussianBlurEffect enableBlending(int sfactor, int dfactor) {

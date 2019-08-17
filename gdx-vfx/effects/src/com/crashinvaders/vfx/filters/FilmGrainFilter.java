@@ -1,7 +1,8 @@
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public class FilmGrainFilter extends PostProcessorFilter<FilmGrainFilter> {
 
@@ -34,7 +35,9 @@ public class FilmGrainFilter extends PostProcessorFilter<FilmGrainFilter> {
     private float seed = 0f;
 
     public FilmGrainFilter() {
-        super(ShaderLoader.fromFile("screenspace", "film-grain"));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/film-grain.frag")));
         rebind();
     }
 

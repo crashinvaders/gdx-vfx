@@ -1,4 +1,4 @@
-package com.crashinvaders.vfx.common;
+package com.crashinvaders.vfx.utils;
 
 import com.badlogic.gdx.utils.Array;
 

@@ -1,4 +1,4 @@
-package com.crashinvaders.vfx.common.framebuffer;
+package com.crashinvaders.vfx.gl.framebuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import com.crashinvaders.vfx.common.gl.GLExtMethods;
-import com.crashinvaders.vfx.common.gl.GLUtils;
+import com.crashinvaders.vfx.gl.GLExtMethods;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
  * Wraps {@link FrameBuffer} and manages currently bound OpenGL FBO.
@@ -27,7 +27,7 @@ import com.crashinvaders.vfx.common.gl.GLUtils;
  * FboWrapper buffer0, buffer1;
  * // ...
  * void render() {
- *      // Any drawing here will be performed directly into the screen.
+ *      // Any drawing here will be performed directly to the screen.
  *      buffer0.begin();
  *      // Any drawing here will be performed into buffer0's FBO.
  *      buffer1.begin();
@@ -35,7 +35,7 @@ import com.crashinvaders.vfx.common.gl.GLUtils;
  *      buffer1.end();
  *      // Any drawing here will be performed into buffer0's FBO.
  *      buffer0.end();
- *      // Any drawing here will be performed directly into the screen.
+ *      // Any drawing here will be performed directly to the screen.
  * }
  * </pre>
  * <p>
@@ -184,12 +184,12 @@ public class FboWrapper implements Disposable {
     }
 
     protected int getBoundFboHandle() {
-        int boundFboHandle = GLUtils.getBoundFboHandle();
+        int boundFboHandle = VfxGLUtils.getBoundFboHandle();
         return boundFboHandle;
     }
 
     protected GLExtMethods.Viewport getViewport() {
-        GLExtMethods.Viewport viewport = GLUtils.getViewport();
+        GLExtMethods.Viewport viewport = VfxGLUtils.getViewport();
         return viewport;
     }
 

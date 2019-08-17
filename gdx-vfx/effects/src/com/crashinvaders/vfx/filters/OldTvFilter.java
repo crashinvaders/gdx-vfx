@@ -1,8 +1,9 @@
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public class OldTvFilter extends PostProcessorFilter<OldTvFilter> {
 
@@ -35,7 +36,9 @@ public class OldTvFilter extends PostProcessorFilter<OldTvFilter> {
     private float time = 0f;
 
     public OldTvFilter() {
-        super(ShaderLoader.fromFile("screenspace", "old-tv"));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/old-tv.frag")));
         rebind();
     }
 

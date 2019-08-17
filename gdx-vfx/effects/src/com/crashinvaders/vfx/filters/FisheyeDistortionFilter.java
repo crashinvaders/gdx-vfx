@@ -1,7 +1,8 @@
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
  * Fisheye distortion filter
@@ -34,7 +35,9 @@ public class FisheyeDistortionFilter extends PostProcessorFilter<FisheyeDistorti
     }
 
     public FisheyeDistortionFilter() {
-        super(ShaderLoader.fromFile("screenspace", "fisheye"));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/fisheye.frag")));
         rebind();
     }
 

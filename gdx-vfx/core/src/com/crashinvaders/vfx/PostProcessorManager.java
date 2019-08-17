@@ -8,9 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.common.PrioritizedArray;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.PrioritizedArray;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 
 /**
  * Provides a way to beginCapture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to
@@ -26,6 +27,9 @@ public final class PostProcessorManager implements Disposable {
     private final PrioritizedArray<PostProcessorEffect> effectsAll = new PrioritizedArray<>();
     /** Maintains a per-frame updated list of enabled effects */
     private final Array<PostProcessorEffect> effectsEnabled = new Array<>();
+
+    /** A mesh that is shared among basic filters to draw to full screen. */
+    private final ScreenQuadMesh screenQuadMesh = new ScreenQuadMesh();
 
     private final Format fboFormat;
     private final PingPongBuffer compositeBuffer;
@@ -56,6 +60,7 @@ public final class PostProcessorManager implements Disposable {
     @Override
     public void dispose() {
         compositeBuffer.dispose();
+        screenQuadMesh.dispose();
     }
 
     public void resize(int width, int height) {
@@ -224,10 +229,10 @@ public final class PostProcessorManager implements Disposable {
 
     /**
      * Stops capturing the scene and apply the effect chain, if there is one.
-     * @param dest Target frame buffer, where result will be rendered to.
+     * @param dst Target frame buffer, where result will be rendered to.
      *             If null, rendering will be performed to the screen.
      */
-    public void render(FboWrapper dest) {
+    public void render(FboWrapper dst) {
         if (capturing) {
             throw new IllegalStateException("You should call PostProcessorManager.endCapture() prior effect rendering.");
         }
@@ -255,7 +260,9 @@ public final class PostProcessorManager implements Disposable {
                 compositeBuffer.begin();
                 for (int i = 0; i < count - 1; i++) {
                     PostProcessorEffect effect = items.get(i);
-                    effect.render(compositeBuffer.getSrcBuffer(), compositeBuffer.getDstBuffer());
+                    effect.render(screenQuadMesh,
+                            compositeBuffer.getSrcBuffer(),
+                            compositeBuffer.getDstBuffer());
                     if (i < count - 2) {
                         compositeBuffer.swap();
                     }
@@ -264,7 +271,7 @@ public final class PostProcessorManager implements Disposable {
             }
 
             // Render with null dest (to screen).
-            items.get(count - 1).render(compositeBuffer.getDstBuffer(), dest);
+            items.get(count - 1).render(screenQuadMesh, compositeBuffer.getDstBuffer(), dst);
 
             // Ensure default texture unit #0 is active.
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);

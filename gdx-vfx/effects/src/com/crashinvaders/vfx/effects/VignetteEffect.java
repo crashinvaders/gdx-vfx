@@ -17,7 +17,8 @@
 package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.Vignetting;
 
@@ -46,9 +47,9 @@ public final class VignetteEffect extends PostProcessorEffect {
 	}
 
 	@Override
-	public void render(FboWrapper src, FboWrapper dest) {
+	public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
 //		restoreViewport(dest);
-		vignetting.setInput(src).setOutput(dest).render();
+		vignetting.setInput(src).setOutput(dst).render(mesh);
 	}
 
 	public boolean doesSaturationControl () {

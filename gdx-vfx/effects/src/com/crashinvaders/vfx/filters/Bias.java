@@ -16,8 +16,9 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Bias filter. Adapted for lensflare2 effect.
  * @see <a href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
@@ -52,7 +53,9 @@ public final class Bias extends PostProcessorFilter<Bias> {
 	}
 
 	public Bias() {
-		super(ShaderLoader.fromFile("screenspace", "bias"));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("bias")));
 		rebind();
 	}
 

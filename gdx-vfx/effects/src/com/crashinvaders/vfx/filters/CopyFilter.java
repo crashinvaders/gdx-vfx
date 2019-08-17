@@ -16,8 +16,9 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public class CopyFilter extends PostProcessorFilter<CopyFilter> {
 	public enum Param implements Parameter {
@@ -43,7 +44,9 @@ public class CopyFilter extends PostProcessorFilter<CopyFilter> {
 	}
 
 	public CopyFilter() {
-		super(ShaderLoader.fromFile("screenspace", "copy"));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/copy.frag")));
 	}
 
     @Override

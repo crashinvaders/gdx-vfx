@@ -15,9 +15,10 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Normal filtered anti-aliasing filter.
  * @author Toni Sagrista */
@@ -51,7 +52,10 @@ public final class NfaaFilter extends PostProcessorFilter<NfaaFilter> {
 	}
 
 	public NfaaFilter (boolean supportAlpha) {
-		super(ShaderLoader.fromFile("screenspace", "nfaa", supportAlpha ? "#define SUPPORT_ALPHA" : ""));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/nfaa.frag"),
+				supportAlpha ? "#define SUPPORT_ALPHA" : ""));
 	}
 
     @Override

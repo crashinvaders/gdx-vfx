@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtGL20;
 import com.badlogic.gdx.backends.gwt.GwtGLUtils;
 import com.badlogic.gdx.backends.gwt.GwtGraphics;
-import com.crashinvaders.vfx.common.gl.GLExtMethods;
-import com.crashinvaders.vfx.common.gl.GLUtils;
+import com.crashinvaders.vfx.gl.GLExtMethods;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.google.gwt.typedarrays.shared.Int32Array;
 import com.google.gwt.webgl.client.WebGLFramebuffer;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
@@ -14,7 +14,7 @@ public class GwtGLExtCalls implements GLExtMethods {
     private static final GLExtMethods.Viewport tmpViewport = new Viewport();
 
     public static void initialize() {
-        GLUtils.customCalls = new GwtGLExtCalls();
+        VfxGLUtils.customCalls = new GwtGLExtCalls();
     }
 
     @Override

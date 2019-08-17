@@ -1,4 +1,4 @@
-package com.crashinvaders.vfx.common;
+package com.crashinvaders.vfx.utils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;

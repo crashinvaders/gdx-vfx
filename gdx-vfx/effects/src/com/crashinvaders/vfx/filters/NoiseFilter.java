@@ -1,9 +1,8 @@
 package com.crashinvaders.vfx.filters;
 
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public class NoiseFilter extends PostProcessorFilter<NoiseFilter> {
 
@@ -40,7 +39,9 @@ public class NoiseFilter extends PostProcessorFilter<NoiseFilter> {
     private float time = 0f;
 
     public NoiseFilter(float amount, float speed) {
-        super(ShaderLoader.fromFile("screenspace", "noise"));
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/noise.frag")));
         this.amount = amount;
         this.speed = speed;
         rebind();

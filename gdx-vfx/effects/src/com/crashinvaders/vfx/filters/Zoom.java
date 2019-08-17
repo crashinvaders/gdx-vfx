@@ -16,8 +16,9 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class Zoom extends PostProcessorFilter<Zoom> {
 	private float x, y, zoom;
@@ -50,7 +51,9 @@ public final class Zoom extends PostProcessorFilter<Zoom> {
 	}
 
 	public Zoom () {
-		super(ShaderLoader.fromFile("zoom", "zoom"));
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/zoom.vert"),
+				Gdx.files.classpath("shaders/zoom.frag")));
 		rebind();
 		setOrigin(0.5f, 0.5f);
 		setZoom(1f);

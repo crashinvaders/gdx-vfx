@@ -16,58 +16,61 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.utils.ShaderLoader;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class Threshold extends PostProcessorFilter<Threshold> {
 
-	public enum Param implements Parameter {
-		// @formatter:off
-		Texture("u_texture0", 0),
-		Threshold("treshold", 0),
-		ThresholdInvTx("tresholdInvTx", 0);
-		// @formatter:on
+    public enum Param implements Parameter {
+        // @formatter:off
+        Texture("u_texture0", 0),
+        Threshold("treshold", 0),
+        ThresholdInvTx("tresholdInvTx", 0);
+        // @formatter:on
 
-		private String mnemonic;
-		private int elementSize;
+        private String mnemonic;
+        private int elementSize;
 
-		private Param (String mnemonic, int elementSize) {
-			this.mnemonic = mnemonic;
-			this.elementSize = elementSize;
-		}
+        private Param(String mnemonic, int elementSize) {
+            this.mnemonic = mnemonic;
+            this.elementSize = elementSize;
+        }
 
-		@Override
-		public String mnemonic () {
-			return this.mnemonic;
-		}
+        @Override
+        public String mnemonic() {
+            return this.mnemonic;
+        }
 
-		@Override
-		public int arrayElementSize () {
-			return this.elementSize;
-		}
-	}
+        @Override
+        public int arrayElementSize() {
+            return this.elementSize;
+        }
+    }
 
-	private float gamma = 0;
+    private float gamma = 0;
 
-	public Threshold () {
-		super(ShaderLoader.fromFile("screenspace", "threshold"));
-		rebind();
-	}
+    public Threshold() {
+        super(VfxGLUtils.compileShader(
+        		Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/threshold.frag")));
+        rebind();
+    }
 
-	public void setTreshold (float gamma) {
-		this.gamma = gamma;
-		setParams(Param.Threshold, gamma);
-		setParams(Param.ThresholdInvTx, 1f / (1 - gamma)).endParams();
-	}
+    public void setTreshold(float gamma) {
+        this.gamma = gamma;
+        setParams(Param.Threshold, gamma);
+        setParams(Param.ThresholdInvTx, 1f / (1 - gamma)).endParams();
+    }
 
-	public float getThreshold () {
-		return gamma;
-	}
+    public float getThreshold() {
+        return gamma;
+    }
 
-	@Override
-	protected void onBeforeRender () {
-		inputTexture.bind(u_texture0);
-	}
+    @Override
+    protected void onBeforeRender() {
+        inputTexture.bind(u_texture0);
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -75,8 +78,8 @@ public final class Threshold extends PostProcessorFilter<Threshold> {
     }
 
     @Override
-	public void rebind () {
-		setParams(Param.Texture, u_texture0);
-		setTreshold(this.gamma);
-	}
+    public void rebind() {
+        setParams(Param.Texture, u_texture0);
+        setTreshold(this.gamma);
+    }
 }

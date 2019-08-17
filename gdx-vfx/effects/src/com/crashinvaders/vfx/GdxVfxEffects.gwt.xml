@@ -20,7 +20,6 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/fxaa.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/hdr.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare2.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/levels.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/mix.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-max.frag" />
@@ -36,8 +35,5 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/vignetting.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/zoom.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/zoom.vert" />
-
-	<!-- Shader resources -->
-	<extend-configuration-property name="gdx.files.classpath" value="vfx-lens-color.png" />
 
 </module>

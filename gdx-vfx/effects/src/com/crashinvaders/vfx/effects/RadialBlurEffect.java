@@ -16,7 +16,8 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.filters.RadialBlurFilter;
 
@@ -49,8 +50,8 @@ public final class RadialBlurEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(FboWrapper src, FboWrapper dest) {
-        radialBlur.setInput(src).setOutput(dest).render();
+    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
+        radialBlur.setInput(src).setOutput(dst).render(mesh);
     }
 
     /**
