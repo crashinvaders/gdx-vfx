@@ -142,6 +142,10 @@ public class PostProcessorExample extends ApplicationAdapter {
 		// PostProcessor manages internal off-screen buffers,
 		// which should always match the required viewport (whole screen in our case).
 		postProcessor.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Don't forget to update batch projection matrix as screen viewport has changed.
+        shapeRenderer.getProjectionMatrix().setToOrtho2D(0f, 0f, width, height);
+        shapeRenderer.updateMatrices();
 	}
 
 	@Override

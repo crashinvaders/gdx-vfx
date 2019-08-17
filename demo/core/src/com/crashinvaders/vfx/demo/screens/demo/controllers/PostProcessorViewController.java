@@ -54,7 +54,7 @@ public class PostProcessorViewController extends LmlViewController {
         postProcessorManager = postProcessingGroup.getPostProcessorManager();
         postProcessorManager.setBlendingEnabled(false);
         postProcessorManager.setCleanUpBuffers(true);
-        postProcessorManager.setCleanColor(clearColor);
+        postProcessorManager.setClearColor(clearColor);
         postProcessingGroup.addActor(canvasRoot);
 
         IntegerRoundFillContainer postProcessorContainer = new IntegerRoundFillContainer(postProcessingGroup);

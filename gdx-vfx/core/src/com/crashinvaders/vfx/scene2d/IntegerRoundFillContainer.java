@@ -5,7 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
-/** Stretches the actor to fill the area and rounds its size to an integer value (round by floor). */
+/**
+ * Stretches the actor to fill the area and rounds its size to an integer value (round by floor).
+ *
+ * @author metaphore
+ */
 public class IntegerRoundFillContainer extends WidgetGroup {
     private final Actor actor;
 

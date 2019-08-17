@@ -30,7 +30,7 @@ public final class PostProcessorManager implements Disposable {
     private final Format fboFormat;
     private final PingPongBuffer compositeBuffer;
 
-    private final Color cleanColor = new Color(Color.CLEAR);
+    private final Color clearColor = new Color(Color.CLEAR);
     private boolean cleanUpBuffers = true;
 
     private boolean disabled = false;
@@ -43,8 +43,14 @@ public final class PostProcessorManager implements Disposable {
     private int width, height;
 
     public PostProcessorManager(Format fboFormat) {
+        this(fboFormat, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    public PostProcessorManager(Format fboFormat, int bufferWidth, int bufferHeight) {
         this.fboFormat = fboFormat;
-        compositeBuffer = new PingPongBuffer(fboFormat);
+        this.compositeBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight);
+        this.width = bufferWidth;
+        this.height = bufferHeight;
     }
 
     @Override
@@ -87,23 +93,23 @@ public final class PostProcessorManager implements Disposable {
         this.cleanUpBuffers = cleanUpBuffers;
     }
 
-    public Color getCleanColor() {
-        return cleanColor;
+    public Color getClearColor() {
+        return clearColor;
     }
 
     /** Sets the color that will be used to clean up the off-screen buffers. */
-    public void setCleanColor(Color color) {
-        cleanColor.set(color);
+    public void setClearColor(Color color) {
+        clearColor.set(color);
     }
 
     /** Sets the color that will be used to clean up the off-screen buffers. */
-    public void setCleanColor(int color) {
-        cleanColor.set(color);
+    public void setClearColor(int color) {
+        clearColor.set(color);
     }
 
     /** Sets the color that will be used to clean up the off-screen buffers. */
-    public void setCleanColor(float r, float g, float b, float a) {
-        cleanColor.set(r, g, b, a);
+    public void setClearColor(float r, float g, float b, float a) {
+        clearColor.set(r, g, b, a);
     }
 
     public boolean isBlendingEnabled() {
@@ -171,7 +177,7 @@ public final class PostProcessorManager implements Disposable {
     /**
      * Starts capturing the scene.
      * If {@link #cleanUpBuffers} is enabled,
-     * the off-screen buffers will be cleaned up with {@link #cleanColor}.
+     * the off-screen buffers will be cleaned up with {@link #clearColor}.
      *
      * @return true or false, whether or not capturing has been initiated. Capturing will fail in case there are no enabled effects
      * in the chain or this instance is not enabled or capturing is already started.
@@ -189,7 +195,7 @@ public final class PostProcessorManager implements Disposable {
         compositeBuffer.begin();
 
         if (cleanUpBuffers) {
-            compositeBuffer.cleanUpBuffers(cleanColor);
+            compositeBuffer.cleanUpBuffers(clearColor);
         }
 
         return true;

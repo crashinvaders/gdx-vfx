@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.crashinvaders.vfx.common.PrioritizedInputMultiplexer;
 import com.crashinvaders.vfx.demo.screens.demo.DemoScreen;
-import com.crashinvaders.vfx.demo.screens.demo.TestScreen;
 
 public class App extends Game {
 
@@ -20,7 +19,6 @@ public class App extends Game {
 	private final PrioritizedInputMultiplexer inputMultiplexer;
 
 	private DemoScreen demoScreen;
-//	private TestScreen testScreen;
 
 	public static App inst() {
 		if (instance == null) {
@@ -43,15 +41,12 @@ public class App extends Game {
 
 		demoScreen = new DemoScreen();
 		setScreen(demoScreen);
-
-//		setScreen(testScreen = new TestScreen());
 	}
 	
 	@Override
 	public void dispose () {
 		super.dispose();
 		demoScreen.dispose();
-//		testScreen.dispose();
 	}
 
 	//region Accessors
@@ -70,7 +65,7 @@ public class App extends Game {
 		public boolean keyDown(int keycode) {
 			switch (keycode) {
 				case Input.Keys.F8:
-					// Restart entire game.
+					// Restart the app.
 					restartApp();
 					return true;
 				default:
