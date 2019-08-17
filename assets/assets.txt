@@ -32,7 +32,6 @@ b:shaders/fisheye.frag:1535:application/unknown
 b:shaders/fxaa.frag:3404:application/unknown
 b:shaders/hdr.frag:615:application/unknown
 b:shaders/lensflare.frag:2049:application/unknown
-b:shaders/lensflare2.frag:2275:application/unknown
 b:shaders/levels.frag:1453:application/unknown
 b:shaders/mix.frag:370:application/unknown
 b:shaders/motionblur-max.frag:486:application/unknown
@@ -48,4 +47,3 @@ b:shaders/threshold.frag:1496:application/unknown
 b:shaders/vignetting.frag:3231:application/unknown
 b:shaders/zoom.frag:1102:application/unknown
 b:shaders/zoom.vert:1143:application/unknown
-i:vfx-lens-color.png:3440:image/png
