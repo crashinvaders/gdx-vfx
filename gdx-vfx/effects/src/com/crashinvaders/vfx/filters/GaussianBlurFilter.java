@@ -16,20 +16,19 @@
 
 package com.crashinvaders.vfx.filters;
 
-import com.badlogic.gdx.utils.IntMap;
 import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 
-public final class BlurFilter extends MultipassFilter {
+public final class GaussianBlurFilter extends MultipassFilter {
 
     private enum Tap {
         Tap3x3(1),
         Tap5x5(2),
-        // Tap7x7( 3 )
+        // Tap7x7(3),
         ;
 
         public final int radius;
 
-        private Tap(int radius) {
+        Tap(int radius) {
             this.radius = radius;
         }
     }
@@ -46,27 +45,24 @@ public final class BlurFilter extends MultipassFilter {
         }
     }
 
-    // blur
-    private BlurType type = BlurType.Gaussian5x5;
+    private BlurType type;
     private float amount = 1f;
     private int passes = 1;
 
-    // fbo, textures
     private float invWidth, invHeight;
-    private final IntMap<Convolve2D> convolve = new IntMap<Convolve2D>(Tap.values().length);
+    private Convolve2D convolve;
 
-    public BlurFilter() {
-        // create filters
-        for (Tap tap : Tap.values()) {
-            convolve.put(tap.radius, new Convolve2D(tap.radius));
-        }
+    public GaussianBlurFilter() {
+        this(BlurType.Gaussian5x5);
+    }
+
+    public GaussianBlurFilter(BlurType blurType) {
+        this.setType(blurType);
     }
 
     @Override
     public void dispose() {
-        for (Convolve2D c : convolve.values()) {
-            c.dispose();
-        }
+        convolve.dispose();
     }
 
     @Override
@@ -74,34 +70,54 @@ public final class BlurFilter extends MultipassFilter {
         this.invWidth = 1f / (float) width;
         this.invHeight = 1f / (float) height;
 
-        for (Convolve2D c : convolve.values()) {
-            c.resize(width, height);
-        }
-
+        convolve.resize(width, height);
         computeBlurWeightings();
     }
 
     @Override
     public void rebind() {
-        for (Convolve2D c : convolve.values()) {
-            c.rebind();
-        }
-
+        convolve.rebind();
         computeBlurWeightings();
     }
 
-    public void setPasses(int passes) {
-        this.passes = passes;
+    @Override
+    public void render(PingPongBuffer buffer) {
+        for (int i = 0; i < this.passes; i++) {
+            convolve.render(buffer);
+
+            if (i < this.passes - 1) {
+                buffer.swap();
+            }
+        }
+    }
+
+    public BlurType getType() {
+        return type;
     }
 
     public void setType(BlurType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Blur type cannot be null.");
+        }
         if (this.type != type) {
             this.type = type;
+
+            // Instantiate new matching convolve filter instance.
+            if (convolve != null) {
+                convolve.dispose();
+            }
+            convolve = new Convolve2D(this.type.tap.radius);
+
             computeBlurWeightings();
         }
     }
 
-    // not all blur types support custom amounts at this time
+    /** Warning: Not all blur types support custom amounts at this time */
+    public float getAmount() {
+        return amount;
+    }
+
+    /** Warning: Not all blur types support custom amounts at this time */
     public void setAmount(float amount) {
         this.amount = amount;
         computeBlurWeightings();
@@ -111,31 +127,16 @@ public final class BlurFilter extends MultipassFilter {
         return passes;
     }
 
-    public BlurType getType() {
-        return type;
-    }
-
-    // not all blur types support custom amounts at this time
-    public float getAmount() {
-        return amount;
-    }
-
-    @Override
-    public void render(PingPongBuffer buffer) {
-        Convolve2D c = convolve.get(this.type.tap.radius);
-
-        for (int i = 0; i < this.passes; i++) {
-            c.render(buffer);
-        }
+    public void setPasses(int passes) {
+        this.passes = passes;
     }
 
     private void computeBlurWeightings() {
-        boolean hasdata = true;
-        Convolve2D c = convolve.get(this.type.tap.radius);
+        boolean hasData = true;
 
-        float[] outWeights = c.weights;
-        float[] outOffsetsH = c.offsetsHor;
-        float[] outOffsetsV = c.offsetsVert;
+        float[] outWeights = convolve.getWeights();
+        float[] outOffsetsH = convolve.getOffsetsHor();
+        float[] outOffsetsV = convolve.getOffsetsVert();
 
         float dx = this.invWidth;
         float dy = this.invHeight;
@@ -148,17 +149,16 @@ public final class BlurFilter extends MultipassFilter {
                 break;
 
             case Gaussian3x3b:
-                // weights and offsets are computed from a binomial distribution
+                // Weights and offsets are computed from a binomial distribution
                 // and reduced to be used *only* with bilinearly-filtered texture lookups
-                //
                 // with radius = 1f
 
-                // weights
+                // Weights
                 outWeights[0] = 0.352941f;
                 outWeights[1] = 0.294118f;
                 outWeights[2] = 0.352941f;
 
-                // horizontal offsets
+                // Horizontal offsets
                 outOffsetsH[0] = -1.33333f;
                 outOffsetsH[1] = 0f;
                 outOffsetsH[2] = 0f;
@@ -166,7 +166,7 @@ public final class BlurFilter extends MultipassFilter {
                 outOffsetsH[4] = 1.33333f;
                 outOffsetsH[5] = 0f;
 
-                // vertical offsets
+                // Vertical offsets
                 outOffsetsV[0] = 0f;
                 outOffsetsV[1] = -1.33333f;
                 outOffsetsV[2] = 0f;
@@ -174,8 +174,8 @@ public final class BlurFilter extends MultipassFilter {
                 outOffsetsV[4] = 0f;
                 outOffsetsV[5] = 1.33333f;
 
-                // scale offsets from binomial space to screen space
-                for (int i = 0; i < c.length * 2; i++) {
+                // Scale offsets from binomial space to screen space
+                for (int i = 0; i < convolve.getLength() * 2; i++) {
                     outOffsetsH[i] *= dx;
                     outOffsetsV[i] *= dy;
                 }
@@ -184,9 +184,8 @@ public final class BlurFilter extends MultipassFilter {
 
             case Gaussian5x5b:
 
-                // weights and offsets are computed from a binomial distribution
+                // Weights and offsets are computed from a binomial distribution
                 // and reduced to be used *only* with bilinearly-filtered texture lookups
-                //
                 // with radius = 2f
 
                 // weights
@@ -196,7 +195,7 @@ public final class BlurFilter extends MultipassFilter {
                 outWeights[3] = 0.316216f;
                 outWeights[4] = 0.0702703f;
 
-                // horizontal offsets
+                // Horizontal offsets
                 outOffsetsH[0] = -3.23077f;
                 outOffsetsH[1] = 0f;
                 outOffsetsH[2] = -1.38462f;
@@ -208,7 +207,7 @@ public final class BlurFilter extends MultipassFilter {
                 outOffsetsH[8] = 3.23077f;
                 outOffsetsH[9] = 0f;
 
-                // vertical offsets
+                // Vertical offsets
                 outOffsetsV[0] = 0f;
                 outOffsetsV[1] = -3.23077f;
                 outOffsetsV[2] = 0f;
@@ -220,20 +219,20 @@ public final class BlurFilter extends MultipassFilter {
                 outOffsetsV[8] = 0f;
                 outOffsetsV[9] = 3.23077f;
 
-                // scale offsets from binomial space to screen space
-                for (int i = 0; i < c.length * 2; i++) {
+                // Scale offsets from binomial space to screen space
+                for (int i = 0; i < convolve.getLength() * 2; i++) {
                     outOffsetsH[i] *= dx;
                     outOffsetsV[i] *= dy;
                 }
 
                 break;
             default:
-                hasdata = false;
+                hasData = false;
                 break;
         }
 
-        if (hasdata) {
-            c.upload();
+        if (hasData) {
+            convolve.rebind();
         }
     }
 

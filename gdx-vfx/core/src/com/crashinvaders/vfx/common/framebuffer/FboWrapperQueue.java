@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-/** Provides looped access to an array of {@link FboWrapper}. */
+/**
+ * Provides looped access to an array of {@link FboWrapper}.
+ */
 public class FboWrapperQueue implements Disposable {
     private final Array<FboWrapper> buffers;
     private int currentIdx = 0;
@@ -38,7 +40,9 @@ public class FboWrapperQueue implements Disposable {
         }
     }
 
-    /** When needed graphics memory could be invalidated so buffers should be rebuilt. */
+    /**
+     * Restores buffer OpenGL parameters. Could be useful in case of OpenGL context loss.
+     */
     public void rebind() {
         for (int i = 0; i < buffers.size; i++) {
             FboWrapper wrapper = buffers.get(i);

@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.vfx.common.lml.CommonLmlParser;
 import com.crashinvaders.vfx.common.scene2d.RepeatTextureDrawable;
 import com.crashinvaders.vfx.common.scene2d.actions.ActionsExt;
+import com.crashinvaders.vfx.common.scene2d.actions.TimeModulationAction;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 
@@ -32,6 +35,9 @@ public class CanvasContentViewController extends LmlViewController {
         super.onViewCreated(sceneRoot);
         canvasRoot = sceneRoot.findActor("canvasRoot");
 
+        final Action backgroundAction;
+        final Action logoAction;
+
         // Background
         {
             final RepeatTextureDrawable backgroundDrawable = new RepeatTextureDrawable(
@@ -42,7 +48,7 @@ public class CanvasContentViewController extends LmlViewController {
 //            imgBackground.setScale(3f);
             canvasRoot.addActor(imgBackground);
 
-            imgBackground.addAction(new Action() {
+            backgroundAction = new Action() {
                 private static final float SPEED_MIN = 0.1f;
                 private static final float SPEED_MAX = 0.3f;
                 private static final float SPEED_DELTA = SPEED_MAX - SPEED_MIN;
@@ -69,7 +75,7 @@ public class CanvasContentViewController extends LmlViewController {
                     backgroundDrawable.setShift(shiftFactorX, shiftFactorY);
                     return false;
                 }
-            });
+            };
         }
 
         // Logo
@@ -79,13 +85,12 @@ public class CanvasContentViewController extends LmlViewController {
             imageLogo.setOrigin(Align.center);
             // Wrap into first container to setup size.
             Container containerImage = new Container<>(imageLogo);
-//            containerImage.size(308f, 252f);
             // Wrap into an another container to always keep composition at center of the screen.
             Container containerHolder = new Container<>(containerImage);
             containerHolder.setFillParent(true);
             canvasRoot.addActor(containerHolder);
 
-            imageLogo.addAction(ActionsExt.post(Actions.sequence(
+            logoAction = ActionsExt.target(imageLogo, ActionsExt.post(Actions.sequence(
                     ActionsExt.origin(Align.center),
                     Actions.moveBy(-100f, -50f),
                     Actions.parallel(
@@ -102,5 +107,25 @@ public class CanvasContentViewController extends LmlViewController {
                     )
             )));
         }
+
+        final TimeModulationAction timeModulationAction;
+        canvasRoot.addAction(timeModulationAction = ActionsExt.timeModulation(Actions.parallel(
+                backgroundAction,
+                logoAction
+        )));
+
+        // Pause scene animation on right click.
+        stage.addListener(new InputListener() {
+            boolean paused = false;
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (button != 1) return super.touchDown(event, x, y, pointer, button);
+
+                paused = !paused;
+                timeModulationAction.setTimeFactor(paused ? 0f : 1f);
+                return true;
+            }
+        });
     }
 }

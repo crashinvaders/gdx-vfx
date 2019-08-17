@@ -1,21 +1,8 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.crashinvaders.vfx.common.framebuffer;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -27,44 +14,63 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  * Upon {@link #begin()} the buffer is reset to a known initial state, this is usually done just before the first usage of the
  * buffer.
  * <p>
- * Subsequent {@link #capture()} calls will initiate writing to the next available buffer, returning the previously used one,
+ * Subsequent {@link #swap()} calls will initiate writing to the next available buffer, returning the previously used one,
  * effectively ping-ponging between the two. Until {@link #end()} is called, chained rendering will be possible by retrieving the
- * necessary buffers via {@link #getSourceTexture()}, {@link #getSourceBuffer()}, {@link #getResultTexture()} or
- * {@link #getResultBuffer}.
+ * necessary buffers via {@link #getSrcTexture()}, {@link #getSrcBuffer()}, {@link #getDstTexture()} or
+ * {@link #getDstBuffer}.
  * <p>
  * When finished, {@link #end()} should be called to stop capturing. When the OpenGL context is lost, {@link #rebind()} should be
  * called.
  *
  * @author bmanuel
+ * @author metaphore
  */
 public final class PingPongBuffer {
-    public final FboWrapper buffer1, buffer2;
-    public Texture texture1, texture2;
 
-    // internal state
-    private Texture texResult, texSrc;
-    private FboWrapper bufResult, bufSrc;
-    private boolean writeState, pending1, pending2;
+    private final FboWrapper buffer1;
+    private final FboWrapper buffer2;
+
+    private FboWrapper bufDst;
+    private FboWrapper bufSrc;
+
+    /**
+     * Keeps track of the current active buffer.
+     * false - first buffer,
+     * true - second buffer.
+     **/
+    private boolean writeState;
+
+    /** Where capturing is started. Should be true between {@link #begin()} and {@link #end()}. */
+    private boolean capturing;
 
     private TextureWrap wrapU = TextureWrap.ClampToEdge;
     private TextureWrap wrapV = TextureWrap.ClampToEdge;
     private TextureFilter filterMin = TextureFilter.Nearest;
     private TextureFilter filterMag = TextureFilter.Nearest;
 
-    public PingPongBuffer(Format fbFormat, int width, int height) {
-        this.buffer1 = new FboWrapper(fbFormat);
-        this.buffer2 = new FboWrapper(fbFormat);
-        this.buffer1.initialize(width, height);
-        this.buffer2.initialize(width, height);
-        rebind();
+    /**
+     * Initializes ping-pong buffer with the size of the LibGDX client's area (usually window size).
+     * If you use different OpenGL viewport, better use {@link #PingPongBuffer(Format, int, int)}
+     * and specify the size manually.
+     * @param fbFormat Pixel format of encapsulated {@link FboWrapper}s.
+     */
+    public PingPongBuffer(Format fbFormat) {
+        this(fbFormat, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     /**
-     * <b>WARNING:</b> You have to call {@link #resize(int, int)} manually before using this instance.
+     * Initializes ping-pong buffer with the given size.
+     * @param fbFormat Pixel format of encapsulated {@link FboWrapper}s.
      */
-    public PingPongBuffer(Format fbFormat) {
+    public PingPongBuffer(Format fbFormat, int width, int height) {
         this.buffer1 = new FboWrapper(fbFormat);
         this.buffer2 = new FboWrapper(fbFormat);
+        resize(width, height);
+
+        // Setup src/dst buffers.
+        writeState = false;
+        this.bufDst = buffer1;
+        this.bufSrc = buffer2;
     }
 
     public void dispose() {
@@ -78,92 +84,91 @@ public final class PingPongBuffer {
         rebind();
     }
 
-    /** When needed graphics memory could be invalidated so buffers should be rebuilt. */
+    /**
+     * Restores buffer OpenGL parameters. Could be useful in case of OpenGL context loss.
+     */
     public void rebind() {
         // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
         if (buffer1.getFbo() != null) {
-            texture1 = buffer1.getFbo().getColorBufferTexture();
-            texture1.setWrap(wrapU, wrapV);
-            texture1.setFilter(filterMin, filterMag);
+            Texture texture = buffer1.getFbo().getColorBufferTexture();
+            texture.setWrap(wrapU, wrapV);
+            texture.setFilter(filterMin, filterMag);
         }
         if (buffer2.getFbo() != null) {
-            texture2 = buffer2.getFbo().getColorBufferTexture();
-            texture2.setWrap(wrapU, wrapV);
-            texture2.setFilter(filterMin, filterMag);
+            Texture texture = buffer2.getFbo().getColorBufferTexture();
+            texture.setWrap(wrapU, wrapV);
+            texture.setFilter(filterMin, filterMag);
         }
-    }
-
-    /** Ensures the initial buffer state is always the same before starting ping-ponging. */
-    public void begin() {
-        pending1 = false;
-        pending2 = false;
-        writeState = true;
-
-        texSrc = texture1;
-        bufSrc = buffer1;
-        texResult = texture2;
-        bufResult = buffer2;
     }
 
     /**
-     * Starts and/or continue ping-ponging,
-     * begin capturing on the next available buffer,
-     * returns the result of the previous.
-     * @return the Texture containing the result.
+     * Start capturing into the destination buffer.
+     * To swap buffers during capturing, call {@link #swap()}.
+     * {@link #end()} shall be called after rendering to ping-pong buffer is done.
      */
-    public Texture capture() {
-        endPending();
+    public void begin() {
+        if (capturing) {
+            throw new IllegalStateException("Ping pong buffer is already in capturing state.");
+        }
 
+        capturing = true;
+        bufDst.begin();
+    }
+
+    /**
+     * Swaps source/target buffers.
+     * May be called outside of capturing state.
+     */
+    public void swap() {
+        if (capturing) {
+            bufDst.end();
+        }
+
+        // Swap buffers
         if (writeState) {
-            // set src
-            texSrc = texture1;
             bufSrc = buffer1;
-
-            // set result
-            texResult = texture2;
-            bufResult = buffer2;
-
-            // write to other
-            pending2 = true;
-            buffer2.begin();
+            bufDst = buffer2;
         } else {
-            texSrc = texture2;
             bufSrc = buffer2;
+            bufDst = buffer1;
+        }
 
-            texResult = texture1;
-            bufResult = buffer1;
-
-            pending1 = true;
-            buffer1.begin();
+        if (capturing) {
+            bufDst.begin();
         }
 
         writeState = !writeState;
-        return texSrc;
     }
 
-    /** Finishes ping-ponging, must always be called after a call to {@link #capture()} */
+    /**
+     * Finishes ping-ponging. Must be called after {@link #begin()}.
+     **/
     public void end() {
-        endPending();
+        if (!capturing) {
+            throw new IllegalStateException("Ping pong is not in capturing state. You should call begin() before calling end().");
+        }
+        bufDst.end();
+        capturing = false;
     }
 
     /** @return the source texture of the current ping-pong chain. */
-    public Texture getSourceTexture() {
-        return texSrc;
+    public Texture getSrcTexture() {
+        return bufSrc.getFbo().getColorBufferTexture();
     }
 
     /** @return the source buffer of the current ping-pong chain. */
-    public FboWrapper getSourceBuffer() {
+    public FboWrapper getSrcBuffer() {
         return bufSrc;
     }
 
-    /** @return the result's texture of the latest {@link #capture()}. */
-    public Texture getResultTexture() {
-        return texResult;
+    /** @return the result's texture of the latest {@link #swap()}. */
+    public Texture getDstTexture() {
+        return bufDst.getFbo().getColorBufferTexture();
     }
 
-    /** @return Returns the result's buffer of the latest {@link #capture()}. */
-    public FboWrapper getResultBuffer() {
-        return bufResult;
+    /** @return Returns the result's buffer of the latest {@link #swap()}. */
+    public FboWrapper getDstBuffer() {
+        return bufDst;
     }
 
     public void setTextureParams(TextureWrap u, TextureWrap v, TextureFilter min, TextureFilter mag) {
@@ -174,31 +179,44 @@ public final class PingPongBuffer {
         rebind();
     }
 
+    /** @see FboWrapper#addRenderer(FboWrapper.Renderer) ) */
     public void addRenderer(FboWrapper.Renderer renderer) {
         buffer1.addRenderer(renderer);
         buffer2.addRenderer(renderer);
     }
 
+    /** @see FboWrapper#removeRenderer(FboWrapper.Renderer) () */
     public void removeRenderer(FboWrapper.Renderer renderer) {
         buffer1.removeRenderer(renderer);
         buffer2.removeRenderer(renderer);
     }
 
+    /** @see FboWrapper#clearRenderers() */
     public void clearRenderers() {
         buffer1.clearRenderers();
         buffer2.clearRenderers();
     }
 
-    // internal use
-    // finish writing to the buffers, mark as not pending anymore.
-    private void endPending() {
-        if (pending1) {
-            buffer1.end();
-            pending1 = false;
-        }
-        if (pending2) {
-            buffer2.end();
-            pending2 = false;
-        }
+    /**
+     * Cleans up managed {@link FboWrapper}s' with specified color.
+     */
+    public void cleanUpBuffers(Color clearColor) {
+        cleanUpBuffers(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    }
+
+    /**
+     * Cleans up managed {@link FboWrapper}s' with specified color.
+     */
+    private void cleanUpBuffers(float r, float g, float b, float a) {
+        final boolean wasCapturing = this.capturing;
+
+        if (!wasCapturing) { begin(); }
+
+        Gdx.gl.glClearColor(r, g, b, a);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        swap();
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (!wasCapturing) { end(); }
     }
 }

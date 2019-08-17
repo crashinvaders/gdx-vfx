@@ -22,12 +22,14 @@ import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
  * Encapsulates a separable 2D convolution kernel filter
  *
  * @author bmanuel
+ * @author metaphore
  */
 public final class Convolve2D extends MultipassFilter {
-    public final int radius;
-    public final int length; // NxN taps filter, w/ N=length
 
-    public final float[] weights, offsetsHor, offsetsVert;
+    private final int radius;
+    private final int length; // NxN taps filter, w/ N=length
+
+    private final float[] weights, offsetsHor, offsetsVert;
 
     private Convolve1D hor, vert;
 
@@ -49,10 +51,6 @@ public final class Convolve2D extends MultipassFilter {
         vert.dispose();
     }
 
-    public void upload() {
-        rebind();
-    }
-
     @Override
     public void resize(int width, int height) {
 
@@ -66,7 +64,34 @@ public final class Convolve2D extends MultipassFilter {
 
     @Override
     public void render(PingPongBuffer buffer) {
-        hor.setInput(buffer.capture()).render();
-        vert.setInput(buffer.capture()).render();
+        hor.setInput(buffer.getSrcTexture())
+            .setOutput(buffer.getDstBuffer())
+            .render();
+
+        buffer.swap();
+
+        vert.setInput(buffer.getSrcTexture())
+            .setOutput(buffer.getDstBuffer())
+            .render();
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public float[] getWeights() {
+        return weights;
+    }
+
+    public float[] getOffsetsHor() {
+        return offsetsHor;
+    }
+
+    public float[] getOffsetsVert() {
+        return offsetsVert;
     }
 }

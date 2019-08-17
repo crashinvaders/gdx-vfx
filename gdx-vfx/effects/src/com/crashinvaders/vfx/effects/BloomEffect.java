@@ -24,63 +24,16 @@ import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.PostProcessorUtils;
-import com.crashinvaders.vfx.filters.BlurFilter;
-import com.crashinvaders.vfx.filters.BlurFilter.BlurType;
+import com.crashinvaders.vfx.filters.GaussianBlurFilter;
+import com.crashinvaders.vfx.filters.GaussianBlurFilter.BlurType;
 import com.crashinvaders.vfx.filters.CombineFilter;
 import com.crashinvaders.vfx.filters.Threshold;
 
 public final class BloomEffect extends PostProcessorEffect {
-    public static class Settings {
-        public final String name;
-
-        public final BlurType blurType;
-        public final int blurPasses; // simple blur
-        public final float blurAmount; // normal blur (1 pass)
-        public final float bloomThreshold;
-
-        public final float bloomIntensity;
-        public final float bloomSaturation;
-        public final float baseIntensity;
-        public final float baseSaturation;
-
-        public Settings(String name, BlurType blurType, int blurPasses, float blurAmount, float bloomThreshold,
-                        float baseIntensity, float baseSaturation, float bloomIntensity, float bloomSaturation) {
-            this.name = name;
-            this.blurType = blurType;
-            this.blurPasses = blurPasses;
-            this.blurAmount = blurAmount;
-
-            this.bloomThreshold = bloomThreshold;
-            this.baseIntensity = baseIntensity;
-            this.baseSaturation = baseSaturation;
-            this.bloomIntensity = bloomIntensity;
-            this.bloomSaturation = bloomSaturation;
-        }
-
-        // simple blur
-        public Settings(String name, int blurPasses, float bloomThreshold, float baseIntensity, float baseSaturation,
-                        float bloomIntensity, float bloomSaturation) {
-            this(name, BlurType.Gaussian5x5b, blurPasses, 0, bloomThreshold, baseIntensity, baseSaturation, bloomIntensity,
-                    bloomSaturation);
-        }
-
-        public Settings(Settings other) {
-            this.name = other.name;
-            this.blurType = other.blurType;
-            this.blurPasses = other.blurPasses;
-            this.blurAmount = other.blurAmount;
-
-            this.bloomThreshold = other.bloomThreshold;
-            this.baseIntensity = other.baseIntensity;
-            this.baseSaturation = other.baseSaturation;
-            this.bloomIntensity = other.bloomIntensity;
-            this.bloomSaturation = other.bloomSaturation;
-        }
-    }
 
     private final PingPongBuffer pingPongBuffer;
 
-    private final BlurFilter blur;
+    private final GaussianBlurFilter blur;
     private final Threshold threshold;
     private final CombineFilter combine;
 
@@ -89,14 +42,18 @@ public final class BloomEffect extends PostProcessorEffect {
     private boolean blending = false;
     private int sfactor, dfactor;
 
-    public BloomEffect() {
+    public BloomEffect(Pixmap.Format bufferFormat) {
+        this(bufferFormat, new Settings("default", 10, 0.85f, 1f, .85f, 1.1f, .85f));
+    }
+
+    public BloomEffect(Pixmap.Format bufferFormat, Settings settings) {
         pingPongBuffer = new PingPongBuffer(Pixmap.Format.RGBA8888);
 
-        blur = new BlurFilter();
+        blur = new GaussianBlurFilter();
         threshold = new Threshold();
         combine = new CombineFilter();
 
-        setSettings(new Settings("default", 2, 0.277f, 1f, .85f, 1.1f, .85f));
+        setSettings(settings);
     }
 
     @Override
@@ -116,7 +73,7 @@ public final class BloomEffect extends PostProcessorEffect {
         pingPongBuffer.dispose();
     }
 
-    public void setBaseIntesity(float intensity) {
+    public void setBaseIntensity(float intensity) {
         combine.setSource1Intensity(intensity);
     }
 
@@ -124,7 +81,7 @@ public final class BloomEffect extends PostProcessorEffect {
         combine.setSource1Saturation(saturation);
     }
 
-    public void setBloomIntesity(float intensity) {
+    public void setBloomIntensity(float intensity) {
         combine.setSource2Intensity(intensity);
     }
 
@@ -153,16 +110,16 @@ public final class BloomEffect extends PostProcessorEffect {
     public void setSettings(Settings settings) {
         this.settings = settings;
 
-        // setup threshold filter
+        // Setup threshold filter
         setThreshold(settings.bloomThreshold);
 
-        // setup combine filter
-        setBaseIntesity(settings.baseIntensity);
+        // Setup combine filter
+        setBaseIntensity(settings.baseIntensity);
         setBaseSaturation(settings.baseSaturation);
-        setBloomIntesity(settings.bloomIntensity);
+        setBloomIntensity(settings.bloomIntensity);
         setBloomSaturation(settings.bloomSaturation);
 
-        // setup blur filter
+        // Setup blur filter
         setBlurPasses(settings.blurPasses);
         setBlurAmount(settings.blurAmount);
         setBlurType(settings.blurType);
@@ -233,11 +190,12 @@ public final class BloomEffect extends PostProcessorEffect {
 
         pingPongBuffer.begin();
         {
-            // threshold / high-pass filter
-            // only areas with pixels >= threshold are blit to smaller fbo
-            threshold.setInput(texSrc).setOutput(pingPongBuffer.getSourceBuffer()).render();
+            // Threshold / high-pass filter
+            // Only areas with pixels >= threshold are blit to smaller FBO
+            threshold.setInput(texSrc).setOutput(pingPongBuffer.getDstBuffer()).render();
+            pingPongBuffer.swap();
 
-            // blur pass
+            // Blur pass
             blur.render(pingPongBuffer);
         }
         pingPongBuffer.end();
@@ -251,10 +209,9 @@ public final class BloomEffect extends PostProcessorEffect {
             Gdx.gl.glBlendFunc(sfactor, dfactor);
         }
 
-        // mix original scene and blurred threshold, modulate via
-        // set(Base|BloomEffect)(Saturation|Intensity)
-        combine.setOutput(dest)
-                .setInput(texSrc, pingPongBuffer.getResultTexture())
+        // Mix original scene and blurred threshold, modulate via set(Base|BloomEffect)(Saturation|Intensity)
+        combine.setInput(texSrc, pingPongBuffer.getDstTexture())
+                .setOutput(dest)
                 .render();
     }
 
@@ -264,5 +221,53 @@ public final class BloomEffect extends PostProcessorEffect {
         threshold.rebind();
         combine.rebind();
         pingPongBuffer.rebind();
+    }
+
+    public static class Settings {
+        public final String name;
+
+        public final BlurType blurType;
+        public final int blurPasses;
+        public final float blurAmount;
+        public final float bloomThreshold;
+
+        public final float bloomIntensity;
+        public final float bloomSaturation;
+        public final float baseIntensity;
+        public final float baseSaturation;
+
+        public Settings(String name, BlurType blurType, int blurPasses, float blurAmount, float bloomThreshold,
+                        float baseIntensity, float baseSaturation, float bloomIntensity, float bloomSaturation) {
+            this.name = name;
+            this.blurType = blurType;
+            this.blurPasses = blurPasses;
+            this.blurAmount = blurAmount;
+
+            this.bloomThreshold = bloomThreshold;
+            this.baseIntensity = baseIntensity;
+            this.baseSaturation = baseSaturation;
+            this.bloomIntensity = bloomIntensity;
+            this.bloomSaturation = bloomSaturation;
+        }
+
+        public Settings(String name, int blurPasses, float bloomThreshold, float baseIntensity, float baseSaturation,
+                        float bloomIntensity, float bloomSaturation) {
+            this(name, BlurType.Gaussian5x5b, blurPasses, 0, bloomThreshold, baseIntensity, baseSaturation,
+                    bloomIntensity,
+                    bloomSaturation);
+        }
+
+        public Settings(Settings other) {
+            this.name = other.name;
+            this.blurType = other.blurType;
+            this.blurPasses = other.blurPasses;
+            this.blurAmount = other.blurAmount;
+
+            this.bloomThreshold = other.bloomThreshold;
+            this.baseIntensity = other.baseIntensity;
+            this.baseSaturation = other.baseSaturation;
+            this.bloomIntensity = other.bloomIntensity;
+            this.bloomSaturation = other.bloomSaturation;
+        }
     }
 }

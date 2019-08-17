@@ -22,7 +22,7 @@ import com.crashinvaders.vfx.utils.ShaderLoader;
 
 /** Lens flare effect.
  * @author Toni Sagrista **/
-public final class LensFlare extends PostProcessorFilter<LensFlare> {
+public final class LensFlareFilter extends PostProcessorFilter<LensFlareFilter> {
 
     private final Vector2 lightPosition = new Vector2(0.5f, 0.5f);
     private final Vector2 viewport = new Vector2();
@@ -57,7 +57,7 @@ public final class LensFlare extends PostProcessorFilter<LensFlare> {
         }
     }
 
-    public LensFlare() {
+    public LensFlareFilter() {
         super(ShaderLoader.fromFile("screenspace", "lensflare"));
         rebind();
     }

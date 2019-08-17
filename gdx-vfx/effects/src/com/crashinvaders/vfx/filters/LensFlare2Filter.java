@@ -20,30 +20,28 @@ import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.PostProcessorFilter;
 import com.crashinvaders.vfx.utils.ShaderLoader;
 
-/** Lens flare effect as described in John Chapman's article (without lens dirt or diffraction starburst). Lens color image
- * (vfx-lens-color.png) is located in src/main/resources/ folder.
- * @see <a
- *      href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
- * @author Toni Sagrista **/
-public final class LensFlare2 extends PostProcessorFilter<LensFlare2> {
-
-	private final Vector2 viewportInverse = new Vector2(1f, 1f);
-    private Texture lensColorTexture;
-    private int ghosts;
-    private float haloWidth;
+/**
+ * Lens flare effect as described in John Chapman's article (without lens dirt or diffraction starburst).
+ * Lens color image (vfx-lens-color.png) is located in "assets" folder.
+ *
+ * @see <a href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">
+ *     http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
+ *
+ * @author Toni Sagrista
+ * @author metaphore
+ **/
+public final class LensFlare2Filter extends PostProcessorFilter<LensFlare2Filter> {
 
     public enum Param implements Parameter {
-        // @formatter:off
         Texture("u_texture0", 0),
         LensColor("u_texture1", 0),
         ViewportInverse("u_viewportInverse", 2),
         HaloWidth("u_haloWidth", 0);
-        // @formatter:on
 
         private String mnemonic;
         private int elementSize;
 
-        private Param(String mnemonic, int arrayElementSize) {
+        Param(String mnemonic, int arrayElementSize) {
             this.mnemonic = mnemonic;
             this.elementSize = arrayElementSize;
         }
@@ -59,7 +57,12 @@ public final class LensFlare2 extends PostProcessorFilter<LensFlare2> {
         }
     }
 
-    public LensFlare2(int ghostAmount) {
+    private final Vector2 viewportInverse = new Vector2(1f, 1f);
+    private Texture lensColorTexture;
+    private int ghosts;
+    private float haloWidth;
+
+    public LensFlare2Filter(int ghostAmount) {
         super(ShaderLoader.fromFile("screenspace", "lensflare2",
                 "#define GHOSTS " + ghostAmount));
         rebind();

@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.action;
@@ -23,30 +22,9 @@ public final class ActionsExt {
         return action;
     }
 
-    public static Action unfocus(Actor actor) {
-        return new UnfocusAction(actor);
-    }
-
-    public static class UnfocusAction extends Action {
-        private final Actor actor;
-
-        public UnfocusAction(Actor actor) {
-            this.actor = actor;
-        }
-
-        @Override
-        public boolean act(float delta) {
-            Stage stage = actor.getStage();
-            if (stage != null) {
-                stage.unfocus(actor);
-            }
-            return true;
-        }
-    }
-
     /** @see PostAction */
-    public static PostAction post(Action action) {
-        return post(1, action);
+    public static PostAction post(Action wrappedAction) {
+        return post(1, wrappedAction);
     }
 
     /** @see PostAction */
@@ -55,11 +33,11 @@ public final class ActionsExt {
     }
 
     /** @see PostAction */
-    public static PostAction post(int skipFrames, Action action) {
-        PostAction postAction = Actions.action(PostAction.class);
-        postAction.setAction(action);
-        postAction.setSkipFrames(skipFrames);
-        return postAction;
+    public static PostAction post(int skipFrames, Action wrappedAction) {
+        PostAction action = Actions.action(PostAction.class);
+        action.setAction(wrappedAction);
+        action.setSkipFrames(skipFrames);
+        return action;
     }
 
     /** Calls {@link Actor#act(float)} */
@@ -80,6 +58,12 @@ public final class ActionsExt {
         return action;
     }
 
+    /** @see UnfocusAction */
+    public static Action unfocus() {
+        UnfocusAction action = action(UnfocusAction.class);
+        return action;
+    }
+
     public static OriginAlignAction origin(int align) {
         OriginAlignAction action = action(OriginAlignAction.class);
         action.setAlign(align);
@@ -92,19 +76,31 @@ public final class ActionsExt {
         return action;
     }
 
-    public static OptionalAction optional(OptionalAction.Condition condition, Action action) {
-        OptionalAction optionalAction = action(OptionalAction.class);
-        optionalAction.setAction(action);
-        optionalAction.setCondition(condition);
-        return optionalAction;
+    public static OptionalAction optional(OptionalAction.Condition condition, Action wrappedAction) {
+        OptionalAction action = action(OptionalAction.class);
+        action.setAction(wrappedAction);
+        action.setCondition(condition);
+        return action;
     }
 
-    public static MoveByPathAction moveByPath(Path<Vector2> path, float duration,
-                                              Interpolation interpolation) {
+    public static MoveByPathAction moveByPath(Path<Vector2> path, float duration, Interpolation interpolation) {
         MoveByPathAction action = action(MoveByPathAction.class);
         action.setPath(path);
         action.setDuration(duration);
         action.setInterpolation(interpolation);
+        return action;
+    }
+
+    /** @see TimeModulationAction */
+    public static TimeModulationAction timeModulation(Action wrappedAction) {
+        return timeModulation(1f, wrappedAction);
+    }
+
+    /** @see TimeModulationAction */
+    public static TimeModulationAction timeModulation(float timeFactor, Action wrappedAction) {
+        TimeModulationAction action = action(TimeModulationAction.class);
+        action.setAction(wrappedAction);
+        action.setTimeFactor(timeFactor);
         return action;
     }
 }

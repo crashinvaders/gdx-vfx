@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.utils.FullscreenQuad;
 
-/** The base class for any single-pass filter. */
+/** Base class for any single-pass filter. */
 @SuppressWarnings("unchecked")
 public abstract class PostProcessorFilter<T extends PostProcessorFilter> implements Disposable {
 

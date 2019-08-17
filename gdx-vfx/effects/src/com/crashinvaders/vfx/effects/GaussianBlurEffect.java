@@ -9,29 +9,25 @@ import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.common.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.filters.*;
 
-public class BlurEffect extends PostProcessorEffect {
+public class GaussianBlurEffect extends PostProcessorEffect {
 
     private final PingPongBuffer pingPongBuffer;
     private final CopyFilter copy;
-    private final BlurFilter blur;
+    private final GaussianBlurFilter blur;
 
     private boolean blending = false;
     private int sfactor, dfactor;
 
-    private int blurPasses;
-
-    public BlurEffect() {
-        this(1, BlurFilter.BlurType.Gaussian5x5);
+    public GaussianBlurEffect() {
+        this(1, GaussianBlurFilter.BlurType.Gaussian5x5);
     }
 
-    public BlurEffect(int blurPasses, BlurFilter.BlurType blurType) {
-        this.blurPasses = blurPasses;
-
+    public GaussianBlurEffect(int blurPasses, GaussianBlurFilter.BlurType blurType) {
         pingPongBuffer = new PingPongBuffer(Pixmap.Format.RGBA8888);
 
         copy = new CopyFilter();
 
-        blur = new BlurFilter();
+        blur = new GaussianBlurFilter();
         blur.setPasses(blurPasses);
         blur.setType(blurType);
     }
@@ -59,7 +55,7 @@ public class BlurEffect extends PostProcessorEffect {
 
     @Override
     public void render(FboWrapper src, FboWrapper dest) {
-        if (blurPasses < 1) {
+        if (blur.getPasses() < 1) {
             // Do not apply blur filter.
             copy.setInput(src).setOutput(dest).render();
             return;
@@ -69,7 +65,8 @@ public class BlurEffect extends PostProcessorEffect {
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         pingPongBuffer.begin();
-        copy.setInput(src).setOutput(pingPongBuffer.getSourceBuffer()).render();
+        copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render();
+        pingPongBuffer.swap();
         blur.render(pingPongBuffer);
         pingPongBuffer.end();
 
@@ -82,12 +79,12 @@ public class BlurEffect extends PostProcessorEffect {
             Gdx.gl.glBlendFunc(sfactor, dfactor);
         }
 
-        copy.setInput(pingPongBuffer.getResultTexture())
+        copy.setInput(pingPongBuffer.getDstTexture())
                 .setOutput(dest)
                 .render();
     }
 
-    public BlurEffect enableBlending(int sfactor, int dfactor) {
+    public GaussianBlurEffect enableBlending(int sfactor, int dfactor) {
         this.blending = true;
         this.sfactor = sfactor;
         this.dfactor = dfactor;
@@ -98,13 +95,12 @@ public class BlurEffect extends PostProcessorEffect {
         this.blending = false;
     }
 
-    public BlurEffect setBlurPasses(int blurPasses) {
-        this.blurPasses = blurPasses;
+    public GaussianBlurEffect setBlurPasses(int blurPasses) {
         blur.setPasses(blurPasses);
         return this;
     }
 
     public int getBlurPasses() {
-        return blurPasses;
+        return blur.getPasses();
     }
 }

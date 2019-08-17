@@ -18,13 +18,13 @@ package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.common.framebuffer.FboWrapper;
 import com.crashinvaders.vfx.PostProcessorEffect;
-import com.crashinvaders.vfx.filters.LensFlare;
+import com.crashinvaders.vfx.filters.LensFlareFilter;
 
 /** Lens flare effect.
  * @author Toni Sagrista */
 public final class LensFlareEffect extends PostProcessorEffect {
 
-    private final LensFlare lensFlare = new LensFlare();
+    private final LensFlareFilter lensFlare = new LensFlareFilter();
 
     @Override
     public void dispose() {

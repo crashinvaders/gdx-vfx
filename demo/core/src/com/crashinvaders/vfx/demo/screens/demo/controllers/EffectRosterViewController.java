@@ -4,13 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
@@ -18,10 +14,10 @@ import com.crashinvaders.vfx.common.lml.CommonLmlParser;
 import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
-import com.crashinvaders.vfx.PostProcessor;
+import com.crashinvaders.vfx.PostProcessorManager;
 import com.crashinvaders.vfx.PostProcessorEffect;
 import com.crashinvaders.vfx.effects.*;
-import com.crashinvaders.vfx.filters.BlurFilter;
+import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.CrtFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter;
 import com.crashinvaders.vfx.filters.RadialBlurFilter;
@@ -33,7 +29,7 @@ public class EffectRosterViewController extends LmlViewController {
     private final Array<EffectEntryModel> effectsRoster = new Array<>(true, 16);
     private final ArrayMap<EffectEntryModel, EffectEntryViewController> effectsChain = new ArrayMap<>(true, 16);
 
-    private PostProcessor postProcessor;
+    private PostProcessorManager postProcessorManager;
 
     private VerticalGroup vgEffectsRoster;
     private VerticalGroup vgEffectsChain;
@@ -47,21 +43,21 @@ public class EffectRosterViewController extends LmlViewController {
         super.onViewCreated(sceneRoot);
 
         effectsRoster.addAll(
-                new EffectEntryModel("Bloom", new BloomEffect()),
+                new EffectEntryModel("Bloom", new BloomEffect(Pixmap.Format.RGBA8888)),
                 new EffectEntryModel("CRT", new CrtEffect(CrtFilter.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f)
                         .setSizeSource(CrtFilter.SizeSource.VIEWPORT)),
                 new EffectEntryModel("Old TV", new OldTvEffect()),
                 new EffectEntryModel("Noise", new NoiseEffect(0.35f, 2f)),
                 new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
                 new EffectEntryModel("Film Grain", new FilmGrainEffect()),
-                new EffectEntryModel("Gaussian Blur", new BlurEffect(10, BlurFilter.BlurType.Gaussian5x5)),
+                new EffectEntryModel("Gaussian Blur", new GaussianBlurEffect(10, GaussianBlurFilter.BlurType.Gaussian5x5)),
                 new EffectEntryModel("Motion Blur (MAX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MAX, 0.75f)),
                 new EffectEntryModel("Motion Blur (MIX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MIX, 0.75f)),
                 new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlurFilter.Quality.High)),
                 new EffectEntryModel("Curvature", new CurvatureEffect()),
                 new EffectEntryModel("Lens Flare", new LensFlareEffect()
                         .setIntensity(10f)),
-                new EffectEntryModel("Lens Flare (Adv)", new LensFlareEffect2(new LensFlareEffect2.Settings(), Pixmap.Format.RGBA8888)),
+                new EffectEntryModel("Lens Flare (Adv)", new LensFlare2Effect(new LensFlare2Effect.Settings(), Pixmap.Format.RGBA8888)),
                 new EffectEntryModel("Vignette", new VignetteEffect(false)),
                 new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
                 new EffectEntryModel("FXAA", new FxaaEffect()),
@@ -76,7 +72,7 @@ public class EffectRosterViewController extends LmlViewController {
                         .setGamma(1.0f))
         );
 
-        postProcessor = getController(PostProcessorViewController.class).getPostProcessor();
+        postProcessorManager = getController(PostProcessorViewController.class).getPostProcessorManager();
 
         vgEffectsRoster = sceneRoot.findActor("vgEffectsRoster");
         vgEffectsChain = sceneRoot.findActor("vgEffectsChain");
@@ -120,7 +116,7 @@ public class EffectRosterViewController extends LmlViewController {
         Group viewRoot = viewController.getViewRoot();
         vgEffectsChain.addActor(viewRoot);
         effectsChain.put(viewController.getModel(), viewController);
-        postProcessor.addEffect(viewController.getModel().getEffect());
+        postProcessorManager.addEffect(viewController.getModel().getEffect());
 
         viewRoot.addListener(new ClickListener() {
             @Override
@@ -136,7 +132,7 @@ public class EffectRosterViewController extends LmlViewController {
 
         vgEffectsChain.removeActor(viewController.getViewRoot());
         effectsChain.removeKey(effectModel);
-        postProcessor.removeEffect(viewController.getModel().getEffect());
+        postProcessorManager.removeEffect(viewController.getModel().getEffect());
     }
 
     private static class EffectEntryModel implements Disposable {

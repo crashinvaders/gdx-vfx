@@ -69,7 +69,6 @@ public class DemoScreen extends ScreenAdapter {
         lmlParser = (CommonLmlParser)new CommonLmlParserBuilder()
                 .syntax(new CommonLmlSyntax())
                 .skin(assets.get("skin/uiskin.json", Skin.class))
-//                .i18nBundle(App.inst().getI18n().getDefaultBundle())
                 .action(":empty", new EmptyActorConsumer())
                 .build();
 

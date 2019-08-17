@@ -32,5 +32,5 @@ public abstract class MultipassFilter implements Disposable {
     /** @see PostProcessorFilter#rebind() */
     public abstract void rebind();
 
-    public abstract void render(PingPongBuffer srcdest);
+    public abstract void render(PingPongBuffer pingPongBuffer);
 }

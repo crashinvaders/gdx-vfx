@@ -6,16 +6,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.crashinvaders.vfx.PostProcessor;
+import com.crashinvaders.vfx.PostProcessorManager;
 
 public class PostProcessorWidgetGroup extends WidgetGroup {
 
-    private final PostProcessor postProcessor;
+    private final PostProcessorManager postProcessorManager;
     private boolean initialized = false;
     private boolean resizePending = false;
 
     public PostProcessorWidgetGroup(Pixmap.Format pixelFormat) {
-        postProcessor = new PostProcessor(pixelFormat);
+        postProcessorManager = new PostProcessorManager(pixelFormat);
     }
 
     @Override
@@ -44,22 +44,22 @@ public class PostProcessorWidgetGroup extends WidgetGroup {
 
         if (resizePending) {
             resizePending = false;
-            postProcessor.resize(
+            postProcessorManager.resize(
                     MathUtils.round(getWidth()),
                     MathUtils.round(getHeight()));
         }
-        postProcessor.beginCapture();
+        postProcessorManager.beginCapture();
         batch.begin();
         super.draw(batch, parentAlpha);
         batch.end();
-        postProcessor.endCapture();
-        postProcessor.render();
+        postProcessorManager.endCapture();
+        postProcessorManager.render();
 
         batch.begin();
     }
 
-    public PostProcessor getPostProcessor() {
-        return postProcessor;
+    public PostProcessorManager getPostProcessorManager() {
+        return postProcessorManager;
     }
 
     private void initialize() {
@@ -70,12 +70,12 @@ public class PostProcessorWidgetGroup extends WidgetGroup {
             width = MathUtils.round(viewport.getWorldWidth());
             height = MathUtils.round(viewport.getWorldHeight());
         }
-        postProcessor.resize(width, height);
+        postProcessorManager.resize(width, height);
         resizePending = false;
     }
 
     private void reset() {
         resizePending = false;
-        postProcessor.dispose();
+        postProcessorManager.dispose();
     }
 }

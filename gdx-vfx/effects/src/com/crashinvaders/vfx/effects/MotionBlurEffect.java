@@ -65,5 +65,4 @@ public class MotionBlurEffect extends PostProcessorEffect {
 		motionBlurFilter.setLastFrameTexture(prevFrame.getFbo().getColorBufferTexture());
 		copyFilter.setInput(prevFrame).setOutput(dest).render();
 	}
-
 }
