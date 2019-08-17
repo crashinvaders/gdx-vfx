@@ -16,24 +16,49 @@ import com.crashinvaders.vfx.common.gl.GLExtMethods;
 import com.crashinvaders.vfx.common.gl.GLUtils;
 
 /**
- * Wraps {@link FrameBuffer} and manages current OpenGL frame buffer.
- * You can use multiple instances of this class to drawToScreen into one framebuffer while you drawing into another one.
+ * Wraps {@link FrameBuffer} and manages currently bound OpenGL FBO.
+ * <p>
+ * This implementation supports nested frame buffer drawing approach.
+ * You can use multiple instances of this class to draw into one frame buffer while you drawing into another one,
+ * the OpenGL state will be managed properly.
+ * <br>
+ * Here's an example:
+ * <pre>
+ * FboWrapper buffer0, buffer1;
+ * // ...
+ * void render() {
+ *      // Any drawing here will be performed directly into the screen.
+ *      buffer0.begin();
+ *      // Any drawing here will be performed into buffer0's FBO.
+ *      buffer1.begin();
+ *      // Any drawing here will be performed into buffer1's FBO.
+ *      buffer1.end();
+ *      // Any drawing here will be performed into buffer0's FBO.
+ *      buffer0.end();
+ *      // Any drawing here will be performed directly into the screen.
+ * }
+ * </pre>
  * <p>
  * {@link FboWrapper} internally switches GL viewport between {@link #begin()} and {@link #end()}.
- * <p>
+ * <br>
  * If you use any kind of batch renders (e.g. {@link Batch} or {@link ShapeRenderer}),
- * you are probably interested in updating their transform and projection matrices.
- * You can do this by registering {@link Renderer} using {@link #addRenderer(Renderer)} and {@link #removeRenderer(Renderer)}.
- * The registered renderers will be automatically switch their matrices back and forth prior to {@link #begin()} and {@link #end()} calls.
+ * you should update their transform and projection matrices to setup viewport to the target frame buffer's size.
+ * You can do so by registering {@link Renderer} using {@link #addRenderer(Renderer)} and {@link #removeRenderer(Renderer)}.
+ * The registered renderers will automatically switch their matrices back and forth respectively upon {@link #begin()} and {@link #end()} calls.
  * They will also be flushed in the right time.
- * <p/>
+ * <p>
  * <b>NOTE:</b> Depth and stencil buffers are not supported.
+ *
+ * @author metaphore
  */
 public class FboWrapper implements Disposable {
+    /** Current depth of buffer nesting rendering (keeps track of how many buffers currently activated). */
+    private static int bufferNesting = 0;
+    /** @see #bufferNesting */
+    public static int getBufferNesting() { return bufferNesting; }
+
     private static final OrthographicCamera tmpCam = new OrthographicCamera();
     private static final Matrix4 zeroTransform = new Matrix4();
-
-    public static int bufferNesting = 0;
 
     private final Matrix4 localProjection = new Matrix4();
     private final Matrix4 localTransform = new Matrix4();
@@ -168,7 +193,7 @@ public class FboWrapper implements Disposable {
         return viewport;
     }
 
-    public static class RendererManager implements Renderer {
+    private static class RendererManager implements Renderer {
 
         private final Array<Renderer> renderers = new Array<>();
 
@@ -187,7 +212,6 @@ public class FboWrapper implements Disposable {
             renderers.clear();
         }
 
-        //region Renderer implementation
         @Override
         public void flush() {
             for (int i = 0; i < renderers.size; i++) {
@@ -206,7 +230,6 @@ public class FboWrapper implements Disposable {
                 renderers.get(i).restoreOwnMatrices();
             }
         }
-        //endregion
     }
 
     public interface Renderer {
@@ -283,13 +306,13 @@ public class FboWrapper implements Disposable {
         }
     }
 
-    public static class ShapesRenderAdapter extends RendererAdapter implements Pool.Poolable {
+    public static class ShapeRenderAdapter extends RendererAdapter implements Pool.Poolable {
         private ShapeRenderer shapeRenderer;
 
-        public ShapesRenderAdapter() {
+        public ShapeRenderAdapter() {
         }
 
-        public ShapesRenderAdapter initialize(ShapeRenderer shapeRenderer) {
+        public ShapeRenderAdapter initialize(ShapeRenderer shapeRenderer) {
             this.shapeRenderer = shapeRenderer;
             return this;
         }

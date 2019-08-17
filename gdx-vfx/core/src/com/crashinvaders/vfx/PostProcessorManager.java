@@ -72,6 +72,7 @@ public final class PostProcessorManager implements Disposable {
         this.disabled = disabled;
     }
 
+    /** @see #setCleanUpBuffers(boolean) */
     public boolean isCleanUpBuffers() {
         return cleanUpBuffers;
     }
@@ -80,15 +81,31 @@ public final class PostProcessorManager implements Disposable {
      * Configures off-screen cleanup behavior.
      * If enabled, the off-screen buffers will be cleaned up prior to capturing stage.
      * Enabled by default.
-     * @param cleanUpBuffers Whether the obuffers should be cleaned up.
-     * @param cleanColor The color that will be used to clean up the buffers.
+     * @param cleanUpBuffers Whether the buffers should be cleaned up.
      */
-    public void setCleanUpBuffers(boolean cleanUpBuffers, Color cleanColor) {
+    public void setCleanUpBuffers(boolean cleanUpBuffers) {
         this.cleanUpBuffers = cleanUpBuffers;
-        this.cleanColor.set(cleanColor);
     }
 
-    /** @see #setCleanUpBuffers(boolean, Color) */
+    public Color getCleanColor() {
+        return cleanColor;
+    }
+
+    /** Sets the color that will be used to clean up the off-screen buffers. */
+    public void setCleanColor(Color color) {
+        cleanColor.set(color);
+    }
+
+    /** Sets the color that will be used to clean up the off-screen buffers. */
+    public void setCleanColor(int color) {
+        cleanColor.set(color);
+    }
+
+    /** Sets the color that will be used to clean up the off-screen buffers. */
+    public void setCleanColor(float r, float g, float b, float a) {
+        cleanColor.set(r, g, b, a);
+    }
+
     public boolean isBlendingEnabled() {
         return blendingEnabled;
     }
