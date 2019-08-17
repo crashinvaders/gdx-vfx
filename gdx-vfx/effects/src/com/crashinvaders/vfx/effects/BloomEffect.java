@@ -48,7 +48,7 @@ public final class BloomEffect extends PostProcessorEffect {
     }
 
     public BloomEffect(Pixmap.Format bufferFormat, Settings settings) {
-        pingPongBuffer = new PingPongBuffer(Pixmap.Format.RGBA8888);
+        pingPongBuffer = new PingPongBuffer(bufferFormat);
 
         blur = new GaussianBlurFilter();
         threshold = new Threshold();

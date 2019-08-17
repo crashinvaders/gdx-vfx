@@ -7,7 +7,6 @@
 	<inherits name='com.crashinvaders.vfx.GdxVfxCore' />
 	<inherits name='com.crashinvaders.vfx.GdxVfxEffects' />
 	<inherits name='com.crashinvaders.vfx.GdxVfxGwt' />
-	<inherits name='com.badlogic.gdx.backends.gwt.GdxVfxGwtExt' />
 	<inherits name='com.crashinvaders.vfx.DemoCore' />
 
 	<source path="client">
