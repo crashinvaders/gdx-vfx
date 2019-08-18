@@ -41,18 +41,6 @@ public class VfxViewController extends LmlViewController {
         this.clearColor = clearColor;
     }
 
-    @Override
-    public void onViewCreated(Group sceneRoot) {
-        super.onViewCreated(sceneRoot);
-
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        vfxManager.dispose();
-    }
-
     public VfxManager getVfxManager() {
         return vfxManager;
     }
