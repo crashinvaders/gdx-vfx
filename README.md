@@ -1,9 +1,9 @@
-![](https://i.imgur.com/Z512PcQ.png)
+![Logo](https://i.imgur.com/Z512PcQ.png)
 
 # 
 
 [![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
-[![](https://jitpack.io/v/crashinvaders/gdx-vfx.svg)](https://jitpack.io/#crashinvaders/gdx-vfx)
+[![JitPack Maven](https://jitpack.io/v/crashinvaders/gdx-vfx.svg)](https://jitpack.io/#crashinvaders/gdx-vfx)
 
 LibGDX flexible post processing visual effects. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), 
 with lots of improvements, aim on stability and to provide lightweight integration with comfortable effect extensions.
@@ -66,85 +66,81 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.crashinvaders.vfx.PostProcessor;
+import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.BloomEffect;
 
-public class PostProcessorExample extends ApplicationAdapter {
+public class VfxExample extends ApplicationAdapter {
 
-	private ShapeRenderer shapeRenderer;
-	private PostProcessor postProcessor;
-	private BloomEffect postProcessorEffect;
+    private ShapeRenderer shapeRenderer;
+    private VfxManager vfxManager;
+    private BloomEffect vfxEffect;
 
-	@Override
-	public void create() {
-		shapeRenderer = new ShapeRenderer();
+    @Override
+    public void create() {
+        shapeRenderer = new ShapeRenderer();
 
-		// PostProcessor is a manager for the effects.
-		// It captures rendering into internal off-screen buffer and applies a chain of defined effects.
-		// Off-screen buffers may have any pixel format, but for better effect mixing
-		// it's recommended to use values with an alpha component (e.g. RGBA8888 or RGBA4444).
-		postProcessor = new PostProcessor(Pixmap.Format.RGBA8888);
+        // VfxManager is a manager for the effects.
+        // It captures rendering into internal off-screen buffer and applies a chain of defined effects.
+        // Off-screen buffers may have any pixel format, but for the better effect mixing
+        // it's recommended to use values with an alpha component (e.g. RGBA8888 or RGBA4444).
+        vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
-		// PostProcessor must be initialized with the required size for internal off-screen buffers.
-		postProcessor.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // Create and add an effect.
+        // VfxEffect derivative classes serve as controllers for the effects.
+        // They usually provide some public properties to configure and control the effects.
+        vfxEffect = new BloomEffect(Pixmap.Format.RGBA8888);
+        vfxEffect.setBlurPasses(32);
+        vfxEffect.setBloomIntensity(1.2f);
+        vfxManager.addEffect(vfxEffect);
+    }
 
-		// Create and add a shader effect.
-		// PostProcessorEffect derivative classes serves as controllers for shader effects.
-		// They usually provide some public properties to configure and control the effects.
-		postProcessorEffect = new BloomEffect();
-		postProcessorEffect.setBlurPasses(32);
-		postProcessorEffect.setBloomIntesity(1.2f);
-		postProcessor.addEffect(postProcessorEffect);
-	}
+    @Override
+    public void resize(int width, int height) {
+        // VfxManager manages internal off-screen buffers,
+        // which should always match the required viewport (whole screen in our case).
+        vfxManager.resize(width, height);
 
-	@Override
-	public void resize(int width, int height) {
-		// PostProcessor manages internal off-screen buffers,
-		// which should always match the required viewport (whole screen in our case).
-		postProcessor.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Don't forget to update batch projection matrix as screen viewport has changed.
         shapeRenderer.getProjectionMatrix().setToOrtho2D(0f, 0f, width, height);
         shapeRenderer.updateMatrices();
-	}
+    }
 
-	@Override
-	public void render() {
-		// Clean up the screen.
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    @Override
+    public void render() {
+        // Clean up the screen.
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Begin render to an off-screen buffer.
-		postProcessor.beginCapture();
+        // Begin render to an off-screen buffer.
+        vfxManager.beginCapture();
 
-		// Render some simple geometry.
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(Color.PINK);
-		shapeRenderer.rect(250f, 100f, 250f, 175f);
-		shapeRenderer.setColor(Color.ORANGE);
-		shapeRenderer.circle(200f, 250f, 100f);
-		shapeRenderer.end();
+        // Render some simple geometry.
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.PINK);
+        shapeRenderer.rect(250f, 100f, 250f, 175f);
+        shapeRenderer.setColor(Color.ORANGE);
+        shapeRenderer.circle(200f, 250f, 100f);
+        shapeRenderer.end();
 
-		// End render to an off-screen buffer.
-		postProcessor.endCapture();
+        // End render to an off-screen buffer.
+        vfxManager.endCapture();
 
-		// Perform shader processing and render result to the screen buffer.
-		postProcessor.render();
-	}
-	
-	@Override
-	public void dispose() {
-		// Since PostProcessor manages internal off-screen buffers,
-		// it should be disposed properly.
-		postProcessor.dispose();
+        // Perform effect chain processing and render result to the screen.
+        vfxManager.render();
+    }
 
-		// *** PLEASE NOTE ***
-		// PostProcessor doesn't dispose attached PostProcessorEffects
-		// on its own, you should do it manually!
-		postProcessorEffect.dispose();
+    @Override
+    public void dispose() {
+        // Since VfxManager manages internal off-screen buffers,
+        // it should be disposed properly.
+        vfxManager.dispose();
 
-		shapeRenderer.dispose();
-	}
+        // *** PLEASE NOTE ***
+        // VfxManager doesn't dispose attached VfxEffects
+        // on its own, you should do it manually!
+        vfxEffect.dispose();
+
+        shapeRenderer.dispose();
+    }
 }
 ```
 
