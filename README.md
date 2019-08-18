@@ -143,4 +143,4 @@ public class VfxExample extends ApplicationAdapter {
 }
 ```
 
-![Result](https://i.imgur.com/qSaIEWD.png)
+![Result](https://i.imgur.com/XjBynGw.png)
