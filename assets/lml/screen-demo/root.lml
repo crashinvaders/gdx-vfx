@@ -5,7 +5,7 @@
 
     <!-- Post processor canvas holder. -->
     <container fill="true">
-        <:actor method="PostProcessorViewController.createCanvas"/>
+        <:actor method="VfxViewController.createCanvas"/>
     </container>
 
     <table align="left" defaultwidth="128" defaultfillx="true" defaultgrowy="true" defaultalign="topleft">
