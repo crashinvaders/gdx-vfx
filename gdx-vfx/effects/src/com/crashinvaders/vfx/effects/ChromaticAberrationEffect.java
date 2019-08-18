@@ -1,11 +1,11 @@
 package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.ChromaticAberrationFilter;
 
-public class ChromaticAberrationEffect extends PostProcessorEffect {
+public class ChromaticAberrationEffect extends VfxEffect {
 
     private final ChromaticAberrationFilter caFilter;
 
@@ -24,7 +24,7 @@ public class ChromaticAberrationEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
+    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         caFilter.setInput(src).setOutput(dst).render(mesh);
     }
 

@@ -18,11 +18,11 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class CombineFilter extends PostProcessorFilter<CombineFilter> {
+public final class CombineFilter extends VfxFilter<CombineFilter> {
 
     private float s1i, s1s, s2i, s2s;
 
@@ -67,7 +67,7 @@ public final class CombineFilter extends PostProcessorFilter<CombineFilter> {
         rebind();
     }
 
-    public CombineFilter setInput(FboWrapper buffer1, FboWrapper buffer2) {
+    public CombineFilter setInput(VfxFrameBuffer buffer1, VfxFrameBuffer buffer2) {
         this.inputTexture = buffer1.getFbo().getColorBufferTexture();
         this.inputTexture2 = buffer2.getFbo().getColorBufferTexture();
         return this;

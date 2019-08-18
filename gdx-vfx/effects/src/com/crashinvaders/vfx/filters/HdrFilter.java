@@ -16,19 +16,19 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
  * HDR filter.
  * @author Toni Sagrista
  */
-public final class HdrFilter extends PostProcessorFilter<HdrFilter> {
+public final class HdrFilter extends VfxFilter<HdrFilter> {
 
     private float exposure;
     private float gamma;
 
-    public enum Param implements PostProcessorFilter.Parameter {
+    public enum Param implements VfxFilter.Parameter {
         // @formatter:off
         Texture("u_texture0", 0),
         Exposure("u_exposure", 0),

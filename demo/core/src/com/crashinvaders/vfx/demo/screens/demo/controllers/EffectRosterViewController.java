@@ -14,8 +14,8 @@ import com.crashinvaders.vfx.common.lml.CommonLmlParser;
 import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
-import com.crashinvaders.vfx.PostProcessorManager;
-import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.VfxManager;
+import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.effects.*;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.CrtFilter;
@@ -29,7 +29,7 @@ public class EffectRosterViewController extends LmlViewController {
     private final Array<EffectEntryModel> effectsRoster = new Array<>(true, 16);
     private final ArrayMap<EffectEntryModel, EffectEntryViewController> effectsChain = new ArrayMap<>(true, 16);
 
-    private PostProcessorManager postProcessorManager;
+    private VfxManager vfxManager;
 
     private VerticalGroup vgEffectsRoster;
     private VerticalGroup vgEffectsChain;
@@ -71,7 +71,7 @@ public class EffectRosterViewController extends LmlViewController {
                         .setGamma(1.0f))
         );
 
-        postProcessorManager = getController(PostProcessorViewController.class).getPostProcessorManager();
+        vfxManager = getController(VfxViewController.class).getVfxManager();
 
         vgEffectsRoster = sceneRoot.findActor("vgEffectsRoster");
         vgEffectsChain = sceneRoot.findActor("vgEffectsChain");
@@ -115,7 +115,7 @@ public class EffectRosterViewController extends LmlViewController {
         Group viewRoot = viewController.getViewRoot();
         vgEffectsChain.addActor(viewRoot);
         effectsChain.put(viewController.getModel(), viewController);
-        postProcessorManager.addEffect(viewController.getModel().getEffect());
+        vfxManager.addEffect(viewController.getModel().getEffect());
 
         viewRoot.addListener(new ClickListener() {
             @Override
@@ -131,14 +131,14 @@ public class EffectRosterViewController extends LmlViewController {
 
         vgEffectsChain.removeActor(viewController.getViewRoot());
         effectsChain.removeKey(effectModel);
-        postProcessorManager.removeEffect(viewController.getModel().getEffect());
+        vfxManager.removeEffect(viewController.getModel().getEffect());
     }
 
     private static class EffectEntryModel implements Disposable {
         private final String name;
-        private final PostProcessorEffect effect;
+        private final VfxEffect effect;
 
-        public EffectEntryModel(String name, PostProcessorEffect effect) {
+        public EffectEntryModel(String name, VfxEffect effect) {
             this.name = name;
             this.effect = effect;
         }
@@ -152,7 +152,7 @@ public class EffectRosterViewController extends LmlViewController {
             return name;
         }
 
-        public PostProcessorEffect getEffect() {
+        public VfxEffect getEffect() {
             return effect;
         }
     }

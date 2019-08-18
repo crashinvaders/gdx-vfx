@@ -17,10 +17,10 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Convolve1D extends PostProcessorFilter<Convolve1D> {
+public final class Convolve1D extends VfxFilter<Convolve1D> {
     public enum Param implements Parameter {
         Texture("u_texture0", 0),
         SampleWeights("SampleWeights", 1),

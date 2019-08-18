@@ -7,14 +7,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
 
 /**
  * Base class for any single-pass filter.
  */
 @SuppressWarnings("unchecked")
-public abstract class PostProcessorFilter<T extends PostProcessorFilter> implements Disposable {
+public abstract class VfxFilter<T extends VfxFilter> implements Disposable {
 
     public interface Parameter {
         String mnemonic();
@@ -29,26 +29,26 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
     protected final ShaderProgram program;
 
     protected Texture inputTexture = null;
-    protected FboWrapper outputBuffer = null;
+    protected VfxFrameBuffer outputBuffer = null;
 
     private boolean programBegan = false;
 
-    public PostProcessorFilter(ShaderProgram program) {
+    public VfxFilter(ShaderProgram program) {
         this.program = program;
     }
 
     public T setInput(Texture input) {
         this.inputTexture = input;
-        return (T)this; // Assumes T extends PostProcessorFilter
+        return (T)this; // Assumes T extends VfxFilter
     }
 
-    public T setInput(FboWrapper input) {
+    public T setInput(VfxFrameBuffer input) {
         return setInput(input.getFbo().getColorBufferTexture());
     }
 
-    public T setOutput(FboWrapper output) {
+    public T setOutput(VfxFrameBuffer output) {
         this.outputBuffer = output;
-        return (T)this; // Assumes T extends PostProcessorFilter
+        return (T)this; // Assumes T extends VfxFilter
     }
 
     @Override
@@ -57,7 +57,7 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
     }
 
     /**
-     * This method should be called once filter will be added to {@link PostProcessorEffect}.
+     * This method should be called once filter will be added to {@link VfxEffect}.
      * Also it must be called on every application resize as usual.
      */
     public abstract void resize(int width, int height);
@@ -70,9 +70,9 @@ public abstract class PostProcessorFilter<T extends PostProcessorFilter> impleme
 
 	/*
      * Sets the parameter to the specified value for this filter. This is for one-off operations since the shader is being bound
-	 * and unbound once per call: for a batch-ready version of this fuction see and use setParams instead.
+	 * and unbound once per call: for a batch-ready version of this function see and use setParams instead.
 	 */
-    public final void render(ScreenQuadMesh mesh) {
+    public void render(ScreenQuadMesh mesh) {
         boolean manualBufferBind = outputBuffer != null && !outputBuffer.isDrawing();
         if (manualBufferBind) { outputBuffer.begin(); }
 

@@ -17,10 +17,10 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialDistortion extends PostProcessorFilter<RadialDistortion> {
+public final class RadialDistortion extends VfxFilter<RadialDistortion> {
 	private float zoom, distortion;
 
 	public enum Param implements Parameter {

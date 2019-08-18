@@ -17,13 +17,13 @@
 package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.FxaaFilter;
 
 /** Implements the fast approximate anti-aliasing. Very fast and useful for combining with other post-processing effects.
  * @author Toni Sagrista */
-public final class FxaaEffect extends PostProcessorEffect {
+public final class FxaaEffect extends VfxEffect {
 
 	private final FxaaFilter fxaaFilter;
 
@@ -51,7 +51,7 @@ public final class FxaaEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
+    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         fxaaFilter.setInput(src).setOutput(dst).render(mesh);
     }
 

@@ -17,10 +17,10 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Threshold extends PostProcessorFilter<Threshold> {
+public final class Threshold extends VfxFilter<Threshold> {
 
     public enum Param implements Parameter {
         // @formatter:off

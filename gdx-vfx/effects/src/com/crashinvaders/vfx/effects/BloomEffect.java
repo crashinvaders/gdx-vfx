@@ -21,16 +21,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter.BlurType;
 import com.crashinvaders.vfx.filters.CombineFilter;
 import com.crashinvaders.vfx.filters.Threshold;
 
-public final class BloomEffect extends PostProcessorEffect {
+public final class BloomEffect extends VfxEffect {
 
     private final PingPongBuffer pingPongBuffer;
 
@@ -183,7 +183,7 @@ public final class BloomEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, final FboWrapper src, final FboWrapper dst) {
+    public void render(ScreenQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst) {
         Texture texSrc = src.getFbo().getColorBufferTexture();
 
         boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);

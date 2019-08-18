@@ -12,5 +12,5 @@
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.common.viewcontroller.LmlViewController" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.CanvasContentViewController" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.EffectRosterViewController" />
-	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.PostProcessorViewController" />
+	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.VfxViewController" />
 </module>

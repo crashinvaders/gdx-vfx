@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import com.crashinvaders.vfx.gl.GLExtMethods;
+import com.crashinvaders.vfx.gl.VfxGlExtension;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
@@ -39,7 +39,7 @@ import com.crashinvaders.vfx.gl.VfxGLUtils;
  * }
  * </pre>
  * <p>
- * {@link FboWrapper} internally switches GL viewport between {@link #begin()} and {@link #end()}.
+ * {@link VfxFrameBuffer} internally switches GL viewport between {@link #begin()} and {@link #end()}.
  * <br>
  * If you use any kind of batch renders (e.g. {@link Batch} or {@link ShapeRenderer}),
  * you should update their transform and projection matrices to setup viewport to the target frame buffer's size.
@@ -51,7 +51,7 @@ import com.crashinvaders.vfx.gl.VfxGLUtils;
  *
  * @author metaphore
  */
-public class FboWrapper implements Disposable {
+public class VfxFrameBuffer implements Disposable {
     /** Current depth of buffer nesting rendering (keeps track of how many buffers currently activated). */
     private static int bufferNesting = 0;
     /** @see #bufferNesting */
@@ -65,7 +65,7 @@ public class FboWrapper implements Disposable {
 
     private final RendererManager renderers = new RendererManager();
 
-    private final GLExtMethods.Viewport preservedViewport = new GLExtMethods.Viewport();
+    private final VfxGlExtension.Viewport preservedViewport = new VfxGlExtension.Viewport();
     private final Pixmap.Format pixelFormat;
     private int previousFboHandle;
 
@@ -73,7 +73,7 @@ public class FboWrapper implements Disposable {
     private boolean initialized;
     private boolean drawing;
 
-    public FboWrapper(Pixmap.Format pixelFormat) {
+    public VfxFrameBuffer(Pixmap.Format pixelFormat) {
         this.pixelFormat = pixelFormat;
     }
 
@@ -115,7 +115,7 @@ public class FboWrapper implements Disposable {
         return initialized;
     }
 
-    /** @return true means {@link FboWrapper#begin()} was called */
+    /** @return true means {@link VfxFrameBuffer#begin()} was called */
     public boolean isDrawing() {
         return drawing;
     }
@@ -160,6 +160,8 @@ public class FboWrapper implements Disposable {
         previousFboHandle = getBoundFboHandle();
         Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, fbo.getFramebufferHandle());
 
+        fbo.begin();
+
         preservedViewport.set(getViewport());
         Gdx.gl20.glViewport(0, 0, getFbo().getWidth(), getFbo().getHeight());
         renderers.assignLocalMatrices(localProjection, localTransform);
@@ -188,8 +190,8 @@ public class FboWrapper implements Disposable {
         return boundFboHandle;
     }
 
-    protected GLExtMethods.Viewport getViewport() {
-        GLExtMethods.Viewport viewport = VfxGLUtils.getViewport();
+    protected VfxGlExtension.Viewport getViewport() {
+        VfxGlExtension.Viewport viewport = VfxGLUtils.getViewport();
         return viewport;
     }
 
@@ -262,13 +264,17 @@ public class FboWrapper implements Disposable {
         protected abstract void setTransform(Matrix4 transform);
     }
 
-    public static class BatchRenderAdapter extends RendererAdapter implements Pool.Poolable {
+    public static class BatchRendererAdapter extends RendererAdapter implements Pool.Poolable {
         private Batch batch;
 
-        public BatchRenderAdapter() {
+        public BatchRendererAdapter() {
         }
 
-        public BatchRenderAdapter initialize(Batch batch) {
+        public BatchRendererAdapter(Batch batch) {
+            initialize(batch);
+        }
+
+        public BatchRendererAdapter initialize(Batch batch) {
             this.batch = batch;
             return this;
         }
@@ -306,13 +312,17 @@ public class FboWrapper implements Disposable {
         }
     }
 
-    public static class ShapeRenderAdapter extends RendererAdapter implements Pool.Poolable {
+    public static class ShapeRendererAdapter extends RendererAdapter implements Pool.Poolable {
         private ShapeRenderer shapeRenderer;
 
-        public ShapeRenderAdapter() {
+        public ShapeRendererAdapter() {
         }
 
-        public ShapeRenderAdapter initialize(ShapeRenderer shapeRenderer) {
+        public ShapeRendererAdapter(ShapeRenderer shapeRenderer) {
+            initialize(shapeRenderer);
+        }
+
+        public ShapeRendererAdapter initialize(ShapeRenderer shapeRenderer) {
             this.shapeRenderer = shapeRenderer;
             return this;
         }

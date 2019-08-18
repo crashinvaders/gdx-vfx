@@ -18,12 +18,12 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Lens flare effect.
  * @author Toni Sagrista **/
-public final class LensFlareFilter extends PostProcessorFilter<LensFlareFilter> {
+public final class LensFlareFilter extends VfxFilter<LensFlareFilter> {
 
     private final Vector2 lightPosition = new Vector2(0.5f, 0.5f);
     private final Vector2 viewport = new Vector2();

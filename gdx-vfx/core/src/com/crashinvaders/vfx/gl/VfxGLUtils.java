@@ -14,14 +14,14 @@ public class VfxGLUtils {
 
     //TODO Remove this after https://github.com/libgdx/libgdx/issues/4688 gets resolved
     // This field may be used to provide custom implementation
-    public static GLExtMethods customCalls = new DefaultGLExtMethods();
+    public static VfxGlExtension glExtension = new DefaultVfxGlExtension();
 
     public static int getBoundFboHandle() {
-        return customCalls.getBoundFboHandle();
+        return glExtension.getBoundFboHandle();
     }
 
-    public static GLExtMethods.Viewport getViewport() {
-        return customCalls.getViewport();
+    public static VfxGlExtension.Viewport getViewport() {
+        return glExtension.getViewport();
     }
 
     public static ShaderProgram compileShader(FileHandle vertexFile, FileHandle fragmentFile) {

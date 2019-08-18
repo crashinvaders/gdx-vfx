@@ -1,13 +1,13 @@
 package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.LevelsFilter;
 
 /** Implements brightness, contrast, hue and saturation levels
  * @author tsagrista */
-public final class LevelsEffect extends PostProcessorEffect {
+public final class LevelsEffect extends VfxEffect {
     private final LevelsFilter filter;
 
     /** Creates the effect */
@@ -31,7 +31,7 @@ public final class LevelsEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
+    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         filter.setInput(src).setOutput(dst).render(mesh);
     }
 

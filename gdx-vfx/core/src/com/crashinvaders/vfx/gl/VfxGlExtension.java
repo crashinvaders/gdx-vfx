@@ -1,8 +1,8 @@
 package com.crashinvaders.vfx.gl;
 
 /** The interface lets to customize some extra OpenGL functionality
- * (methods yet not implemented/unsupported by official LibGDX backends).*/
-public interface GLExtMethods {
+ * (methods yet not implemented/unsupported by the official LibGDX backends).*/
+public interface VfxGlExtension {
     int getBoundFboHandle();
     Viewport getViewport();
 

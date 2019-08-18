@@ -18,10 +18,10 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Vignetting extends PostProcessorFilter<Vignetting> {
+public final class Vignetting extends VfxFilter<Vignetting> {
 
 	private float x, y;
 	private float intensity, saturation, saturationMul;

@@ -5,9 +5,9 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.PostProcessorEffect;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapperQueue;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBufferQueue;
 import com.crashinvaders.vfx.filters.CopyFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter.BlurFunction;
@@ -15,10 +15,10 @@ import com.crashinvaders.vfx.filters.MotionBlurFilter.BlurFunction;
 /** A motion blur effect which draws the last frame with a lower opacity. The result is then stored as the next last frame to
  * create the trail effect.
  * @author Toni Sagrista */
-public class MotionBlurEffect extends PostProcessorEffect {
+public class MotionBlurEffect extends VfxEffect {
 	private final MotionBlurFilter motionBlurFilter;
 	private final CopyFilter copyFilter;
-	private final FboWrapperQueue localBuffer;
+	private final VfxFrameBufferQueue localBuffer;
 
 	public MotionBlurEffect(Pixmap.Format pixelFormat, BlurFunction blurFunction, float blurOpacity) {
 		motionBlurFilter = new MotionBlurFilter(blurFunction);
@@ -26,7 +26,7 @@ public class MotionBlurEffect extends PostProcessorEffect {
 
 		copyFilter = new CopyFilter();
 
-		localBuffer = new FboWrapperQueue(pixelFormat,
+		localBuffer = new VfxFrameBufferQueue(pixelFormat,
 				// On WebGL (GWT) we cannot render from/into the same texture simultaneously.
 				// Will use ping-pong approach to avoid "writing into itself".
 				Gdx.app.getType() == Application.ApplicationType.WebGL ? 2 : 1
@@ -60,8 +60,8 @@ public class MotionBlurEffect extends PostProcessorEffect {
 	}
 
 	@Override
-	public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
-		FboWrapper prevFrame = this.localBuffer.changeToNext();
+	public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+		VfxFrameBuffer prevFrame = this.localBuffer.changeToNext();
 		motionBlurFilter.setInput(src).setOutput(prevFrame).render(mesh);
 		motionBlurFilter.setLastFrameTexture(prevFrame.getFbo().getColorBufferTexture());
 		copyFilter.setInput(prevFrame).setOutput(dst).render(mesh);

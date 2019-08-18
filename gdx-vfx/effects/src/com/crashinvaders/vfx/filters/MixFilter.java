@@ -19,11 +19,11 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-import com.crashinvaders.vfx.PostProcessorFilter;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class MixFilter extends PostProcessorFilter<MixFilter> {
+public final class MixFilter extends VfxFilter<MixFilter> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
@@ -60,7 +60,7 @@ public final class MixFilter extends PostProcessorFilter<MixFilter> {
         rebind();
     }
 
-    public MixFilter setInput(FboWrapper buffer1, FboWrapper buffer2) {
+    public MixFilter setInput(VfxFrameBuffer buffer1, VfxFrameBuffer buffer2) {
         this.inputTexture = buffer1.getFbo().getColorBufferTexture();
         this.inputTexture2 = buffer2.getFbo().getColorBufferTexture();
         return this;
@@ -72,9 +72,9 @@ public final class MixFilter extends PostProcessorFilter<MixFilter> {
         return this;
     }
 
-    /** @deprecated use {@link #setInput(FboWrapper, FboWrapper)} instead. */
+    /** @deprecated use {@link #setInput(VfxFrameBuffer, VfxFrameBuffer)} instead. */
     @Override
-    public MixFilter setInput(FboWrapper input) {
+    public MixFilter setInput(VfxFrameBuffer input) {
         throw new UnsupportedOperationException("Use #setInput(FboWrapper, FboWrapper)} instead.");
     }
 

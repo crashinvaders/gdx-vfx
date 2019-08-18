@@ -2,10 +2,10 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class CrtFilter extends PostProcessorFilter<CrtFilter> {
+public class CrtFilter extends VfxFilter<CrtFilter> {
     private static final Vector2 tmpVec = new Vector2();
 
     public enum Param implements Parameter {

@@ -17,10 +17,10 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Zoom extends PostProcessorFilter<Zoom> {
+public final class Zoom extends VfxFilter<Zoom> {
 	private float x, y, zoom;
 
 	public enum Param implements Parameter {

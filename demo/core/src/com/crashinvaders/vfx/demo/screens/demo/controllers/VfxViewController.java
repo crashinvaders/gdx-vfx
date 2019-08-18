@@ -5,22 +5,22 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.crashinvaders.vfx.PostProcessorManager;
+import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.common.lml.CommonLmlParser;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.scene2d.IntegerRoundFillContainer;
-import com.crashinvaders.vfx.scene2d.PostProcessorWidgetGroup;
+import com.crashinvaders.vfx.scene2d.VfxWidgetGroup;
 import com.github.czyzby.lml.annotation.LmlAction;
 
-public class PostProcessorViewController extends LmlViewController {
+public class VfxViewController extends LmlViewController {
 
     private final Color clearColor;
 
-    private PostProcessorManager postProcessorManager;
+    private VfxManager vfxManager;
     private WidgetGroup canvasRoot;
 
-    public PostProcessorViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser, Color clearColor) {
+    public VfxViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser, Color clearColor) {
         super(viewControllers, lmlParser);
         this.clearColor = clearColor;
     }
@@ -34,11 +34,11 @@ public class PostProcessorViewController extends LmlViewController {
     @Override
     public void dispose() {
         super.dispose();
-        postProcessorManager.dispose();
+        vfxManager.dispose();
     }
 
-    public PostProcessorManager getPostProcessorManager() {
-        return postProcessorManager;
+    public VfxManager getVfxManager() {
+        return vfxManager;
     }
 
     public Group getCanvasRoot() {
@@ -50,14 +50,14 @@ public class PostProcessorViewController extends LmlViewController {
         canvasRoot.setName("canvasRoot");
         canvasRoot.setFillParent(true);
 
-        PostProcessorWidgetGroup postProcessingGroup = new PostProcessorWidgetGroup(Pixmap.Format.RGBA8888);
-        postProcessorManager = postProcessingGroup.getPostProcessorManager();
-        postProcessorManager.setBlendingEnabled(false);
-        postProcessorManager.setCleanUpBuffers(true);
-        postProcessorManager.setClearColor(clearColor);
-        postProcessingGroup.addActor(canvasRoot);
+        VfxWidgetGroup vfxGroup = new VfxWidgetGroup(Pixmap.Format.RGBA8888);
+        vfxManager = vfxGroup.getVfxManager();
+        vfxManager.setBlendingEnabled(false);
+        vfxManager.setCleanUpBuffers(true);
+        vfxManager.setClearColor(clearColor);
+        vfxGroup.addActor(canvasRoot);
 
-        IntegerRoundFillContainer postProcessorContainer = new IntegerRoundFillContainer(postProcessingGroup);
-        return postProcessorContainer;
+        IntegerRoundFillContainer vfxGroupContainer = new IntegerRoundFillContainer(vfxGroup);
+        return vfxGroupContainer;
     }
 }

@@ -17,13 +17,13 @@
 package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
-import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.NfaaFilter;
 
 /** Implements the normal filter anti-aliasing. Very fast and useful for combining with other post-processing effects.
  * @author Toni Sagrista */
-public final class NfaaEffect extends PostProcessorEffect {
+public final class NfaaEffect extends VfxEffect {
 
 	private final NfaaFilter nfaaFilter;
 
@@ -51,7 +51,7 @@ public final class NfaaEffect extends PostProcessorEffect {
 	}
 
 	@Override
-	public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
+	public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
 		nfaaFilter.setInput(src).setOutput(dst).render(mesh);
 	}
 }

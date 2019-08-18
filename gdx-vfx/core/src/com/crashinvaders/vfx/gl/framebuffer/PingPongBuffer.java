@@ -27,11 +27,11 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  */
 public final class PingPongBuffer {
 
-    private final FboWrapper buffer1;
-    private final FboWrapper buffer2;
+    private final VfxFrameBuffer buffer1;
+    private final VfxFrameBuffer buffer2;
 
-    private FboWrapper bufDst;
-    private FboWrapper bufSrc;
+    private VfxFrameBuffer bufDst;
+    private VfxFrameBuffer bufSrc;
 
     /**
      * Keeps track of the current active buffer.
@@ -52,7 +52,7 @@ public final class PingPongBuffer {
      * Initializes ping-pong buffer with the size of the LibGDX client's area (usually window size).
      * If you use different OpenGL viewport, better use {@link #PingPongBuffer(Format, int, int)}
      * and specify the size manually.
-     * @param fbFormat Pixel format of encapsulated {@link FboWrapper}s.
+     * @param fbFormat Pixel format of encapsulated {@link VfxFrameBuffer}s.
      */
     public PingPongBuffer(Format fbFormat) {
         this(fbFormat, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -60,11 +60,11 @@ public final class PingPongBuffer {
 
     /**
      * Initializes ping-pong buffer with the given size.
-     * @param fbFormat Pixel format of encapsulated {@link FboWrapper}s.
+     * @param fbFormat Pixel format of encapsulated {@link VfxFrameBuffer}s.
      */
     public PingPongBuffer(Format fbFormat, int width, int height) {
-        this.buffer1 = new FboWrapper(fbFormat);
-        this.buffer2 = new FboWrapper(fbFormat);
+        this.buffer1 = new VfxFrameBuffer(fbFormat);
+        this.buffer2 = new VfxFrameBuffer(fbFormat);
         resize(width, height);
 
         // Setup src/dst buffers.
@@ -157,7 +157,7 @@ public final class PingPongBuffer {
     }
 
     /** @return the source buffer of the current ping-pong chain. */
-    public FboWrapper getSrcBuffer() {
+    public VfxFrameBuffer getSrcBuffer() {
         return bufSrc;
     }
 
@@ -167,7 +167,7 @@ public final class PingPongBuffer {
     }
 
     /** @return Returns the result's buffer of the latest {@link #swap()}. */
-    public FboWrapper getDstBuffer() {
+    public VfxFrameBuffer getDstBuffer() {
         return bufDst;
     }
 
@@ -179,33 +179,33 @@ public final class PingPongBuffer {
         rebind();
     }
 
-    /** @see FboWrapper#addRenderer(FboWrapper.Renderer) ) */
-    public void addRenderer(FboWrapper.Renderer renderer) {
+    /** @see VfxFrameBuffer#addRenderer(VfxFrameBuffer.Renderer) ) */
+    public void addRenderer(VfxFrameBuffer.Renderer renderer) {
         buffer1.addRenderer(renderer);
         buffer2.addRenderer(renderer);
     }
 
-    /** @see FboWrapper#removeRenderer(FboWrapper.Renderer) () */
-    public void removeRenderer(FboWrapper.Renderer renderer) {
+    /** @see VfxFrameBuffer#removeRenderer(VfxFrameBuffer.Renderer) () */
+    public void removeRenderer(VfxFrameBuffer.Renderer renderer) {
         buffer1.removeRenderer(renderer);
         buffer2.removeRenderer(renderer);
     }
 
-    /** @see FboWrapper#clearRenderers() */
+    /** @see VfxFrameBuffer#clearRenderers() */
     public void clearRenderers() {
         buffer1.clearRenderers();
         buffer2.clearRenderers();
     }
 
     /**
-     * Cleans up managed {@link FboWrapper}s' with specified color.
+     * Cleans up managed {@link VfxFrameBuffer}s' with specified color.
      */
     public void cleanUpBuffers(Color clearColor) {
         cleanUpBuffers(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     }
 
     /**
-     * Cleans up managed {@link FboWrapper}s' with specified color.
+     * Cleans up managed {@link VfxFrameBuffer}s' with specified color.
      */
     private void cleanUpBuffers(float r, float g, float b, float a) {
         final boolean wasCapturing = this.capturing;

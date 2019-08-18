@@ -10,23 +10,23 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
 import com.crashinvaders.vfx.utils.PrioritizedArray;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 
 /**
  * Provides a way to beginCapture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to
  * screen.
  * <p>
- * Effects can be added or removed via {@link #addEffect(PostProcessorEffect)} and {@link #removeEffect(PostProcessorEffect)}.
+ * Effects can be added or removed via {@link #addEffect(VfxEffect)} and {@link #removeEffect(VfxEffect)}.
  *
  * @author bmanuel
  * @author metaphore
  */
-public final class PostProcessorManager implements Disposable {
+public final class VfxManager implements Disposable {
 
-    private final PrioritizedArray<PostProcessorEffect> effectsAll = new PrioritizedArray<>();
+    private final PrioritizedArray<VfxEffect> effectsAll = new PrioritizedArray<>();
     /** Maintains a per-frame updated list of enabled effects */
-    private final Array<PostProcessorEffect> effectsEnabled = new Array<>();
+    private final Array<VfxEffect> effectsEnabled = new Array<>();
 
     /** A mesh that is shared among basic filters to draw to full screen. */
     private final ScreenQuadMesh screenQuadMesh = new ScreenQuadMesh();
@@ -46,11 +46,11 @@ public final class PostProcessorManager implements Disposable {
 
     private int width, height;
 
-    public PostProcessorManager(Format fboFormat) {
+    public VfxManager(Format fboFormat) {
         this(fboFormat, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
-    public PostProcessorManager(Format fboFormat, int bufferWidth, int bufferHeight) {
+    public VfxManager(Format fboFormat, int bufferWidth, int bufferHeight) {
         this.fboFormat = fboFormat;
         this.compositeBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight);
         this.width = bufferWidth;
@@ -152,31 +152,38 @@ public final class PostProcessorManager implements Disposable {
     /**
      * Returns the last active composite buffer.
      */
-    public FboWrapper getResultBuffer() {
+    public VfxFrameBuffer getResultBuffer() {
         return compositeBuffer.getDstBuffer();
     }
 
     /**
-     * Adds an effect to the effect chain and transfers ownership to the PostProcessor, it will manage cleaning it up for
-     * you. The order of the inserted effects IS important, since effects will be applied in a FIFO fashion, the first added is the
-     * first being applied.
+     * Adds an effect to the effect chain and transfers ownership to the VfxManager.
+     * The order of the inserted effects IS important, since effects will be applied in a FIFO fashion,
+     * the first added is the first being applied.
+     * <p>
+     * For more control over the order supply the effect with a priority - {@link #addEffect(VfxEffect, int)}.
+     * @see #addEffect(VfxEffect, int)
      */
-    public void addEffect(PostProcessorEffect effect) {
+    public void addEffect(VfxEffect effect) {
         addEffect(effect, 0);
     }
 
-    public void addEffect(PostProcessorEffect effect, int priority) {
+    public void addEffect(VfxEffect effect, int priority) {
         effectsAll.add(effect, priority);
         effect.resize(width, height);
     }
 
     /** Removes the specified effect from the effect chain. */
-    public void removeEffect(PostProcessorEffect effect) {
+    public void removeEffect(VfxEffect effect) {
         effectsAll.remove(effect);
     }
 
     public void removeAllEffects() {
         effectsAll.clear();
+    }
+
+    public void setEffectPriority(VfxEffect effect, int priority) {
+        effectsAll.setPriority(effect, priority);
     }
 
     /**
@@ -221,7 +228,7 @@ public final class PostProcessorManager implements Disposable {
 
     /**
      * Convenience method to render to the screen.
-     * @see #render(FboWrapper)
+     * @see #render(VfxFrameBuffer)
      **/
     public void render() {
         render(null);
@@ -232,16 +239,16 @@ public final class PostProcessorManager implements Disposable {
      * @param dst Target frame buffer, where result will be rendered to.
      *             If null, rendering will be performed to the screen.
      */
-    public void render(FboWrapper dst) {
+    public void render(VfxFrameBuffer dst) {
         if (capturing) {
-            throw new IllegalStateException("You should call PostProcessorManager.endCapture() prior effect rendering.");
+            throw new IllegalStateException("You should call VfxManager.endCapture() prior effect rendering.");
         }
 
         if (disabled) return;
         if (!hasCaptured) return;
 
         updateEnabledEffectList();
-        Array<PostProcessorEffect> items = effectsEnabled;
+        Array<VfxEffect> items = effectsEnabled;
 
         rendering = true;
         int count = items.size;
@@ -259,7 +266,7 @@ public final class PostProcessorManager implements Disposable {
                 compositeBuffer.swap(); // Swap buffers to get captured result in src buffer.
                 compositeBuffer.begin();
                 for (int i = 0; i < count - 1; i++) {
-                    PostProcessorEffect effect = items.get(i);
+                    VfxEffect effect = items.get(i);
                     effect.render(screenQuadMesh,
                             compositeBuffer.getSrcBuffer(),
                             compositeBuffer.getDstBuffer());
@@ -296,7 +303,7 @@ public final class PostProcessorManager implements Disposable {
         // Build up active effects
         effectsEnabled.clear();
         for (int i = 0; i < effectsAll.size(); i++) {
-            PostProcessorEffect effect = effectsAll.get(i);
+            VfxEffect effect = effectsAll.get(i);
             if (!effect.isDisabled()) {
                 effectsEnabled.add(effect);
             }

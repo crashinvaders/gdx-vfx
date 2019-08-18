@@ -6,16 +6,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.crashinvaders.vfx.PostProcessorManager;
+import com.crashinvaders.vfx.VfxManager;
 
-public class PostProcessorWidgetGroup extends WidgetGroup {
+public class VfxWidgetGroup extends WidgetGroup {
 
-    private final PostProcessorManager postProcessorManager;
+    private final VfxManager vfxManager;
     private boolean initialized = false;
     private boolean resizePending = false;
 
-    public PostProcessorWidgetGroup(Pixmap.Format pixelFormat) {
-        postProcessorManager = new PostProcessorManager(pixelFormat);
+    public VfxWidgetGroup(Pixmap.Format pixelFormat) {
+        vfxManager = new VfxManager(pixelFormat);
     }
 
     @Override
@@ -44,22 +44,22 @@ public class PostProcessorWidgetGroup extends WidgetGroup {
 
         if (resizePending) {
             resizePending = false;
-            postProcessorManager.resize(
+            vfxManager.resize(
                     MathUtils.round(getWidth()),
                     MathUtils.round(getHeight()));
         }
-        postProcessorManager.beginCapture();
+        vfxManager.beginCapture();
         batch.begin();
         super.draw(batch, parentAlpha);
         batch.end();
-        postProcessorManager.endCapture();
-        postProcessorManager.render();
+        vfxManager.endCapture();
+        vfxManager.render();
 
         batch.begin();
     }
 
-    public PostProcessorManager getPostProcessorManager() {
-        return postProcessorManager;
+    public VfxManager getVfxManager() {
+        return vfxManager;
     }
 
     private void initialize() {
@@ -70,12 +70,12 @@ public class PostProcessorWidgetGroup extends WidgetGroup {
             width = MathUtils.round(viewport.getWorldWidth());
             height = MathUtils.round(viewport.getWorldHeight());
         }
-        postProcessorManager.resize(width, height);
+        vfxManager.resize(width, height);
         resizePending = false;
     }
 
     private void reset() {
         resizePending = false;
-        postProcessorManager.dispose();
+        vfxManager.dispose();
     }
 }

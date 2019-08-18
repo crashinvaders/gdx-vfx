@@ -3,15 +3,15 @@ package com.crashinvaders.vfx.effects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.crashinvaders.vfx.PostProcessorEffect;
+import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.crashinvaders.vfx.filters.CopyFilter;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 
-public class GaussianBlurEffect extends PostProcessorEffect {
+public class GaussianBlurEffect extends VfxEffect {
 
     private final PingPongBuffer pingPongBuffer;
     private final CopyFilter copy;
@@ -56,7 +56,7 @@ public class GaussianBlurEffect extends PostProcessorEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, FboWrapper src, FboWrapper dst) {
+    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         if (blur.getPasses() < 1) {
             // Do not apply blur filter.
             copy.setInput(src).setOutput(dst).render(mesh);

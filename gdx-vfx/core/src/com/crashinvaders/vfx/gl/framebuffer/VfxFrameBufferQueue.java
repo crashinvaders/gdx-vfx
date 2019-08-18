@@ -6,10 +6,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
- * Provides looped access to an array of {@link FboWrapper}.
+ * Provides looped access to an array of {@link VfxFrameBuffer}.
  */
-public class FboWrapperQueue implements Disposable {
-    private final Array<FboWrapper> buffers;
+public class VfxFrameBufferQueue implements Disposable {
+    private final Array<VfxFrameBuffer> buffers;
     private int currentIdx = 0;
 
     private Texture.TextureWrap wrapU = Texture.TextureWrap.ClampToEdge;
@@ -17,13 +17,13 @@ public class FboWrapperQueue implements Disposable {
     private Texture.TextureFilter filterMin = Texture.TextureFilter.Nearest;
     private Texture.TextureFilter filterMag = Texture.TextureFilter.Nearest;
 
-    public FboWrapperQueue(Pixmap.Format pixelFormat, int fboAmount) {
+    public VfxFrameBufferQueue(Pixmap.Format pixelFormat, int fboAmount) {
         if (fboAmount < 1) {
             throw new IllegalArgumentException("FBO amount should be a positive number.");
         }
         buffers = new Array<>(true, fboAmount);
         for (int i = 0; i < fboAmount; i++) {
-            buffers.add(new FboWrapper(pixelFormat));
+            buffers.add(new VfxFrameBuffer(pixelFormat));
         }
     }
 
@@ -45,7 +45,7 @@ public class FboWrapperQueue implements Disposable {
      */
     public void rebind() {
         for (int i = 0; i < buffers.size; i++) {
-            FboWrapper wrapper = buffers.get(i);
+            VfxFrameBuffer wrapper = buffers.get(i);
             // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
             if (wrapper.getFbo() == null) continue;
 
@@ -55,11 +55,11 @@ public class FboWrapperQueue implements Disposable {
         }
     }
 
-    public FboWrapper getCurrent() {
+    public VfxFrameBuffer getCurrent() {
         return buffers.get(currentIdx);
     }
 
-    public FboWrapper changeToNext() {
+    public VfxFrameBuffer changeToNext() {
         currentIdx = (currentIdx + 1) % buffers.size;
         return getCurrent();
     }

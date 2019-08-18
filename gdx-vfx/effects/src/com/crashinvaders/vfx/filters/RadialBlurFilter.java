@@ -17,10 +17,10 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialBlurFilter extends PostProcessorFilter<RadialBlurFilter> {
+public final class RadialBlurFilter extends VfxFilter<RadialBlurFilter> {
 
 	private int blurLen;
 	private float strength = 0.2f;

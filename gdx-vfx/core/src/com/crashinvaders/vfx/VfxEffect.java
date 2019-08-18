@@ -2,7 +2,7 @@ package com.crashinvaders.vfx;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
+import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 
 /**
  * This interface defines the base class for the concrete implementation of post-processor effects.
@@ -11,12 +11,12 @@ import com.crashinvaders.vfx.gl.framebuffer.FboWrapper;
  * @author bmanuel
  * @author metaphore
  */
-public abstract class PostProcessorEffect implements Disposable {
+public abstract class VfxEffect implements Disposable {
 
     protected boolean disabled = false;
 
     /**
-     * This method will be called once effect will be added to {@link PostProcessorManager}.
+     * This method will be called once effect will be added to {@link VfxManager}.
      * Also it will be called on every application resize as usual.
      */
     public abstract void resize(int width, int height);
@@ -28,7 +28,7 @@ public abstract class PostProcessorEffect implements Disposable {
     public abstract void rebind();
 
     /** Concrete objects shall implements its own rendering, given the source and destination buffers. */
-    public abstract void render(ScreenQuadMesh mesh, final FboWrapper src, final FboWrapper dst);
+    public abstract void render(ScreenQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst);
 
     /** Whether or not this effect is disabled and shouldn't be processed */
     public boolean isDisabled() {

@@ -24,7 +24,7 @@ import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.demo.App;
 import com.crashinvaders.vfx.demo.screens.demo.controllers.CanvasContentViewController;
 import com.crashinvaders.vfx.demo.screens.demo.controllers.EffectRosterViewController;
-import com.crashinvaders.vfx.demo.screens.demo.controllers.PostProcessorViewController;
+import com.crashinvaders.vfx.demo.screens.demo.controllers.VfxViewController;
 
 public class DemoScreen extends ScreenAdapter {
     private static final Color clearColor = new Color(0x006ba6ff);
@@ -73,7 +73,7 @@ public class DemoScreen extends ScreenAdapter {
                 .build();
 
         viewControllers = new ViewControllerManager(stage);
-        viewControllers.add(new PostProcessorViewController(viewControllers, lmlParser, clearColor));
+        viewControllers.add(new VfxViewController(viewControllers, lmlParser, clearColor));
         viewControllers.add(new CanvasContentViewController(viewControllers, lmlParser, assets));
         viewControllers.add(new EffectRosterViewController(viewControllers, lmlParser));
 

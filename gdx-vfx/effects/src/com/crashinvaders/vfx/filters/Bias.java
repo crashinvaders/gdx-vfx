@@ -17,13 +17,13 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.PostProcessorFilter;
+import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Bias filter. Adapted for lensflare2 effect.
  * @see <a href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
  * @author Toni Sagrista */
-public final class Bias extends PostProcessorFilter<Bias> {
+public final class Bias extends VfxFilter<Bias> {
 
 	private float bias;
 

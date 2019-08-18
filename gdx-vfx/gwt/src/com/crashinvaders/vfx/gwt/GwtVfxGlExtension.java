@@ -3,17 +3,17 @@ package com.crashinvaders.vfx.gwt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtGL20;
 import com.badlogic.gdx.backends.gwt.GwtGraphics;
-import com.crashinvaders.vfx.gl.GLExtMethods;
+import com.crashinvaders.vfx.gl.VfxGlExtension;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.google.gwt.typedarrays.shared.Int32Array;
 import com.google.gwt.webgl.client.WebGLFramebuffer;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
 
-public class GwtGLExtCalls implements GLExtMethods {
-    private static final GLExtMethods.Viewport tmpViewport = new Viewport();
+public class GwtVfxGlExtension implements VfxGlExtension {
+    private static final VfxGlExtension.Viewport tmpViewport = new Viewport();
 
     public static void initialize() {
-        VfxGLUtils.customCalls = new GwtGLExtCalls();
+        VfxGLUtils.glExtension = new GwtVfxGlExtension();
     }
 
     @Override
