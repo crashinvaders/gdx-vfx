@@ -68,13 +68,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.effects.BloomEffect;
+import com.crashinvaders.vfx.effects.GaussianBlurEffect;
 
 public class VfxExample extends ApplicationAdapter {
 
     private ShapeRenderer shapeRenderer;
     private VfxManager vfxManager;
-    private BloomEffect vfxEffect;
+    private GaussianBlurEffect vfxEffect;
 
     @Override
     public void create() {
@@ -89,9 +89,7 @@ public class VfxExample extends ApplicationAdapter {
         // Create and add an effect.
         // VfxEffect derivative classes serve as controllers for the effects.
         // They usually provide some public properties to configure and control the effects.
-        vfxEffect = new BloomEffect(Pixmap.Format.RGBA8888);
-        vfxEffect.setBlurPasses(32);
-        vfxEffect.setBloomIntensity(1.2f);
+        vfxEffect = new GaussianBlurEffect();
         vfxManager.addEffect(vfxEffect);
     }
 
