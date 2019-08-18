@@ -174,11 +174,8 @@ public class VfxFrameBuffer implements Disposable {
 
         renderers.flush();
         previousFboHandle = getBoundFboHandle();
-        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, fbo.getFramebufferHandle());
-
-        fbo.begin();
-
         preservedViewport.set(getViewport());
+        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, fbo.getFramebufferHandle());
         Gdx.gl20.glViewport(0, 0, getFbo().getWidth(), getFbo().getHeight());
         renderers.assignLocalMatrices(localProjection, localTransform);
     }
