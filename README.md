@@ -11,8 +11,6 @@ with lots of improvements, aim on stability and to provide lightweight integrati
 Work is in progress, some official backends are not stable yet.
 More effects to be implemented and included in the standard library package.
 
-_If you need GWT support, please [read this section](#gwt-integration)._
-
 # Demo
 
 Visit https://crashinvaders.github.io/gdx-vfx
@@ -31,7 +29,7 @@ cd gdx-vfx
 
 ### 1. Add the library to the project
 
-#### A. Maven dependency
+#### Maven dependency
 The library currently is in beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx) we still can reference the library as a maven dependency.
 
 Add it in your root build.gradle at the end of repositories:
@@ -53,49 +51,11 @@ dependencies {
 }
 ```
 
-#### B. Manually add the library into the project
+#### Other options
+There are number of ways to incorporate the library into the project. If you're looking for the other appoach, please read the full [integration guide in wiki](https://github.com/crashinvaders/gdx-vfx/wiki/Library-integration).
 
-<details>
-<summary>Click to expand!</summary>
-	
-##### Option 1: Local JAR artifacts
-Download JAR artifacts from [releases page](https://github.com/crashinvaders/gdx-vfx/releases) and attach them to the project.
-Put the downloaded `gdx-vfx-core.jar` and `gdx-vfx-effects.jar` into `/core/libs` dir and add them as dependencies.
-
-_/core/build.gradle_:
-```gradle
-dependencies {
-    // ...
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-}
-```
-
-##### Option 2: Local maven archetype (useful for local build/testing)
-
-1. Clone the repository into a local directory.
-```
-git clone https://github.com/crashinvaders/gdx-vfx.git
-```
-2. Install local maven archetype using gradle task (maven should be installed on the system and added to the PATH).
-```
-./gradlew gdx-vfx:core:install gdx-vfx:effects:install gdx-vfx:gwt:install
-```
-3. Include the library from a local maven repository.
-
-_/core/build.gradle_:
-```gradle
-repositories {
-    // ...
-    mavenLocal()
-}
-
-dependencies {
-    // ...
-    compile "com.crashinvaders.vfx:gdx-vfx-core:0.+"
-    compile "com.crashinvaders.vfx:gdx-vfx-effects:0.+"
-}
-```
-</details>
+#### HTML/GWT support
+If your project has a GWT module, please consider reading [this wiki page](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Integration).
 
 ### 2. Sample code
 
@@ -189,35 +149,3 @@ public class PostProcessorExample extends ApplicationAdapter {
 ```
 
 ![Result](https://i.imgur.com/qSaIEWD.png)
-
-
-### 3. HTML/GWT integration guide <a name="gwt-integration"></a>
-
-The library uses extended set of OpenGL functions, that is not implemented for the official HTML/GWT LibGDX backend.
-In order to activate them for a GWT module, a specific method should be called prior any library usage.
-
-#### A. GWT jar dependency
-`gdx-vfx-gwt.jar` should be added as a dependency to the respectful GWT module.
-
-#### B. Activate GWT specific library code
-Call `GwtGLExtCalls.initialize();` prior any library usage. The code best to be placed in a GWT module launcher class (the one that extends `GwtApplication`).
-
-For example:
-```java
-public class GwtLauncher extends GwtApplication {
-
-    @Override
-    public GwtApplicationConfiguration getConfig() {
-	// ...
-    }
-
-    @Override
-    public ApplicationListener createApplicationListener() {
-	// ...
-
-        GwtGLExtCalls.initialize();
-
-        return new MyApplicationListener();
-    }
-}
-```
