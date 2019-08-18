@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +20,14 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
 import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffect;
-import com.crashinvaders.vfx.filters.RadialDistortion;
+import com.crashinvaders.vfx.filters.RadialDistortionFilter;
 
 public final class CurvatureEffect extends VfxEffect {
 
-    private RadialDistortion distort;
+    private RadialDistortionFilter distort;
 
     public CurvatureEffect() {
-        distort = new RadialDistortion();
+        distort = new RadialDistortionFilter();
     }
 
     @Override

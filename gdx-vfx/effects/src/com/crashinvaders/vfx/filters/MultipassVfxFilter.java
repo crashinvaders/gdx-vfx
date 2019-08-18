@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +23,11 @@ import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.VfxFilter;
 
 /**
- * The base class for any multi-pass filter. Usually a multi-pass filter will make use of one or more single-pass filters,
+ * The base class for any multi-pass filter.
+ * Usually a multi-pass filter will make use of one or more single-pass filters,
  * promoting composition over inheritance.
  */
-public abstract class MultipassFilter implements Disposable {
+public abstract class MultipassVfxFilter implements Disposable {
 
     /** @see VfxFilter#resize(int, int)  */
     public abstract void resize(int width, int height);

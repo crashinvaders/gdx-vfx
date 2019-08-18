@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +22,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Vignetting extends VfxFilter<Vignetting> {
+public final class VignettingFilter extends VfxFilter<VignettingFilter> {
 
 	private float x, y;
 	private float intensity, saturation, saturationMul;
@@ -70,7 +71,7 @@ public final class Vignetting extends VfxFilter<Vignetting> {
 		}
 	}
 
-	public Vignetting (boolean controlSaturation) {
+	public VignettingFilter(boolean controlSaturation) {
 		super(VfxGLUtils.compileShader(
 				Gdx.files.classpath("shaders/screenspace.vert"),
 				Gdx.files.classpath("shaders/vignetting.frag"),

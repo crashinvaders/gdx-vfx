@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +20,13 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
 import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffect;
-import com.crashinvaders.vfx.filters.Zoom;
+import com.crashinvaders.vfx.filters.ZoomFilter;
 
 /**
  * Implements a zooming effect.
  */
 public final class ZoomerEffect extends VfxEffect {
-    private final Zoom zoom;
+    private final ZoomFilter zoom;
 
     /**
      * Creating a Zoomer effect with zoom factor of 1.0.
@@ -39,7 +40,7 @@ public final class ZoomerEffect extends VfxEffect {
      * @param zoomFactor initial zoom factor.
      */
     public ZoomerEffect(float zoomFactor) {
-        zoom = new Zoom();
+        zoom = new ZoomFilter();
         setZoom(zoomFactor);
     }
 

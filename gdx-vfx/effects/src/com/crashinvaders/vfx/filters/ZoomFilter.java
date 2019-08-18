@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +21,23 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialDistortion extends VfxFilter<RadialDistortion> {
-	private float zoom, distortion;
+public final class ZoomFilter extends VfxFilter<ZoomFilter> {
+	private float x, y, zoom;
 
 	public enum Param implements Parameter {
 		// @formatter:off
-		Texture0("u_texture0", 0),
-		Distortion("distortion", 0),
-		Zoom("zoom", 0);
+		Texture("u_texture0", 0),
+		OffsetX("offset_x", 0),
+		OffsetY("offset_y", 0),
+		Zoom("zoom", 0), ;
 		// @formatter:on
 
-		private final String mnemonic;
+		private String mnemonic;
 		private int elementSize;
 
-		private Param (String m, int elementSize) {
-			this.mnemonic = m;
-			this.elementSize = elementSize;
+		private Param (String mnemonic, int arrayElementSize) {
+			this.mnemonic = mnemonic;
+			this.elementSize = arrayElementSize;
 		}
 
 		@Override
@@ -49,18 +51,22 @@ public final class RadialDistortion extends VfxFilter<RadialDistortion> {
 		}
 	}
 
-	public RadialDistortion () {
+	public ZoomFilter() {
 		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/radial-distortion.frag")));
+				Gdx.files.classpath("shaders/zoom.vert"),
+				Gdx.files.classpath("shaders/zoom.frag")));
 		rebind();
-		setDistortion(0.3f);
+		setOrigin(0.5f, 0.5f);
 		setZoom(1f);
 	}
 
-	public void setDistortion (float distortion) {
-		this.distortion = distortion;
-		setParam(Param.Distortion, this.distortion);
+	/** Specify the zoom origin, in normalized screen coordinates. */
+	public void setOrigin (float x, float y) {
+		this.x = x;
+		this.y = y;
+		setParams(Param.OffsetX, this.x);
+		setParams(Param.OffsetY, this.y);
+		endParams();
 	}
 
 	public void setZoom (float zoom) {
@@ -68,30 +74,35 @@ public final class RadialDistortion extends VfxFilter<RadialDistortion> {
 		setParam(Param.Zoom, this.zoom);
 	}
 
-	public float getDistortion () {
-		return distortion;
-	}
-
 	public float getZoom () {
 		return zoom;
+	}
+
+	public float getOriginX () {
+		return x;
+	}
+
+	public float getOriginY () {
+		return y;
+	}
+
+    @Override
+    public void resize(int width, int height) {
+		// Do nothing.
+    }
+
+    @Override
+	public void rebind () {
+		// reimplement super to batch every parameter
+		setParams(Param.Texture, u_texture0);
+		setParams(Param.OffsetX, x);
+		setParams(Param.OffsetY, y);
+		setParams(Param.Zoom, zoom);
+		endParams();
 	}
 
 	@Override
 	protected void onBeforeRender () {
 		inputTexture.bind(u_texture0);
-	}
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-	public void rebind () {
-		setParams(Param.Texture0, u_texture0);
-		setParams(Param.Distortion, distortion);
-		setParams(Param.Zoom, zoom);
-
-		endParams();
 	}
 }

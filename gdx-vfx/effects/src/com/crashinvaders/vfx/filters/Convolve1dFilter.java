@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Convolve1D extends VfxFilter<Convolve1D> {
+public final class Convolve1dFilter extends VfxFilter<Convolve1dFilter> {
     public enum Param implements Parameter {
         Texture("u_texture0", 0),
         SampleWeights("SampleWeights", 1),
@@ -50,15 +51,15 @@ public final class Convolve1D extends VfxFilter<Convolve1D> {
     public float[] weights;
     public float[] offsets;
 
-    public Convolve1D(int length) {
+    public Convolve1dFilter(int length) {
         this(length, new float[length], new float[length * 2]);
     }
 
-    public Convolve1D(int length, float[] weights_data) {
+    public Convolve1dFilter(int length, float[] weights_data) {
         this(length, weights_data, new float[length * 2]);
     }
 
-    public Convolve1D(int length, float[] weights_data, float[] offsets) {
+    public Convolve1dFilter(int length, float[] weights_data, float[] offsets) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
                 Gdx.files.classpath("shaders/convolve-1d.frag"),

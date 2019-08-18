@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +29,14 @@ import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter.BlurType;
 import com.crashinvaders.vfx.filters.CombineFilter;
-import com.crashinvaders.vfx.filters.Threshold;
+import com.crashinvaders.vfx.filters.ThresholdFilter;
 
 public final class BloomEffect extends VfxEffect {
 
     private final PingPongBuffer pingPongBuffer;
 
     private final GaussianBlurFilter blur;
-    private final Threshold threshold;
+    private final ThresholdFilter threshold;
     private final CombineFilter combine;
 
     private Settings settings;
@@ -51,7 +52,7 @@ public final class BloomEffect extends VfxEffect {
         pingPongBuffer = new PingPongBuffer(bufferFormat);
 
         blur = new GaussianBlurFilter();
-        threshold = new Threshold();
+        threshold = new ThresholdFilter();
         combine = new CombineFilter();
 
         setSettings(settings);

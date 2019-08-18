@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright 2012 tsagrista
- *
+ * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,24 +21,21 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/** Bias filter. Adapted for lensflare2 effect.
- * @see <a href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
- * @author Toni Sagrista */
-public final class Bias extends VfxFilter<Bias> {
-
-	private float bias;
+public final class RadialDistortionFilter extends VfxFilter<RadialDistortionFilter> {
+	private float zoom, distortion;
 
 	public enum Param implements Parameter {
 		// @formatter:off
-		Texture("u_texture0", 0),
-		Bias("u_bias", 0);
+		Texture0("u_texture0", 0),
+		Distortion("distortion", 0),
+		Zoom("zoom", 0);
 		// @formatter:on
 
-		private String mnemonic;
+		private final String mnemonic;
 		private int elementSize;
 
-		private Param (String mnemonic, int elementSize) {
-			this.mnemonic = mnemonic;
+		private Param (String m, int elementSize) {
+			this.mnemonic = m;
 			this.elementSize = elementSize;
 		}
 
@@ -52,35 +50,49 @@ public final class Bias extends VfxFilter<Bias> {
 		}
 	}
 
-	public Bias() {
+	public RadialDistortionFilter() {
 		super(VfxGLUtils.compileShader(
 				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("bias")));
+				Gdx.files.classpath("shaders/radial-distortion.frag")));
 		rebind();
+		setDistortion(0.3f);
+		setZoom(1f);
 	}
 
-	public float getBias() {
-		return bias;
+	public void setDistortion (float distortion) {
+		this.distortion = distortion;
+		setParam(Param.Distortion, this.distortion);
 	}
 
-	public void setBias(float bias) {
-		this.bias = bias;
-		setParam(Param.Bias, this.bias);
+	public void setZoom (float zoom) {
+		this.zoom = zoom;
+		setParam(Param.Zoom, this.zoom);
+	}
+
+	public float getDistortion () {
+		return distortion;
+	}
+
+	public float getZoom () {
+		return zoom;
 	}
 
 	@Override
-	protected void onBeforeRender() {
+	protected void onBeforeRender () {
 		inputTexture.bind(u_texture0);
 	}
 
-	@Override
-	public void resize(int width, int height) {
+    @Override
+    public void resize(int width, int height) {
 
-	}
+    }
 
-	@Override
-	public void rebind() {
-		setParams(Param.Texture, u_texture0);
-		setBias(this.bias);
+    @Override
+	public void rebind () {
+		setParams(Param.Texture0, u_texture0);
+		setParams(Param.Distortion, distortion);
+		setParams(Param.Zoom, zoom);
+
+		endParams();
 	}
 }

@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +20,7 @@ package com.crashinvaders.vfx.filters;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
 import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
 
-public final class GaussianBlurFilter extends MultipassFilter {
+public final class GaussianBlurFilter extends MultipassVfxFilter {
 
     private enum Tap {
         Tap3x3(1),
@@ -51,7 +52,7 @@ public final class GaussianBlurFilter extends MultipassFilter {
     private int passes = 1;
 
     private float invWidth, invHeight;
-    private Convolve2D convolve;
+    private Convolve2dFilter convolve;
 
     public GaussianBlurFilter() {
         this(BlurType.Gaussian5x5);
@@ -107,7 +108,7 @@ public final class GaussianBlurFilter extends MultipassFilter {
             if (convolve != null) {
                 convolve.dispose();
             }
-            convolve = new Convolve2D(this.type.tap.radius);
+            convolve = new Convolve2dFilter(this.type.tap.radius);
 
             computeBlurWeightings();
         }

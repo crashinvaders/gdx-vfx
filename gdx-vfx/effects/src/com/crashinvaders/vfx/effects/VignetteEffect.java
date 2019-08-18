@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +21,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.gl.ScreenQuadMesh;
 import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffect;
-import com.crashinvaders.vfx.filters.Vignetting;
+import com.crashinvaders.vfx.filters.VignettingFilter;
 
 public final class VignetteEffect extends VfxEffect {
-	private Vignetting vignetting;
+	private VignettingFilter vignetting;
 	private boolean controlSaturation;
 
 	public VignetteEffect(boolean controlSaturation) {
 		this.controlSaturation = controlSaturation;
-		vignetting = new Vignetting(controlSaturation);
+		vignetting = new VignettingFilter(controlSaturation);
 	}
 
 	@Override

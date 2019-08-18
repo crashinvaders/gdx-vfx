@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Threshold extends VfxFilter<Threshold> {
+public final class ThresholdFilter extends VfxFilter<ThresholdFilter> {
 
     public enum Param implements Parameter {
         // @formatter:off
@@ -50,7 +51,7 @@ public final class Threshold extends VfxFilter<Threshold> {
 
     private float gamma = 0;
 
-    public Threshold() {
+    public ThresholdFilter() {
         super(VfxGLUtils.compileShader(
         		Gdx.files.classpath("shaders/screenspace.vert"),
 				Gdx.files.classpath("shaders/threshold.frag")));

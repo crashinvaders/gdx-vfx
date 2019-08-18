@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright 2012 bmanuel
- * 
+ * Copyright 2012 tsagrista
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,23 +20,25 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Zoom extends VfxFilter<Zoom> {
-	private float x, y, zoom;
+/** Bias filter. Adapted for lensflare2 effect.
+ * @see <a href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
+ * @author Toni Sagrista */
+public final class BiasFilter extends VfxFilter<BiasFilter> {
+
+	private float bias;
 
 	public enum Param implements Parameter {
 		// @formatter:off
 		Texture("u_texture0", 0),
-		OffsetX("offset_x", 0),
-		OffsetY("offset_y", 0),
-		Zoom("zoom", 0), ;
+		Bias("u_bias", 0);
 		// @formatter:on
 
 		private String mnemonic;
 		private int elementSize;
 
-		private Param (String mnemonic, int arrayElementSize) {
+		private Param (String mnemonic, int elementSize) {
 			this.mnemonic = mnemonic;
-			this.elementSize = arrayElementSize;
+			this.elementSize = elementSize;
 		}
 
 		@Override
@@ -50,58 +52,35 @@ public final class Zoom extends VfxFilter<Zoom> {
 		}
 	}
 
-	public Zoom () {
+	public BiasFilter() {
 		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/zoom.vert"),
-				Gdx.files.classpath("shaders/zoom.frag")));
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("bias")));
 		rebind();
-		setOrigin(0.5f, 0.5f);
-		setZoom(1f);
 	}
 
-	/** Specify the zoom origin, in normalized screen coordinates. */
-	public void setOrigin (float x, float y) {
-		this.x = x;
-		this.y = y;
-		setParams(Param.OffsetX, this.x);
-		setParams(Param.OffsetY, this.y);
-		endParams();
+	public float getBias() {
+		return bias;
 	}
 
-	public void setZoom (float zoom) {
-		this.zoom = zoom;
-		setParam(Param.Zoom, this.zoom);
-	}
-
-	public float getZoom () {
-		return zoom;
-	}
-
-	public float getOriginX () {
-		return x;
-	}
-
-	public float getOriginY () {
-		return y;
-	}
-
-    @Override
-    public void resize(int width, int height) {
-		// Do nothing.
-    }
-
-    @Override
-	public void rebind () {
-		// reimplement super to batch every parameter
-		setParams(Param.Texture, u_texture0);
-		setParams(Param.OffsetX, x);
-		setParams(Param.OffsetY, y);
-		setParams(Param.Zoom, zoom);
-		endParams();
+	public void setBias(float bias) {
+		this.bias = bias;
+		setParam(Param.Bias, this.bias);
 	}
 
 	@Override
-	protected void onBeforeRender () {
+	protected void onBeforeRender() {
 		inputTexture.bind(u_texture0);
+	}
+
+	@Override
+	public void resize(int width, int height) {
+
+	}
+
+	@Override
+	public void rebind() {
+		setParams(Param.Texture, u_texture0);
+		setBias(this.bias);
 	}
 }

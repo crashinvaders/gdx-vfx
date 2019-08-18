@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +26,21 @@ import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
  * @author bmanuel
  * @author metaphore
  */
-public final class Convolve2D extends MultipassFilter {
+public final class Convolve2dFilter extends MultipassVfxFilter {
 
     private final int radius;
     private final int length; // NxN taps filter, w/ N=length
 
     private final float[] weights, offsetsHor, offsetsVert;
 
-    private Convolve1D hor, vert;
+    private Convolve1dFilter hor, vert;
 
-    public Convolve2D(int radius) {
+    public Convolve2dFilter(int radius) {
         this.radius = radius;
         length = (radius * 2) + 1;
 
-        hor = new Convolve1D(length);
-        vert = new Convolve1D(length, hor.weights);
+        hor = new Convolve1dFilter(length);
+        vert = new Convolve1dFilter(length, hor.weights);
 
         weights = hor.weights;
         offsetsHor = hor.offsets;
