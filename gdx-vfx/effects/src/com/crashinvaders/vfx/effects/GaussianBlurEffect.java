@@ -36,8 +36,11 @@ public class GaussianBlurEffect extends VfxEffect {
     private boolean blending = false;
     private int sfactor, dfactor;
 
+    // To keep track of the first render call.
+    private boolean firstRender = true;
+
     public GaussianBlurEffect() {
-        this(1, GaussianBlurFilter.BlurType.Gaussian5x5);
+        this(8, GaussianBlurFilter.BlurType.Gaussian5x5);
     }
 
     public GaussianBlurEffect(int blurPasses, GaussianBlurFilter.BlurType blurType) {
@@ -85,6 +88,13 @@ public class GaussianBlurEffect extends VfxEffect {
         pingPongBuffer.begin();
         copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
         pingPongBuffer.swap();
+        // Blur filter performs multiple passes of mixing ping-pong buffers and expects src and dst to have valid data.
+        // So for the first run we just make both src and dst buffers identical.
+        if (firstRender) {
+            firstRender = false;
+            copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
+            pingPongBuffer.swap();
+        }
         blur.render(mesh, pingPongBuffer);
         pingPongBuffer.end();
 

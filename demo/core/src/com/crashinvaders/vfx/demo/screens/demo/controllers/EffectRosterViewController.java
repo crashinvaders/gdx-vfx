@@ -66,7 +66,7 @@ public class EffectRosterViewController extends LmlViewController {
                 new EffectEntryModel("Noise", new NoiseEffect(0.35f, 2f)),
                 new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
                 new EffectEntryModel("Film Grain", new FilmGrainEffect()),
-                new EffectEntryModel("Gaussian Blur", new GaussianBlurEffect(10, GaussianBlurFilter.BlurType.Gaussian5x5)),
+                new EffectEntryModel("Gaussian Blur", new GaussianBlurEffect(8, GaussianBlurFilter.BlurType.Gaussian5x5)),
                 new EffectEntryModel("Motion Blur (MAX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MAX, 0.75f)),
                 new EffectEntryModel("Motion Blur (MIX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MIX, 0.75f)),
                 new EffectEntryModel("Radial Blur", new RadialBlurEffect(RadialBlurFilter.Quality.High)),
