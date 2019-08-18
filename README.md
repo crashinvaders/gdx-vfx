@@ -35,19 +35,19 @@ The library currently is in beta, thus it's not available as a public release on
 Add it in your root build.gradle at the end of repositories:
 ```gradle
 allprojects {
-	repositories {
-		// ...
-		maven { url 'https://jitpack.io' }
-	}
+    repositories {
+        // ...
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
 Add the dependency:
 ```gradle
 dependencies {
-	// ...
-    	implementation 'com.github.crashinvaders.gdx-vfx:core:0.2'
-    	implementation 'com.github.crashinvaders.gdx-vfx:effects:0.2'
+    // ...
+    implementation 'com.github.crashinvaders.gdx-vfx:core:0.2'
+    implementation 'com.github.crashinvaders.gdx-vfx:effects:0.2'
 }
 ```
 
