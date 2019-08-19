@@ -16,20 +16,21 @@
 
 buildscript {
     repositories {
-        mavenLocal()
         mavenCentral()
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
         google()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
+        // https://github.com/Codearte/gradle-nexus-staging-plugin#tasks
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.0"
     }
 }
 
+apply plugin: 'io.codearte.nexus-staging'
+
 allprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
         jcenter()
         google()
@@ -38,8 +39,19 @@ allprojects {
     }
 }
 
+nexusStaging {
+    packageGroup = 'com.crashinvaders.vfx'
+    username = ossrhUsername
+    password = ossrhPassword
+}
+
 // Invokes 'build' and 'install' tasks on all projects in the correct order.
 // Prefer this over 'gradle build install' when changing the version of library.
 task installAll(dependsOn: ['gdx-vfx:core:build', 'gdx-vfx:core:install',
                             'gdx-vfx:effects:build', 'gdx-vfx:effects:install',
                             'gdx-vfx:gwt:build', 'gdx-vfx:gwt:install'])
+
+// Invokes 'build' and 'uploadArchives' tasks on all projects.
+task uploadArchivesAll(dependsOn: ['gdx-vfx:core:build', 'gdx-vfx:core:uploadArchives',
+                            'gdx-vfx:effects:build', 'gdx-vfx:effects:uploadArchives',
+                            'gdx-vfx:gwt:build', 'gdx-vfx:gwt:uploadArchives'])

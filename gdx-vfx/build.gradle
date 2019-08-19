@@ -25,9 +25,8 @@ subprojects {
 
     ext {
         projectVersion = '0.3.0'
-        isSnapshot = '-SNAPSHOT'
-        libVersion = "$projectVersion$isSnapshot"
-        isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
+        snapshotVersion = true
+        libVersion = "$projectVersion${snapshotVersion ? '-SNAPSHOT' : ''}"
     }
 
     group = "com.crashinvaders.vfx"
@@ -50,7 +49,7 @@ subprojects {
     }
 
     signing {
-        required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+        required { !snapshotVersion && gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
     }
 
@@ -69,9 +68,10 @@ subprojects {
 
                 pom.project {
                     name = projectName
-                    packaging 'jar'
+                    artifactId = projectName
+                    packaging = 'jar'
                     description = projectDesc
-                    url 'http://github.com/crashinvaders/gdx-vfx'
+                    url = 'http://github.com/crashinvaders/gdx-vfx'
 
                     licenses {
                         license {
@@ -98,10 +98,4 @@ subprojects {
             }
         }
     }
-
-//    nexusStaging {
-//        packageGroup = 'com.crashinvaders.vfx'
-//        username = ossrhUsername
-//        password = ossrhPassword
-//    }
 }
