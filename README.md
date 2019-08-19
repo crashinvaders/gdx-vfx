@@ -31,7 +31,7 @@ cd gdx-vfx
 ### 1. Add the library to the project
 
 #### Maven dependency
-The library currently is in Beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx) we still can reference the library as a maven dependency.
+The library currently is in Beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx) we still can connect the library as a maven dependency.
 
 Add it in your root build.gradle at the end of repositories:
 ```gradle
