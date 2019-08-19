@@ -19,7 +19,7 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 

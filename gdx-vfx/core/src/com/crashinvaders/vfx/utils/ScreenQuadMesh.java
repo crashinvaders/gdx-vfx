@@ -1,4 +1,5 @@
 /*******************************************************************************
+ * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.gl;
+package com.crashinvaders.vfx.utils;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;

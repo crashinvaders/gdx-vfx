@@ -17,8 +17,8 @@
 package com.crashinvaders.vfx;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 /**
  * This interface defines the base class for the concrete implementation of post-processor effects.

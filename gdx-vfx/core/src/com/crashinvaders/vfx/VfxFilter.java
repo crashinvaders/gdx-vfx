@@ -23,8 +23,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.utils.ScreenQuadMesh;
 
 /**
  * Base class for any single-pass filter.

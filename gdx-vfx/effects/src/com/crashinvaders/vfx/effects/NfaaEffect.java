@@ -16,8 +16,8 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.NfaaFilter;
 

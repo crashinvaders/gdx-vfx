@@ -18,8 +18,8 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.gl.ScreenQuadMesh;
-import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.VfxFilter;
 
 /**

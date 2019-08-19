@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.gl.framebuffer;
+package com.crashinvaders.vfx.framebuffer;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;

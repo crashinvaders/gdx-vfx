@@ -24,10 +24,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.gl.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ScreenQuadMesh;
 import com.crashinvaders.vfx.utils.PrioritizedArray;
-import com.crashinvaders.vfx.gl.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.gl.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 
 /**
  * Provides a way to beginCapture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to
