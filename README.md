@@ -2,8 +2,8 @@
 
 # 
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.crashinvaders.vfx/gdx-vfx-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.crashinvaders.vfx%22%20AND%20a:%22gdx-vfx-core%22)
 [![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
-[![JitPack Maven](https://jitpack.io/v/crashinvaders/gdx-vfx.svg)](https://jitpack.io/#crashinvaders/gdx-vfx)
 
 Flexible post-processing shader visual effects for LibGDX. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), with lots of improvements and heavy refactoring.
 The goal is to focus on stability, offer lightweight integration and provide simple effect implementation mechanism.
@@ -31,14 +31,13 @@ cd gdx-vfx
 ### 1. Add the library to the project
 
 #### Maven dependency
-The library currently is in Beta, thus it's not available as a public release on Maven Central. But with help of [JitPack](https://jitpack.io/#crashinvaders/gdx-vfx) we still can connect the library as a maven dependency.
+The library stable releases are available through maven central repo.
 
 Add it in your root build.gradle at the end of repositories:
 ```gradle
 allprojects {
     repositories {
-        // ...
-        maven { url 'https://jitpack.io' }
+        mavenCentral()
     }
 }
 ```
@@ -46,9 +45,8 @@ allprojects {
 Add the dependency:
 ```gradle
 dependencies {
-    // ...
-    implementation 'com.github.crashinvaders.gdx-vfx:core:0.2'
-    implementation 'com.github.crashinvaders.gdx-vfx:effects:0.2'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.4.0'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.4.0'
 }
 ```
 
