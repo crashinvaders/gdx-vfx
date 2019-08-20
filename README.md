@@ -1,7 +1,5 @@
 ![Logo](https://i.imgur.com/kVBGQHx.png)
 
-# 
-
 [![Maven Central](https://img.shields.io/maven-central/v/com.crashinvaders.vfx/gdx-vfx-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.crashinvaders.vfx%22%20AND%20a:%22gdx-vfx-core%22)
 [![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
 
