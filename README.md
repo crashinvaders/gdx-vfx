@@ -31,7 +31,7 @@ cd gdx-vfx
 ### 1. Add the library to the project
 
 #### Maven dependency
-The library stable releases are available through maven central repo.
+The library's stable releases are available through maven central repo.
 
 Add it in your root build.gradle at the end of repositories:
 ```gradle
