@@ -8,7 +8,7 @@
 Flexible post-processing shader visual effects for LibGDX. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), with lots of improvements and heavy refactoring.
 The goal is to focus on stability, offer lightweight integration and provide simple effect implementation mechanism.
 
-The library is in Beta. Some goodies might be missing and more cool stuff is to be implemented soon.
+The library is in Beta, code is poorly documented. Some goodies might be missing and more cool stuff is to be implemented soon.
 
 Read more about the library at the [wiki introduction page](https://github.com/crashinvaders/gdx-vfx/wiki/Library-overview).
 
