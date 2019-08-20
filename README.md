@@ -46,7 +46,7 @@ Add the dependency:
 ```gradle
 dependencies {
     implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.4.0'
-    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.4.0'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.4.0'    // Optional, if you need standard filter/effects.
 }
 ```
 
