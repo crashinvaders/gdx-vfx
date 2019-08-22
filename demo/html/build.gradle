@@ -41,16 +41,16 @@ gwt {
 }
 
 dependencies {
-    compile project(":demo:core")
-    compile project(":gdx-vfx:gwt")
-    compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
-    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+    implementation project(":demo:core")
+    implementation project(":gdx-vfx:gwt")
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+    implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
 
     //TODO Replace with Maven dependency when LML will officially support LibGDX 1.9.10.
-    compile fileTree(dir: '../libs', include: ['gdx-kiwi*.jar', 'gdx-lml*.jar'])
-//    compile "com.github.czyzby:gdx-lml:$lmlVersion:sources"
-//    compile "com.github.czyzby:gdx-kiwi:$lmlVersion:sources"
+    implementation fileTree(dir: '../libs', include: ['gdx-kiwi*.jar', 'gdx-lml*.jar'])
+//    implementation "com.github.czyzby:gdx-lml:$lmlVersion:sources"
+//    implementation "com.github.czyzby:gdx-kiwi:$lmlVersion:sources"
 }
 
 task startHttpServer () {

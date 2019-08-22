@@ -45,7 +45,6 @@ configure(subprojects - project(':demo:android')) {
     sourceSets.main.resources.srcDirs = ["src"]
 }
 
-
 subprojects {
     version = '1.0'
     ext.appName = 'gdx-vfx'

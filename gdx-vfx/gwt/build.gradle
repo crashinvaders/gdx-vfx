@@ -18,6 +18,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs += ['../assets']
 
 dependencies {
-    compile project(":demo:core")
-    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+    implementation project(":demo:core")
+    implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
 }

@@ -18,7 +18,7 @@ sourceSets.main.java.srcDirs += ['src/']
 sourceSets.main.resources.srcDirs += ['assets/']
 
 dependencies {
-    compile project(':gdx-vfx:core')
+    implementation project(':gdx-vfx:core')
     runtime files('assets')
 }
 
