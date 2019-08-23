@@ -61,7 +61,6 @@ public class VfxViewController extends LmlViewController {
         vfxManager.setClearColor(clearColor);
         vfxGroup.addActor(canvasRoot);
 
-        IntegerRoundFillContainer vfxGroupContainer = new IntegerRoundFillContainer(vfxGroup);
-        return vfxGroupContainer;
+        return new IntegerRoundFillContainer(vfxGroup);
     }
 }

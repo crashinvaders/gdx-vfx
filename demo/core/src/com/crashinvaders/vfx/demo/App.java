@@ -16,10 +16,7 @@
 
 package com.crashinvaders.vfx.demo;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.*;
 import com.crashinvaders.vfx.common.PrioritizedInputMultiplexer;
 import com.crashinvaders.vfx.demo.screens.demo.DemoScreen;
 
@@ -53,6 +50,7 @@ public class App extends Game {
 	public void create () {
 		instance = this;
 
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		demoScreen = new DemoScreen();

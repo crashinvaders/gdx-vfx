@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.crashinvaders.vfx.VfxManager;
 
@@ -38,12 +39,9 @@ public class VfxWidgetGroup extends WidgetGroup {
     protected void setStage(Stage stage) {
         super.setStage(stage);
 
-        if (stage != null && !initialized) {
-            initialized = true;
+        if (stage != null) {
             initialize();
-        }
-        if (stage == null && initialized) {
-            initialized = false;
+        } else {
             reset();
         }
     }
@@ -61,8 +59,8 @@ public class VfxWidgetGroup extends WidgetGroup {
         if (resizePending) {
             resizePending = false;
             vfxManager.resize(
-                    MathUtils.round(getWidth()),
-                    MathUtils.round(getHeight()));
+                    MathUtils.floor(getWidth()),
+                    MathUtils.floor(getHeight()));
         }
         vfxManager.beginCapture();
         batch.begin();
@@ -79,19 +77,25 @@ public class VfxWidgetGroup extends WidgetGroup {
     }
 
     private void initialize() {
+        if (initialized) return;
+
         int width = (int)getWidth();
         int height = (int)getHeight();
         if (width == 0 || height == 0) {
             Viewport viewport = getStage().getViewport();
-            width = MathUtils.round(viewport.getWorldWidth());
-            height = MathUtils.round(viewport.getWorldHeight());
+            width = MathUtils.floor(viewport.getWorldWidth());
+            height = MathUtils.floor(viewport.getWorldHeight());
         }
         vfxManager.resize(width, height);
         resizePending = false;
+        initialized = true;
     }
 
     private void reset() {
-        resizePending = false;
+        if (!initialized) return;
+
         vfxManager.dispose();
+        resizePending = false;
+        initialized = false;
     }
 }
