@@ -19,29 +19,25 @@ package com.crashinvaders.vfx.gwt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtGL20;
 import com.badlogic.gdx.backends.gwt.GwtGraphics;
+import com.badlogic.gdx.graphics.GL20;
 import com.crashinvaders.vfx.gl.VfxGlExtension;
-import com.crashinvaders.vfx.gl.VfxGLUtils;
+import com.crashinvaders.vfx.gl.VfxGlViewport;
 import com.google.gwt.typedarrays.shared.Int32Array;
 import com.google.gwt.webgl.client.WebGLFramebuffer;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
 
-public class GwtVfxGlExtension implements VfxGlExtension {
-    private static final VfxGlExtension.Viewport tmpViewport = new Viewport();
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
-    @Override
-    public Viewport getViewport() {
-        GwtGraphics graphics = (GwtGraphics) Gdx.graphics;
-        WebGLRenderingContext renderingContext = graphics.getContext();
-        Int32Array viewport = renderingContext.getParameterv(WebGLRenderingContext.VIEWPORT);
-        return tmpViewport.set(viewport.get(0), viewport.get(1), viewport.get(2), viewport.get(3));
-    }
+public class GwtVfxGlExtension implements VfxGlExtension {
 
     @Override
     public int getBoundFboHandle() {
         GwtGraphics graphics = (GwtGraphics) Gdx.graphics;
         GwtGL20 gwtGl = (GwtGL20) graphics.getGL20();
-        WebGLRenderingContext renderingContext = graphics.getContext();
-        WebGLFramebuffer frameBuffer = renderingContext.getParametero(WebGLRenderingContext.FRAMEBUFFER_BINDING);
+        WebGLRenderingContext glContext = graphics.getContext();
+        WebGLFramebuffer frameBuffer = glContext.getParametero(WebGLRenderingContext.FRAMEBUFFER_BINDING);
 
         if (frameBuffer == null) {
             return 0;

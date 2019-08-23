@@ -27,12 +27,17 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 public class VfxGLUtils {
     private static final String TAG = VfxGLUtils.class.getSimpleName();
+    private static final IntBuffer tmpIntBuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
+    private static final ByteBuffer tmpByteBuffer = BufferUtils.newByteBuffer(32);
+    private static final VfxGlViewport tmpViewport = new VfxGlViewport();
 
     //TODO Remove this after https://github.com/libgdx/libgdx/issues/4688 gets resolved
-    // This field may be used to provide custom implementation
+    /** This field is used to provide custom GL calls implementation. */
     public static VfxGlExtension glExtension;
     static {
         if (Gdx.app.getType() == Application.ApplicationType.WebGL) {
@@ -56,8 +61,10 @@ public class VfxGLUtils {
         return glExtension.getBoundFboHandle();
     }
 
-    public static VfxGlExtension.Viewport getViewport() {
-        return glExtension.getViewport();
+    public static VfxGlViewport getViewport() {
+        IntBuffer intBuf = tmpIntBuf;
+        Gdx.gl.glGetIntegerv(GL20.GL_VIEWPORT, intBuf);
+        return tmpViewport.set(intBuf.get(0), intBuf.get(1), intBuf.get(2), intBuf.get(3));
     }
 
     public static ShaderProgram compileShader(FileHandle vertexFile, FileHandle fragmentFile) {
@@ -99,8 +106,6 @@ public class VfxGLUtils {
     /** Enable pipeline state queries: beware the pipeline can stall! */
     public static boolean enableGLQueryStates = false;
 
-    private static final ByteBuffer byteBuffer = BufferUtils.newByteBuffer(32);
-
     /**
      * Provides a simple mechanism to query OpenGL pipeline states.
      * Note: state queries are costly and stall the pipeline, especially on mobile devices!
@@ -114,9 +119,9 @@ public class VfxGLUtils {
 
         switch (pName) {
             case GL20.GL_BLEND:
-                Gdx.gl20.glGetBooleanv(GL20.GL_BLEND, byteBuffer);
-                result = (byteBuffer.get() == 1);
-                byteBuffer.clear();
+                Gdx.gl20.glGetBooleanv(GL20.GL_BLEND, tmpByteBuffer);
+                result = (tmpByteBuffer.get() == 1);
+                tmpByteBuffer.clear();
                 break;
             default:
                 result = false;

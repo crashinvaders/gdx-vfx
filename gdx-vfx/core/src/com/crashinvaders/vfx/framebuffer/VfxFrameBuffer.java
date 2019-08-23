@@ -28,8 +28,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import com.crashinvaders.vfx.gl.VfxGlExtension;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
+import com.crashinvaders.vfx.gl.VfxGlViewport;
 
 /**
  * Wraps {@link FrameBuffer} and manages currently bound OpenGL FBO.
@@ -81,7 +81,7 @@ public class VfxFrameBuffer implements Disposable {
 
     private final RendererManager renderers = new RendererManager();
 
-    private final VfxGlExtension.Viewport preservedViewport = new VfxGlExtension.Viewport();
+    private final VfxGlViewport preservedViewport = new VfxGlViewport();
     private final Pixmap.Format pixelFormat;
     private int previousFboHandle;
 
@@ -203,8 +203,8 @@ public class VfxFrameBuffer implements Disposable {
         return boundFboHandle;
     }
 
-    protected VfxGlExtension.Viewport getViewport() {
-        VfxGlExtension.Viewport viewport = VfxGLUtils.getViewport();
+    protected VfxGlViewport getViewport() {
+        VfxGlViewport viewport = VfxGLUtils.getViewport();
         return viewport;
     }
 
