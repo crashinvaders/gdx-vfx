@@ -35,8 +35,8 @@ public final class CombineFilter extends VfxFilter<CombineFilter> {
         Source2Intensity("u_src2Intensity", 0),
         Source2Saturation("u_src2Saturation", 0);
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
         private Param(String m, int elementSize) {
             this.mnemonic = m;

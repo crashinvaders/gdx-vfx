@@ -24,14 +24,13 @@ public class FilmGrainFilter extends VfxFilter<FilmGrainFilter> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
-//        Resolution("u_resolution", 2),
         Seed("u_seed", 0),
         ;
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
-        Param (String m, int elementSize) {
+        Param(String m, int elementSize) {
             this.mnemonic = m;
             this.elementSize = elementSize;
         }
@@ -47,7 +46,6 @@ public class FilmGrainFilter extends VfxFilter<FilmGrainFilter> {
         }
     }
 
-//    private final Vector2 resolution = new Vector2();
     private float seed = 0f;
 
     public FilmGrainFilter() {
@@ -64,15 +62,13 @@ public class FilmGrainFilter extends VfxFilter<FilmGrainFilter> {
 
     @Override
     public void resize(int width, int height) {
-//        resolution.set(width, height);
-//        rebind();
+        // Do nothing.
     }
 
     @Override
     public void rebind () {
-        setParam(Param.Texture0, u_texture0);
-//        setParam(Param.Resolution, resolution);
-        setParam(Param.Seed, seed);
+        setParams(Param.Texture0, u_texture0);
+        setParams(Param.Seed, seed);
         endParams();
     }
 

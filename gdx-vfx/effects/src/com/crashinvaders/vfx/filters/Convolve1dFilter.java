@@ -22,6 +22,7 @@ import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class Convolve1dFilter extends VfxFilter<Convolve1dFilter> {
+
     public enum Param implements Parameter {
         Texture("u_texture0", 0),
         SampleWeights("SampleWeights", 1),
@@ -29,9 +30,9 @@ public final class Convolve1dFilter extends VfxFilter<Convolve1dFilter> {
         ;
 
         private String mnemonic;
-        private int elementSize;
+        final int elementSize;
 
-        private Param(String mnemonic, int arrayElementSize) {
+        Param(String mnemonic, int arrayElementSize) {
             this.mnemonic = mnemonic;
             this.elementSize = arrayElementSize;
         }
@@ -91,7 +92,7 @@ public final class Convolve1dFilter extends VfxFilter<Convolve1dFilter> {
     public void rebind() {
         setParams(Param.Texture, u_texture0);
         setParamsv(Param.SampleWeights, weights, 0, length);
-        setParamsv(Param.SampleOffsets, offsets, 0, length * 2 /* libgdx asks for number of floats, NOT number of elements! */);
+        setParamsv(Param.SampleOffsets, offsets, 0, length * 2 /* LibGDX asks for number of floats, NOT number of elements! */);
         endParams();
     }
 

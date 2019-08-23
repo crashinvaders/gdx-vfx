@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 // Source https://github.com/spite/Wagner/blob/master/fragment-shaders/noise-fs.glsl
+
 //#version 120
 #ifdef GL_ES
 precision mediump float;

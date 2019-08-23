@@ -31,18 +31,16 @@ public final class FxaaFilter extends VfxFilter<FxaaFilter> {
 	private float fxaaSpanMax;
 
 	public enum Param implements Parameter {
-		// @formatter:off
 		Texture("u_texture0", 0),
 		ViewportInverse("u_viewportInverse", 2),
 		FxaaReduceMin("u_fxaaReduceMin", 0),
 		FxaaReduceMul("u_fxaaReduceMul", 0),
 		FxaaSpanMax("u_fxaaSpanMax", 0);
-		// @formatter:on
 
 		private String mnemonic;
-		private int elementSize;
+		final int elementSize;
 
-		private Param (String mnemonic, int arrayElementSize) {
+		Param(String mnemonic, int arrayElementSize) {
 			this.mnemonic = mnemonic;
 			this.elementSize = arrayElementSize;
 		}
@@ -69,34 +67,25 @@ public final class FxaaFilter extends VfxFilter<FxaaFilter> {
 		rebind();
 	}
 
-	public void setViewportSize (float width, float height) {
-		this.viewportInverse.set(1f / width, 1f / height);
-		setParam(Param.ViewportInverse, this.viewportInverse);
-	}
-
 	/** Sets the parameter. The default value is 1/128.
 	 * @param value */
-	public void setFxaaReduceMin (float value) {
+	public void setReduceMin (float value) {
 		this.fxaaReduceMin = value;
 		setParam(Param.FxaaReduceMin, this.fxaaReduceMin);
 	}
 
 	/** Sets the parameter. The default value is 1/8.
 	 * @param value */
-	public void setFxaaReduceMul (float value) {
+	public void setReduceMul (float value) {
 		this.fxaaReduceMul = value;
 		setParam(Param.FxaaReduceMul, this.fxaaReduceMul);
 	}
 
 	/** Sets the parameter. The default value is 8;
 	 * @param value */
-	public void setFxaaSpanMax (float value) {
+	public void setSpanMax(float value) {
 		this.fxaaSpanMax = value;
 		setParam(Param.FxaaSpanMax, this.fxaaSpanMax);
-	}
-
-	public Vector2 getViewportSize () {
-		return viewportInverse;
 	}
 
     @Override
@@ -107,7 +96,6 @@ public final class FxaaFilter extends VfxFilter<FxaaFilter> {
 
     @Override
 	public void rebind () {
-		// reimplement super to batch every parameter
 		setParams(Param.Texture, u_texture0);
 		setParams(Param.ViewportInverse, viewportInverse);
 		setParams(Param.FxaaReduceMin, fxaaReduceMin);

@@ -22,46 +22,47 @@ import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public class CopyFilter extends VfxFilter<CopyFilter> {
-	public enum Param implements Parameter {
-		Texture0("u_texture0", 0);
 
-		private final String mnemonic;
-		private int elementSize;
+    public enum Param implements Parameter {
+        Texture0("u_texture0", 0);
 
-		Param (String m, int elementSize) {
-			this.mnemonic = m;
-			this.elementSize = elementSize;
-		}
+        final String mnemonic;
+        final int elementSize;
 
-		@Override
-		public String mnemonic () {
-			return this.mnemonic;
-		}
+        Param(String m, int elementSize) {
+            this.mnemonic = m;
+            this.elementSize = elementSize;
+        }
 
-		@Override
-		public int arrayElementSize () {
-			return this.elementSize;
-		}
-	}
+        @Override
+        public String mnemonic() {
+            return this.mnemonic;
+        }
 
-	public CopyFilter() {
-		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/copy.frag")));
-	}
+        @Override
+        public int arrayElementSize() {
+            return this.elementSize;
+        }
+    }
 
-    @Override
-    public void resize(int width, int height) {
-
+    public CopyFilter() {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/copy.frag")));
     }
 
     @Override
-	public void rebind () {
-		setParam(Param.Texture0, u_texture0);
-	}
+    public void resize(int width, int height) {
+		// Do nothing.
+    }
 
-	@Override
-	protected void onBeforeRender () {
-		inputTexture.bind(u_texture0);
-	}
+    @Override
+    public void rebind() {
+        setParam(Param.Texture0, u_texture0);
+    }
+
+    @Override
+    protected void onBeforeRender() {
+        inputTexture.bind(u_texture0);
+    }
 }

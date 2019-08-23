@@ -22,19 +22,16 @@ import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class RadialDistortionFilter extends VfxFilter<RadialDistortionFilter> {
-	private float zoom, distortion;
 
 	public enum Param implements Parameter {
-		// @formatter:off
 		Texture0("u_texture0", 0),
 		Distortion("distortion", 0),
 		Zoom("zoom", 0);
-		// @formatter:on
 
-		private final String mnemonic;
-		private int elementSize;
+		final String mnemonic;
+		final int elementSize;
 
-		private Param (String m, int elementSize) {
+		Param(String m, int elementSize) {
 			this.mnemonic = m;
 			this.elementSize = elementSize;
 		}
@@ -50,13 +47,18 @@ public final class RadialDistortionFilter extends VfxFilter<RadialDistortionFilt
 		}
 	}
 
+	private float zoom = 1f;
+	private float distortion = 0.3f;
+
 	public RadialDistortionFilter() {
 		super(VfxGLUtils.compileShader(
 				Gdx.files.classpath("shaders/screenspace.vert"),
 				Gdx.files.classpath("shaders/radial-distortion.frag")));
 		rebind();
-		setDistortion(0.3f);
-		setZoom(1f);
+	}
+
+	public float getDistortion () {
+		return distortion;
 	}
 
 	public void setDistortion (float distortion) {
@@ -64,17 +66,13 @@ public final class RadialDistortionFilter extends VfxFilter<RadialDistortionFilt
 		setParam(Param.Distortion, this.distortion);
 	}
 
+	public float getZoom () {
+		return zoom;
+	}
+
 	public void setZoom (float zoom) {
 		this.zoom = zoom;
 		setParam(Param.Zoom, this.zoom);
-	}
-
-	public float getDistortion () {
-		return distortion;
-	}
-
-	public float getZoom () {
-		return zoom;
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public final class RadialDistortionFilter extends VfxFilter<RadialDistortionFilt
 
     @Override
     public void resize(int width, int height) {
-
+		// Do nothing.
     }
 
     @Override
@@ -92,7 +90,6 @@ public final class RadialDistortionFilter extends VfxFilter<RadialDistortionFilt
 		setParams(Param.Texture0, u_texture0);
 		setParams(Param.Distortion, distortion);
 		setParams(Param.Zoom, zoom);
-
 		endParams();
 	}
 }

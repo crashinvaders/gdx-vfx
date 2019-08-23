@@ -18,24 +18,22 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class ZoomFilter extends VfxFilter<ZoomFilter> {
-	private float x, y, zoom;
 
 	public enum Param implements Parameter {
-		// @formatter:off
 		Texture("u_texture0", 0),
-		OffsetX("offset_x", 0),
-		OffsetY("offset_y", 0),
-		Zoom("zoom", 0), ;
-		// @formatter:on
+		OffsetX("u_offsetX", 0),
+		OffsetY("u_offsetY", 0),
+		Zoom("u_zoom", 0), ;
 
 		private String mnemonic;
-		private int elementSize;
+		final int elementSize;
 
-		private Param (String mnemonic, int arrayElementSize) {
+		Param(String mnemonic, int arrayElementSize) {
 			this.mnemonic = mnemonic;
 			this.elementSize = arrayElementSize;
 		}
@@ -51,39 +49,69 @@ public final class ZoomFilter extends VfxFilter<ZoomFilter> {
 		}
 	}
 
+	private float originX = 0.5f;
+	private float originY = 0.5f;
+	private float zoom = 1f;
+
 	public ZoomFilter() {
 		super(VfxGLUtils.compileShader(
 				Gdx.files.classpath("shaders/zoom.vert"),
 				Gdx.files.classpath("shaders/zoom.frag")));
 		rebind();
-		setOrigin(0.5f, 0.5f);
-		setZoom(1f);
 	}
 
-	/** Specify the zoom origin, in normalized screen coordinates. */
-	public void setOrigin (float x, float y) {
-		this.x = x;
-		this.y = y;
-		setParams(Param.OffsetX, this.x);
-		setParams(Param.OffsetY, this.y);
+	public float getOriginX () {
+		return originX;
+	}
+
+	public float getOriginY () {
+		return originY;
+	}
+
+	/**
+	 * Specify the zoom origin in {@link Align} bits.
+	 * @see Align
+	 */
+	public void setOrigin(int align) {
+		final float originX;
+		final float originY;
+		if ((align & Align.left) != 0) {
+			originX = 0f;
+		} else if ((align & Align.right) != 0) {
+			originX = 1f;
+		} else {
+			originX = 0.5f;
+		}
+		if ((align & Align.bottom) != 0) {
+			originY = 0f;
+		} else if ((align & Align.top) != 0) {
+			originY = 1f;
+		} else {
+			originY = 0.5f;
+		}
+		setOrigin(originX, originY);
+	}
+
+	/**
+	 * Specify the zoom origin in normalized screen coordinates.
+	 * @param originX horizontal origin [0..1].
+	 * @param originY vertical origin [0..1].
+	 */
+	public void setOrigin (float originX, float originY) {
+		this.originX = originX;
+		this.originY = originY;
+		setParams(Param.OffsetX, this.originX);
+		setParams(Param.OffsetY, this.originY);
 		endParams();
-	}
-
-	public void setZoom (float zoom) {
-		this.zoom = zoom;
-		setParam(Param.Zoom, this.zoom);
 	}
 
 	public float getZoom () {
 		return zoom;
 	}
 
-	public float getOriginX () {
-		return x;
-	}
-
-	public float getOriginY () {
-		return y;
+	public void setZoom (float zoom) {
+		this.zoom = zoom;
+		setParam(Param.Zoom, this.zoom);
 	}
 
     @Override
@@ -93,10 +121,9 @@ public final class ZoomFilter extends VfxFilter<ZoomFilter> {
 
     @Override
 	public void rebind () {
-		// reimplement super to batch every parameter
 		setParams(Param.Texture, u_texture0);
-		setParams(Param.OffsetX, x);
-		setParams(Param.OffsetY, y);
+		setParams(Param.OffsetX, originX);
+		setParams(Param.OffsetY, originY);
 		setParams(Param.Zoom, zoom);
 		endParams();
 	}

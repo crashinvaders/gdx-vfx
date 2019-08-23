@@ -24,32 +24,30 @@ public class NoiseFilter extends VfxFilter<NoiseFilter> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
-//        Resolution("u_resolution", 2),
         Amount("u_amount", 0),
         Speed("u_speed", 0),
         Time("u_time", 0),
         ;
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
-        Param (String m, int elementSize) {
+        Param(String m, int elementSize) {
             this.mnemonic = m;
             this.elementSize = elementSize;
         }
 
         @Override
-        public String mnemonic () {
+        public String mnemonic() {
             return this.mnemonic;
         }
 
         @Override
-        public int arrayElementSize () {
+        public int arrayElementSize() {
             return this.elementSize;
         }
     }
 
-//    private final Vector2 resolution = new Vector2();
     private float amount;
     private float speed;
     private float time = 0f;
@@ -90,14 +88,12 @@ public class NoiseFilter extends VfxFilter<NoiseFilter> {
 
     @Override
     public void resize(int width, int height) {
-//        this.resolution.set(width, height);
-//        rebind();
+        // Do nothing.
     }
 
     @Override
-    public void rebind () {
+    public void rebind() {
         setParams(Param.Texture0, u_texture0);
-//        setParams(Param.Resolution, resolution);
         setParams(Param.Amount, amount);
         setParams(Param.Speed, speed);
         setParams(Param.Time, time);
@@ -105,7 +101,7 @@ public class NoiseFilter extends VfxFilter<NoiseFilter> {
     }
 
     @Override
-    protected void onBeforeRender () {
+    protected void onBeforeRender() {
         inputTexture.bind(u_texture0);
     }
 }

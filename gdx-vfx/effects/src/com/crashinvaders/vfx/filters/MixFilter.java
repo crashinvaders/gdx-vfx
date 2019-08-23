@@ -31,8 +31,8 @@ public final class MixFilter extends VfxFilter<MixFilter> {
         Texture1("u_texture1", 0),
         Mix("u_mix", 0);
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
         Param(String m, int elementSize) {
             this.mnemonic = m;

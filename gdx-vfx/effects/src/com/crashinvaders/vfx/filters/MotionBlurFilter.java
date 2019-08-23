@@ -47,7 +47,7 @@ public class MotionBlurFilter extends VfxFilter<MotionBlurFilter> {
         BlurOpacity("u_blurOpacity", 0);
 
         private String mnemonic;
-        private int elementSize;
+        final int elementSize;
 
         Param(String mnemonic, int arrayElementSize) {
             this.mnemonic = mnemonic;

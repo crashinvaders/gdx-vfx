@@ -23,7 +23,7 @@ import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.ZoomFilter;
 
 /**
- * Implements a zooming effect.
+ * Simple zooming effect.
  */
 public final class ZoomerEffect extends VfxEffect {
     private final ZoomFilter zoom;
@@ -64,9 +64,20 @@ public final class ZoomerEffect extends VfxEffect {
         zoom.setInput(src).setOutput(dst).render(mesh);
     }
 
-    /**
-     * Specify the zoom origin, in screen normalized coordinates.
-     */
+    public float getOriginX() {
+        return zoom.getOriginX();
+    }
+
+    public float getOriginY() {
+        return zoom.getOriginY();
+    }
+
+    /** @see ZoomFilter#setOrigin(int) */
+    public void setOrigin(int align) {
+        zoom.setOrigin(align);
+    }
+
+    /** @see ZoomFilter#setOrigin(float, float) */
     public void setOrigin(float x, float y) {
         zoom.setOrigin(x, y);
     }

@@ -22,17 +22,15 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.RadialBlurFilter;
 
-/**
- * Implements a zooming effect: either a radial blur filter.
- */
 public final class RadialBlurEffect extends VfxEffect {
     private final RadialBlurFilter radialBlur;
 
-    /**
-     * Creating a Zoomer specifying the radial blur quality will enable radial blur
-     */
-    public RadialBlurEffect(RadialBlurFilter.Quality quality) {
-        radialBlur = new RadialBlurFilter(quality);
+    public RadialBlurEffect() {
+        this(8);
+    }
+
+    public RadialBlurEffect(int passes) {
+        radialBlur = new RadialBlurFilter(passes);
     }
 
     @Override
@@ -55,9 +53,13 @@ public final class RadialBlurEffect extends VfxEffect {
         radialBlur.setInput(src).setOutput(dst).render(mesh);
     }
 
-    /**
-     * Specify the zoom origin, in screen normalized coordinates.
-     */
+    /** @see RadialBlurFilter#setOrigin(int)  */
+    public RadialBlurEffect setOrigin(int align) {
+        radialBlur.setOrigin(align);
+        return this;
+    }
+
+    /** @see RadialBlurFilter#setOrigin(float, float)  */
     public RadialBlurEffect setOrigin(float x, float y) {
         radialBlur.setOrigin(x, y);
         return this;
@@ -72,11 +74,11 @@ public final class RadialBlurEffect extends VfxEffect {
         return this;
     }
 
-    public float getBlurStrength() {
+    public float getStrength() {
         return radialBlur.getStrength();
     }
 
-    public RadialBlurEffect setBlurStrength(float strength) {
+    public RadialBlurEffect setStrength(float strength) {
         radialBlur.setStrength(strength);
         return this;
     }

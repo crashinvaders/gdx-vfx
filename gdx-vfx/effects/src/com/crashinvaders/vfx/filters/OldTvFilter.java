@@ -29,10 +29,10 @@ public class OldTvFilter extends VfxFilter<OldTvFilter> {
         Time("u_time", 0),
         ;
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
-        Param (String m, int elementSize) {
+        Param(String m, int elementSize) {
             this.mnemonic = m;
             this.elementSize = elementSize;
         }

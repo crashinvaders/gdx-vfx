@@ -24,12 +24,15 @@
 	#define PRECISION
 #endif
 
-const float MAX_DISTORT = 1.2;
-const int NUM_ITER = 12;
+#ifndef PASSES
+#error Please define PASSES
+#endif
+
+const int NUM_ITER = PASSES;
 const float RECI_NUM_ITER_F = 1.0 / float(NUM_ITER);
 
 uniform sampler2D u_texture0;
-//uniform vec2 u_resolution;
+uniform float u_maxDistortion;
 
 varying vec2 v_texCoords;
 
@@ -47,7 +50,6 @@ float linterp(float t) {
 	return sat(1.0 - abs(2.0 * t - 1.0));
 }
 
-
 float remap(float t, float a, float b) {
 	return sat((t - a) / (b - a));
 }
@@ -59,7 +61,7 @@ vec4 spectrumOffset(float t) {
 	float w = linterp(remap(t, 1.0 / 6.0, 5.0 / 6.0));
 	ret = vec4(lo, 1.0, hi, 1.0) * vec4(1.0 - w, w, 1.0 - w, 1.0);
 
-	return pow(ret, vec4(1.0 / MAX_DISTORT));
+	return pow(ret, vec4(1.0 / u_maxDistortion));
 }
 void main() {
 	vec2 uv = v_texCoords;
@@ -70,7 +72,7 @@ void main() {
 		float t = float(i) * RECI_NUM_ITER_F;
 		vec4 w = spectrumOffset(t);
 		sumw += w;
-		sumcol += w * texture2D(u_texture0, barrelDistortion(uv, 0.6 * MAX_DISTORT * t));
+		sumcol += w * texture2D(u_texture0, barrelDistortion(uv, 0.6 * u_maxDistortion * t));
 	}
 
 	gl_FragColor = sumcol / sumw;

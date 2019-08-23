@@ -31,8 +31,8 @@ public class FisheyeDistortionFilter extends VfxFilter<FisheyeDistortionFilter> 
         Texture0("u_texture0", 0);
         // @formatter:on
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
         private Param(String m, int elementSize) {
             this.mnemonic = m;

@@ -56,7 +56,7 @@ public final class LensFlareFilter extends VfxFilter<LensFlareFilter> {
         // @formatter:on
 
         private String mnemonic;
-        private int elementSize;
+        final int elementSize;
 
         private Param(String mnemonic, int arrayElementSize) {
             this.mnemonic = mnemonic;

@@ -7,7 +7,6 @@
 
 	<!-- Shader code -->
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/bias.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/blur.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/blur.vert" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/chromatic-aberration.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/combine.frag" />

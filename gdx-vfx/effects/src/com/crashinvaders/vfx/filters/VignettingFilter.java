@@ -24,202 +24,204 @@ import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 public final class VignettingFilter extends VfxFilter<VignettingFilter> {
 
-	private float x, y;
-	private float intensity, saturation, saturationMul;
+    public enum Param implements Parameter {
+        Texture0("u_texture0", 0),
+        TexLUT("u_texture1", 0),
+        VignetteIntensity("u_vignetteIntensity", 0),
+        VignetteX("u_vignetteX", 0),
+        VignetteY("u_vignetteY", 0),
+        Saturation("u_saturation", 0),
+        SaturationMul("u_saturationMul", 0),
+        LutIntensity("u_lutIntensity", 0),
+        LutIndex1("u_lutIndex1", 0),
+        LutIndex2("u_lutIndex2", 0),
+        LutIndexOffset("u_lutIndexOffset", 0),
+        LutStep("u_lutStep", 0),
+        LutStepOffset("u_lutStepOffset", 0),
+        CenterX("u_centerX", 0),
+        CenterY("u_centerY", 0),
+        ;
 
-	private Texture texLut;
-	private boolean dolut, dosat;
-	private float lutintensity;
-	private int[] lutindex;
-	private float lutStep, lutStepOffset, lutIndexOffset;
-	private float centerX, centerY;
+        final String mnemonic;
+        final int elementSize;
 
-	public enum Param implements Parameter {
-		Texture0("u_texture0", 0),
-		TexLUT("u_texture1", 0),
-		VignetteIntensity("VignetteIntensity", 0),
-		VignetteX("VignetteX", 0),
-		VignetteY("VignetteY", 0),
-		Saturation("Saturation", 0),
-		SaturationMul("SaturationMul", 0),
-		LutIntensity("LutIntensity", 0),
-		LutIndex("LutIndex", 0),
-		LutIndex2("LutIndex2", 0),
-		LutIndexOffset("LutIndexOffset", 0),
-		LutStep("LutStep", 0),
-		LutStepOffset("LutStepOffset", 0),
-		CenterX("CenterX", 0),
-		CenterY("CenterY", 0),
-		;
+        Param(String m, int elementSize) {
+            this.mnemonic = m;
+            this.elementSize = elementSize;
+        }
 
-		private final String mnemonic;
-		private int elementSize;
+        @Override
+        public String mnemonic() {
+            return this.mnemonic;
+        }
 
-		Param (String m, int elementSize) {
-			this.mnemonic = m;
-			this.elementSize = elementSize;
-		}
+        @Override
+        public int arrayElementSize() {
+            return this.elementSize;
+        }
+    }
 
-		@Override
-		public String mnemonic () {
-			return this.mnemonic;
-		}
+    private float vignetteX = 0.8f;
+    private float vignetteY = 0.25f;
+    private float centerX = 0.5f;
+    private float centerY = 0.5f;
+    private float intensity = 1f;
+    private float saturation = 0f;
+    private float saturationMul = 0f;
 
-		@Override
-		public int arrayElementSize () {
-			return this.elementSize;
-		}
-	}
+    private boolean saturationEnabled;
 
-	public VignettingFilter(boolean controlSaturation) {
-		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/vignetting.frag"),
-				(controlSaturation ?
-						"#define CONTROL_SATURATION\n#define ENABLE_GRADIENT_MAPPING" :
-						"#define ENABLE_GRADIENT_MAPPING")));
-		dolut = false;
-		dosat = controlSaturation;
+    private boolean lutEnabled = false;
+    private Texture lutTexture = null;
+    private float lutIntensity = 1f;
+    private int lutIndex1 = -1;
+    private int lutIndex2 = -1;
+    private float lutStep;
+    private float lutStepOffset;
+    private float lutIndexOffset = 0f;
 
-		texLut = null;
-		lutindex = new int[2];
-		lutindex[0] = -1;
-		lutindex[1] = -1;
+    public VignettingFilter(boolean controlSaturation) {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/vignetting.frag"),
+                (controlSaturation ?
+                        "#define CONTROL_SATURATION\n#define ENABLE_GRADIENT_MAPPING" :
+                        "#define ENABLE_GRADIENT_MAPPING")));
+        saturationEnabled = controlSaturation;
+        rebind();
+    }
 
-		lutintensity = 1f;
-		lutIndexOffset = 0;
-		rebind();
-		setCoords(0.8f, 0.25f);
-		setCenter(0.5f, 0.5f);
-		setIntensity(1f);
-	}
+    public void setIntensity(float intensity) {
+        this.intensity = intensity;
+        setParam(Param.VignetteIntensity, intensity);
+    }
 
-	public void setIntensity (float intensity) {
-		this.intensity = intensity;
-		setParam(Param.VignetteIntensity, intensity);
-	}
+    public void setSaturation(float saturation) {
+        this.saturation = saturation;
+        if (saturationEnabled) {
+            setParam(Param.Saturation, saturation);
+        }
+    }
 
-	public void setSaturation (float saturation) {
-		this.saturation = saturation;
-		if (dosat) {
-			setParam(Param.Saturation, saturation);
-		}
-	}
+    public void setSaturationMul(float saturationMul) {
+        this.saturationMul = saturationMul;
+        if (saturationEnabled) {
+            setParam(Param.SaturationMul, saturationMul);
+        }
+    }
 
-	public void setSaturationMul (float saturationMul) {
-		this.saturationMul = saturationMul;
-		if (dosat) {
-			setParam(Param.SaturationMul, saturationMul);
-		}
-	}
+    public void setCoords(float x, float y) {
+        this.vignetteX = x;
+        this.vignetteY = y;
+        setParams(Param.VignetteX, x);
+        setParams(Param.VignetteY, y);
+        endParams();
+    }
 
-	public void setCoords (float x, float y) {
-		this.x = x;
-		this.y = y;
-		setParams(Param.VignetteX, x);
-		setParams(Param.VignetteY, y);
-		endParams();
-	}
+    public void setVignetteX(float x) {
+        this.vignetteX = x;
+        setParam(Param.VignetteX, x);
+    }
 
-	public void setX (float x) {
-		this.x = x;
-		setParam(Param.VignetteX, x);
-	}
+    public void setVignetteY(float vignetteY) {
+        this.vignetteY = vignetteY;
+        setParam(Param.VignetteY, vignetteY);
+    }
 
-	public void setY (float y) {
-		this.y = y;
-		setParam(Param.VignetteY, y);
-	}
+    /**
+     * Sets the texture with which gradient mapping will be performed.
+     */
+    public void setLut(Texture texture) {
+        lutTexture = texture;
+        lutEnabled = (lutTexture != null);
 
-	/** Sets the texture with which gradient mapping will be performed. */
-	public void setLut (Texture texture) {
-		texLut = texture;
-		dolut = (texLut != null);
+        if (lutEnabled) {
+            lutStep = 1f / (float) texture.getHeight();
+            lutStepOffset = lutStep / 2f; // center texel
+            setParams(Param.TexLUT, u_texture1);
+            setParams(Param.LutStep, lutStep);
+            setParams(Param.LutStepOffset, lutStepOffset).endParams();
+        }
+    }
 
-		if (dolut) {
-			lutStep = 1f / (float)texture.getHeight();
-			lutStepOffset = lutStep / 2f; // center texel
-			setParams(Param.TexLUT, u_texture1);
-			setParams(Param.LutStep, lutStep);
-			setParams(Param.LutStepOffset, lutStepOffset).endParams();
-		}
-	}
+    public void setLutIntensity(float value) {
+        lutIntensity = value;
+        setParam(Param.LutIntensity, lutIntensity);
+    }
 
-	public void setLutIntensity (float value) {
-		lutintensity = value;
-		setParam(Param.LutIntensity, lutintensity);
-	}
+    public void setLutIndex1(int value) {
+        lutIndex1 = value;
+        setParam(Param.LutIndex1, lutIndex1);
+    }
 
-	public void setLutIndexVal (int index, int value) {
-		lutindex[index] = value;
+    public void setLutIndex2(int value) {
+        lutIndex2 = value;
+        setParam(Param.LutIndex2, lutIndex2);
+    }
 
-		switch (index) {
-		case 0:
-			setParam(Param.LutIndex, lutindex[0]);
-			break;
-		case 1:
-			setParam(Param.LutIndex2, lutindex[1]);
-			break;
-		}
+    public void setLutIndexOffset(float value) {
+        lutIndexOffset = value;
+        setParam(Param.LutIndexOffset, lutIndexOffset);
+    }
 
-	}
+    /**
+     * Specify the center, in normalized screen coordinates.
+     */
+    public void setCenter(float x, float y) {
+        this.centerX = x;
+        this.centerY = y;
+        setParams(Param.CenterX, centerX);
+        setParams(Param.CenterY, centerY);
+        endParams();
+    }
 
-	public void setLutIndexOffset (float value) {
-		lutIndexOffset = value;
-		setParam(Param.LutIndexOffset, lutIndexOffset);
-	}
+    public float getCenterX() {
+        return centerX;
+    }
 
-	/** Specify the center, in normalized screen coordinates. */
-	public void setCenter (float x, float y) {
-		this.centerX = x;
-		this.centerY = y;
-		setParams(Param.CenterX, centerX);
-		setParams(Param.CenterY, centerY).endParams();
-	}
+    public float getCenterY() {
+        return centerY;
+    }
 
-	public float getCenterX () {
-		return centerX;
-	}
+    public int getLutIndex1() {
+        return lutIndex1;
+    }
 
-	public float getCenterY () {
-		return centerY;
-	}
+    public int getLutIndex2() {
+        return lutIndex2;
+    }
 
-	public int getLutIndexVal (int index) {
-		return (int)lutindex[index];
-	}
+    public float getLutIntensity() {
+        return lutIntensity;
+    }
 
-	public float getLutIntensity () {
-		return lutintensity;
-	}
+    public Texture getLut() {
+        return lutTexture;
+    }
 
-	public Texture getLut () {
-		return texLut;
-	}
+    public float getVignetteX() {
+        return vignetteX;
+    }
 
-	public float getX () {
-		return x;
-	}
+    public float getVignetteY() {
+        return vignetteY;
+    }
 
-	public float getY () {
-		return y;
-	}
+    public float getIntensity() {
+        return intensity;
+    }
 
-	public float getIntensity () {
-		return intensity;
-	}
+    public float getSaturation() {
+        return saturation;
+    }
 
-	public float getSaturation () {
-		return saturation;
-	}
+    public float getSaturationMul() {
+        return saturationMul;
+    }
 
-	public float getSaturationMul () {
-		return saturationMul;
-	}
-
-	public boolean isGradientMappingEnabled () {
-		return dolut;
-	}
+    public boolean isGradientMappingEnabled() {
+        return lutEnabled;
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -227,36 +229,36 @@ public final class VignettingFilter extends VfxFilter<VignettingFilter> {
     }
 
     @Override
-	public void rebind () {
-		setParams(Param.Texture0, u_texture0);
+    public void rebind() {
+        setParams(Param.Texture0, u_texture0);
 
-		setParams(Param.LutIndex, lutindex[0]);
-		setParams(Param.LutIndex2, lutindex[1]);
-		setParams(Param.LutIndexOffset, lutIndexOffset);
+        setParams(Param.LutIndex1, lutIndex1);
+        setParams(Param.LutIndex2, lutIndex2);
+        setParams(Param.LutIndexOffset, lutIndexOffset);
 
-		setParams(Param.TexLUT, u_texture1);
-		setParams(Param.LutIntensity, lutintensity);
-		setParams(Param.LutStep, lutStep);
-		setParams(Param.LutStepOffset, lutStepOffset);
+        setParams(Param.TexLUT, u_texture1);
+        setParams(Param.LutIntensity, lutIntensity);
+        setParams(Param.LutStep, lutStep);
+        setParams(Param.LutStepOffset, lutStepOffset);
 
-		if (dosat) {
-			setParams(Param.Saturation, saturation);
-			setParams(Param.SaturationMul, saturationMul);
-		}
+        if (saturationEnabled) {
+            setParams(Param.Saturation, saturation);
+            setParams(Param.SaturationMul, saturationMul);
+        }
 
-		setParams(Param.VignetteIntensity, intensity);
-		setParams(Param.VignetteX, x);
-		setParams(Param.VignetteY, y);
-		setParams(Param.CenterX, centerX);
-		setParams(Param.CenterY, centerY);
-		endParams();
-	}
+        setParams(Param.VignetteIntensity, intensity);
+        setParams(Param.VignetteX, vignetteX);
+        setParams(Param.VignetteY, vignetteY);
+        setParams(Param.CenterX, centerX);
+        setParams(Param.CenterY, centerY);
+        endParams();
+    }
 
-	@Override
-	protected void onBeforeRender () {
-		inputTexture.bind(u_texture0);
-		if (dolut) {
-			texLut.bind(u_texture1);
-		}
-	}
+    @Override
+    protected void onBeforeRender() {
+        inputTexture.bind(u_texture0);
+        if (lutEnabled) {
+            lutTexture.bind(u_texture1);
+        }
+    }
 }

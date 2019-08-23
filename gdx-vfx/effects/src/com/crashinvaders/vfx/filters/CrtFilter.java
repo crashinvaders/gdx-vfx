@@ -29,10 +29,10 @@ public class CrtFilter extends VfxFilter<CrtFilter> {
         Resolution("u_resolution", 2),
         ;
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
-        Param (String m, int elementSize) {
+        Param(String m, int elementSize) {
             this.mnemonic = m;
             this.elementSize = elementSize;
         }
@@ -107,13 +107,13 @@ public class CrtFilter extends VfxFilter<CrtFilter> {
 
     @Override
     public void rebind () {
-        setParam(Param.Texture0, u_texture0);
+        setParams(Param.Texture0, u_texture0);
         switch (sizeSource) {
             case VIEWPORT:
-                setParam(Param.Resolution, viewportSize);
+                setParams(Param.Resolution, viewportSize);
                 break;
             case SCREEN:
-                setParam(Param.Resolution, tmpVec.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+                setParams(Param.Resolution, tmpVec.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
                 break;
         }
         endParams();

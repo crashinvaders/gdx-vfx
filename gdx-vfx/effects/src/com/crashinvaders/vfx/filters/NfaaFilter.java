@@ -28,15 +28,13 @@ public final class NfaaFilter extends VfxFilter<NfaaFilter> {
 	private final Vector2 viewportInverse = new Vector2();
 
 	public enum Param implements Parameter {
-		// @formatter:off
 		Texture("u_texture0", 0),
 		ViewportInverse("u_viewportInverse", 2);
-		// @formatter:on
 
 		private String mnemonic;
-		private int elementSize;
+		final int elementSize;
 
-		private Param (String mnemonic, int arrayElementSize) {
+		Param(String mnemonic, int arrayElementSize) {
 			this.mnemonic = mnemonic;
 			this.elementSize = arrayElementSize;
 		}

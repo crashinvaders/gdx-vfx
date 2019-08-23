@@ -24,47 +24,61 @@ public class ChromaticAberrationFilter extends VfxFilter<ChromaticAberrationFilt
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
+        MaxDistortion("u_maxDistortion", 0),
         ;
 
-        private final String mnemonic;
-        private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
-        Param (String m, int elementSize) {
+        Param(String m, int elementSize) {
             this.mnemonic = m;
             this.elementSize = elementSize;
         }
 
         @Override
-        public String mnemonic () {
+        public String mnemonic() {
             return this.mnemonic;
         }
 
         @Override
-        public int arrayElementSize () {
+        public int arrayElementSize() {
             return this.elementSize;
         }
     }
 
-    public ChromaticAberrationFilter() {
+    private float maxDistortion = 1.2f;
+
+    public ChromaticAberrationFilter(int passes) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/chromatic-aberration.frag")));
+                Gdx.files.classpath("shaders/chromatic-aberration.frag"),
+                "#define PASSES " + passes));
         rebind();
+    }
+
+    public float getMaxDistortion() {
+        return maxDistortion;
+    }
+
+    public void setMaxDistortion(float maxDistortion) {
+        this.maxDistortion = maxDistortion;
+        setParam(Param.MaxDistortion, maxDistortion);
     }
 
     @Override
     public void resize(int width, int height) {
-
+        // Do nothing.
     }
 
     @Override
-    public void rebind () {
-        setParam(Param.Texture0, u_texture0);
+    public void rebind() {
+        setParams(Param.Texture0, u_texture0);
+        setParams(Param.MaxDistortion, maxDistortion);
         endParams();
     }
 
     @Override
-    protected void onBeforeRender () {
+    protected void onBeforeRender() {
         inputTexture.bind(u_texture0);
     }
 }

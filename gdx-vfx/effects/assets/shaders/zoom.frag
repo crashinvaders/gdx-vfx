@@ -22,13 +22,12 @@
 	#define PRECISION
 #endif
 
-uniform sampler2D u_texture0;
-uniform float offset_x;
-uniform float offset_y;
-uniform float zoom;
 varying vec2 v_texCoord0;
 
-void main()
-{
-	gl_FragColor = texture2D(u_texture0, (v_texCoord0) + vec2(offset_x, offset_y));
+uniform sampler2D u_texture0;
+uniform float u_offsetX;
+uniform float u_offsetY;
+
+void main() {
+	gl_FragColor = texture2D(u_texture0, (v_texCoord0) + vec2(u_offsetX, u_offsetY));
 }

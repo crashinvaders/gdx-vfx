@@ -24,125 +24,138 @@ import com.crashinvaders.vfx.VfxEffect;
 import com.crashinvaders.vfx.filters.VignettingFilter;
 
 public final class VignetteEffect extends VfxEffect {
-	private VignettingFilter vignetting;
-	private boolean controlSaturation;
+    private VignettingFilter vignetting;
+    private boolean controlSaturation;
 
-	public VignetteEffect(boolean controlSaturation) {
-		this.controlSaturation = controlSaturation;
-		vignetting = new VignettingFilter(controlSaturation);
-	}
+    public VignetteEffect(boolean controlSaturation) {
+        this.controlSaturation = controlSaturation;
+        vignetting = new VignettingFilter(controlSaturation);
+    }
 
-	@Override
-	public void dispose () {
-		vignetting.dispose();
-	}
+    @Override
+    public void dispose() {
+        vignetting.dispose();
+    }
 
-	@Override
-	public void rebind () {
-		vignetting.rebind();
-	}
+    @Override
+    public void rebind() {
+        vignetting.rebind();
+    }
 
-	@Override
-	public void resize(int width, int height) {
-		vignetting.resize(width, height);
-	}
+    @Override
+    public void resize(int width, int height) {
+        vignetting.resize(width, height);
+    }
 
-	@Override
-	public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-//		restoreViewport(dest);
-		vignetting.setInput(src).setOutput(dst).render(mesh);
-	}
+    @Override
+    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+        vignetting.setInput(src).setOutput(dst).render(mesh);
+    }
 
-	public boolean doesSaturationControl () {
-		return controlSaturation;
-	}
+    public boolean doesSaturationControl() {
+        return controlSaturation;
+    }
 
-	public void setIntensity (float intensity) {
-		vignetting.setIntensity(intensity);
-	}
+    public void setIntensity(float intensity) {
+        vignetting.setIntensity(intensity);
+    }
 
-	public void setCoords (float x, float y) {
-		vignetting.setCoords(x, y);
-	}
+    public void setCoords(float x, float y) {
+        vignetting.setCoords(x, y);
+    }
 
-	public void setX (float x) {
-		vignetting.setX(x);
-	}
+    public void setSaturation(float saturation) {
+        vignetting.setSaturation(saturation);
+    }
 
-	public void setY (float y) {
-		vignetting.setY(y);
-	}
+    public void setSaturationMul(float saturationMul) {
+        vignetting.setSaturationMul(saturationMul);
+    }
 
-	public void setSaturation (float saturation) {
-		vignetting.setSaturation(saturation);
-	}
+    public void setLutTexture(Texture texture) {
+        vignetting.setLut(texture);
+    }
 
-	public void setSaturationMul (float saturationMul) {
-		vignetting.setSaturationMul(saturationMul);
-	}
+    public void setLutIntensity(float value) {
+        vignetting.setLutIntensity(value);
+    }
 
-	public void setLutTexture (Texture texture) {
-		vignetting.setLut(texture);
-	}
+    public void setVignetteX(float x) {
+        vignetting.setVignetteX(x);
+    }
 
-	public void setLutIntensity (float value) {
-		vignetting.setLutIntensity(value);
-	}
+    public void setVignetteY(float vignetteY) {
+        vignetting.setVignetteY(vignetteY);
+    }
 
-	public void setLutIndexVal (int index, int value) {
-		vignetting.setLutIndexVal(index, value);
-	}
+    public void setLut(Texture texture) {
+        vignetting.setLut(texture);
+    }
 
-	public void setLutIndexOffset (float value) {
-		vignetting.setLutIndexOffset(value);
-	}
+    public void setLutIndex1(int value) {
+        vignetting.setLutIndex1(value);
+    }
 
-	/** Specify the center, in normalized screen coordinates. */
-	public void setCenter (float x, float y) {
-		vignetting.setCenter(x, y);
-	}
+    public void setLutIndex2(int value) {
+        vignetting.setLutIndex2(value);
+    }
 
-	public float getIntensity () {
-		return vignetting.getIntensity();
-	}
+    public int getLutIndex1() {
+        return vignetting.getLutIndex1();
+    }
 
-	public float getLutIntensity () {
-		return vignetting.getLutIntensity();
-	}
+    public int getLutIndex2() {
+        return vignetting.getLutIndex2();
+    }
 
-	public int getLutIndexVal (int index) {
-		return vignetting.getLutIndexVal(index);
-	}
+    public float getVignetteX() {
+        return vignetting.getVignetteX();
+    }
 
-	public Texture getLut () {
-		return vignetting.getLut();
-	}
+    public float getVignetteY() {
+        return vignetting.getVignetteY();
+    }
 
-	public float getCenterX () {
-		return vignetting.getCenterX();
-	}
+    public void setLutIndexOffset(float value) {
+        vignetting.setLutIndexOffset(value);
+    }
 
-	public float getCenterY () {
-		return vignetting.getCenterY();
-	}
+    /**
+     * Specify the center, in normalized screen coordinates.
+     */
+    public void setCenter(float x, float y) {
+        vignetting.setCenter(x, y);
+    }
 
-	public float getCoordsX () {
-		return vignetting.getX();
-	}
+    public float getIntensity() {
+        return vignetting.getIntensity();
+    }
 
-	public float getCoordsY () {
-		return vignetting.getY();
-	}
+    public float getLutIntensity() {
+        return vignetting.getLutIntensity();
+    }
 
-	public float getSaturation () {
-		return vignetting.getSaturation();
-	}
+    public Texture getLut() {
+        return vignetting.getLut();
+    }
 
-	public float getSaturationMul () {
-		return vignetting.getSaturationMul();
-	}
+    public float getCenterX() {
+        return vignetting.getCenterX();
+    }
 
-	public boolean isGradientMappingEnabled () {
-		return vignetting.isGradientMappingEnabled();
-	}
+    public float getCenterY() {
+        return vignetting.getCenterY();
+    }
+
+    public float getSaturation() {
+        return vignetting.getSaturation();
+    }
+
+    public float getSaturationMul() {
+        return vignetting.getSaturationMul();
+    }
+
+    public boolean isGradientMappingEnabled() {
+        return vignetting.isGradientMappingEnabled();
+    }
 }

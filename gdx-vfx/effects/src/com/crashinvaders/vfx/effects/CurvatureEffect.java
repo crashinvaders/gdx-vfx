@@ -47,7 +47,6 @@ public final class CurvatureEffect extends VfxEffect {
 
     @Override
     public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-//        restoreViewport(dest);
         distort.setInput(src).setOutput(dst).render(mesh);
     }
 

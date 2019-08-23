@@ -26,7 +26,11 @@ public class ChromaticAberrationEffect extends VfxEffect {
     private final ChromaticAberrationFilter caFilter;
 
     public ChromaticAberrationEffect() {
-        caFilter = new ChromaticAberrationFilter();
+        this(12);
+    }
+
+    public ChromaticAberrationEffect(int passes) {
+        caFilter = new ChromaticAberrationFilter(passes);
     }
 
     @Override
@@ -47,5 +51,13 @@ public class ChromaticAberrationEffect extends VfxEffect {
     @Override
     public void dispose() {
         caFilter.dispose();
+    }
+
+    public float getMaxDistortion() {
+        return caFilter.getMaxDistortion();
+    }
+
+    public void setMaxDistortion(float maxDistortion) {
+        caFilter.setMaxDistortion(maxDistortion);
     }
 }

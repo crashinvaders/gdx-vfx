@@ -58,6 +58,14 @@ public final class FxaaEffect extends VfxEffect {
     /** Sets the span max parameter. The default value is 8.
      * @param value */
     public void setSpanMax(float value) {
-        fxaaFilter.setFxaaSpanMax(value);
+        fxaaFilter.setSpanMax(value);
+    }
+
+    public void setReduceMin(float value) {
+        fxaaFilter.setReduceMin(value);
+    }
+
+    public void setReduceMul(float value) {
+        fxaaFilter.setReduceMul(value);
     }
 }

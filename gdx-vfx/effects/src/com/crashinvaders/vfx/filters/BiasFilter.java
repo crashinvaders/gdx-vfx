@@ -20,67 +20,66 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilter;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/** Bias filter. Adapted for lensflare2 effect.
- * @see <a href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
- * @author Toni Sagrista */
+/**
+ * Bias filter.
+ * @author Toni Sagrista
+ */
 public final class BiasFilter extends VfxFilter<BiasFilter> {
 
-	private float bias;
+    private float bias;
 
-	public enum Param implements Parameter {
-		// @formatter:off
-		Texture("u_texture0", 0),
-		Bias("u_bias", 0);
-		// @formatter:on
+    public enum Param implements Parameter {
+        Texture("u_texture0", 0),
+        Bias("u_bias", 0);
 
-		private String mnemonic;
-		private int elementSize;
+        final String mnemonic;
+        final int elementSize;
 
-		private Param (String mnemonic, int elementSize) {
-			this.mnemonic = mnemonic;
-			this.elementSize = elementSize;
-		}
+        Param(String mnemonic, int elementSize) {
+            this.mnemonic = mnemonic;
+            this.elementSize = elementSize;
+        }
 
-		@Override
-		public String mnemonic () {
-			return this.mnemonic;
-		}
+        @Override
+        public String mnemonic() {
+            return this.mnemonic;
+        }
 
-		@Override
-		public int arrayElementSize () {
-			return this.elementSize;
-		}
-	}
+        @Override
+        public int arrayElementSize() {
+            return this.elementSize;
+        }
+    }
 
-	public BiasFilter() {
-		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("bias")));
-		rebind();
-	}
+    public BiasFilter() {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("bias")));
+        rebind();
+    }
 
-	public float getBias() {
-		return bias;
-	}
+    public float getBias() {
+        return bias;
+    }
 
-	public void setBias(float bias) {
-		this.bias = bias;
-		setParam(Param.Bias, this.bias);
-	}
+    public void setBias(float bias) {
+        this.bias = bias;
+        setParam(Param.Bias, this.bias);
+    }
 
-	@Override
-	protected void onBeforeRender() {
-		inputTexture.bind(u_texture0);
-	}
+    @Override
+    protected void onBeforeRender() {
+        inputTexture.bind(u_texture0);
+    }
 
-	@Override
-	public void resize(int width, int height) {
+    @Override
+    public void resize(int width, int height) {
+		// Do nothing.
+    }
 
-	}
-
-	@Override
-	public void rebind() {
-		setParams(Param.Texture, u_texture0);
-		setBias(this.bias);
-	}
+    @Override
+    public void rebind() {
+        setParams(Param.Texture, u_texture0);
+        setBias(this.bias);
+    }
 }

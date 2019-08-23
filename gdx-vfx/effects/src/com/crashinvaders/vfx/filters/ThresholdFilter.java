@@ -31,7 +31,7 @@ public final class ThresholdFilter extends VfxFilter<ThresholdFilter> {
         // @formatter:on
 
         private String mnemonic;
-        private int elementSize;
+        final int elementSize;
 
         private Param(String mnemonic, int elementSize) {
             this.mnemonic = mnemonic;
