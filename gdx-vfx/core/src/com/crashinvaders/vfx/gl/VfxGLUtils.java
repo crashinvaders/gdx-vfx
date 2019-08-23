@@ -16,12 +16,15 @@
 
 package com.crashinvaders.vfx.gl;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import java.nio.ByteBuffer;
 
@@ -30,7 +33,24 @@ public class VfxGLUtils {
 
     //TODO Remove this after https://github.com/libgdx/libgdx/issues/4688 gets resolved
     // This field may be used to provide custom implementation
-    public static VfxGlExtension glExtension = new DefaultVfxGlExtension();
+    public static VfxGlExtension glExtension;
+    static {
+        if (Gdx.app.getType() == Application.ApplicationType.WebGL) {
+            try {
+                glExtension = (VfxGlExtension) ClassReflection.newInstance(
+                        ClassReflection.forName("com.crashinvaders.vfx.gwt.GwtVfxGlExtension"));
+                Gdx.app.log(TAG, "GWT GL Extension initialized.");
+            } catch (ReflectionException e) {
+                throw new GdxRuntimeException("Cannot find GwtVfxGlExtension class." +
+                        "Are you sure you connected \"gdx-vfx-gwt\" library? " +
+                        "\n" +
+                        "Please visit GWT setup wiki page for instructions: " +
+                        "https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Library-Integration", e);
+            }
+        } else {
+            glExtension = new DefaultVfxGlExtension();
+        }
+    }
 
     public static int getBoundFboHandle() {
         return glExtension.getBoundFboHandle();

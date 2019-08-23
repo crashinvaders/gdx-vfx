@@ -28,8 +28,12 @@ import com.google.gwt.webgl.client.WebGLRenderingContext;
 public class GwtVfxGlExtension implements VfxGlExtension {
     private static final VfxGlExtension.Viewport tmpViewport = new Viewport();
 
-    public static void initialize() {
-        VfxGLUtils.glExtension = new GwtVfxGlExtension();
+    @Override
+    public Viewport getViewport() {
+        GwtGraphics graphics = (GwtGraphics) Gdx.graphics;
+        WebGLRenderingContext renderingContext = graphics.getContext();
+        Int32Array viewport = renderingContext.getParameterv(WebGLRenderingContext.VIEWPORT);
+        return tmpViewport.set(viewport.get(0), viewport.get(1), viewport.get(2), viewport.get(3));
     }
 
     @Override
@@ -44,14 +48,6 @@ public class GwtVfxGlExtension implements VfxGlExtension {
         } else {
             return getFrameBufferId(gwtGl, frameBuffer);
         }
-    }
-
-    @Override
-    public Viewport getViewport() {
-        GwtGraphics graphics = (GwtGraphics) Gdx.graphics;
-        WebGLRenderingContext renderingContext = graphics.getContext();
-        Int32Array viewport = renderingContext.getParameterv(WebGLRenderingContext.VIEWPORT);
-        return tmpViewport.set(viewport.get(0), viewport.get(1), viewport.get(2), viewport.get(3));
     }
 
     private static native int getFrameBufferId(GwtGL20 gwtGl, WebGLFramebuffer frameBuffer) /*-{

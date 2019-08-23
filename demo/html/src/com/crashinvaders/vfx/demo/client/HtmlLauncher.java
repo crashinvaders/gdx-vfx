@@ -21,7 +21,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 import com.crashinvaders.vfx.demo.App;
-import com.crashinvaders.vfx.gwt.GwtVfxGlExtension;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
@@ -71,7 +70,6 @@ public class HtmlLauncher extends GwtApplication {
             }
         });
 
-        GwtVfxGlExtension.initialize();
         return new App();
     }
 }
