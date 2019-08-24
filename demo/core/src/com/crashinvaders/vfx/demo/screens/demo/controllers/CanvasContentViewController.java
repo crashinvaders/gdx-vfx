@@ -19,14 +19,10 @@ package com.crashinvaders.vfx.demo.screens.demo.controllers;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.vfx.common.lml.CommonLmlParser;
 import com.crashinvaders.vfx.common.scene2d.RepeatTextureDrawable;
@@ -34,12 +30,13 @@ import com.crashinvaders.vfx.common.scene2d.actions.ActionsExt;
 import com.crashinvaders.vfx.common.scene2d.actions.TimeModulationAction;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
+import com.crashinvaders.vfx.scene2d.VfxWidgetGroup;
+import com.github.czyzby.lml.annotation.LmlActor;
+import com.github.czyzby.lml.parser.LmlView;
 
 public class CanvasContentViewController extends LmlViewController {
 
     private final AssetManager assets;
-
-    private WidgetGroup canvasRoot;
 
     public CanvasContentViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser, AssetManager assets) {
         super(viewControllers, lmlParser);
@@ -49,7 +46,9 @@ public class CanvasContentViewController extends LmlViewController {
     @Override
     public void onViewCreated(Group sceneRoot) {
         super.onViewCreated(sceneRoot);
-        canvasRoot = sceneRoot.findActor("canvasRoot");
+
+        final WidgetGroup canvasRoot = sceneRoot.findActor("canvasRoot");
+        final WidgetGroup canvasTransformWrapper = sceneRoot.findActor("canvasTransformWrapper");
 
         final Action backgroundAction;
         final Action logoAction;
@@ -143,5 +142,53 @@ public class CanvasContentViewController extends LmlViewController {
                 return true;
             }
         });
+
+        // Add some Scene2D widgets on canvas.
+        {
+            final Table table = new Table(skin);
+
+            final Container<Table> container = new Container<>(table);
+            container.align(Align.topRight);
+            container.setFillParent(true);
+            container.pad(20f);
+
+            TextButton button = new TextButton("Transform VFX canvas", skin);
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    table.clearActions();
+                    table.setOrigin(Align.center);
+                    table.addAction(Actions.sequence(
+                            ActionsExt.transform(true),
+                            Actions.scaleTo(1.3f, 1.3f, 0.15f, Interpolation.sineOut),
+                            Actions.scaleTo(1f, 1f, 0.75f, Interpolation.elasticOut),
+                            ActionsExt.transform(false)
+                    ));
+
+                    canvasTransformWrapper.clearActions();
+                    canvasTransformWrapper.setOrigin(Align.center);
+                    canvasTransformWrapper.addAction(Actions.sequence(
+                            Actions.rotateTo(0f),
+                            Actions.scaleTo(1f, 1f),
+                            Actions.parallel(
+                                    Actions.rotateTo(360f, 3f, Interpolation.exp10),
+                                    Actions.sequence(
+                                            Actions.scaleTo(0.6f, 0.6f, 1.5f, Interpolation.exp5In),
+                                            Actions.scaleTo(1.0f, 1.0f, 1.5f, Interpolation.exp5Out)
+                                    )
+                            )
+                    ));
+                }
+            });
+
+            table.defaults().right();
+            table.add("These are Scene2D widgets");
+            table.row();
+            table.add("within VfxWidgetGroup.");
+            table.row();
+            table.add(button).padTop(4f);
+
+            canvasRoot.addActor(container);
+        }
     }
 }

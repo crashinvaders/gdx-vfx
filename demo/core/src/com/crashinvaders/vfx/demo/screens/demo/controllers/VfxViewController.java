@@ -57,8 +57,6 @@ public class VfxViewController extends LmlViewController {
         VfxWidgetGroup vfxGroup = new VfxWidgetGroup(Pixmap.Format.RGBA8888);
         vfxManager = vfxGroup.getVfxManager();
         vfxManager.setBlendingEnabled(false);
-        vfxManager.setCleanUpBuffers(true);
-        vfxManager.setClearColor(clearColor);
         vfxGroup.addActor(canvasRoot);
 
         return new IntegerRoundFillContainer(vfxGroup);

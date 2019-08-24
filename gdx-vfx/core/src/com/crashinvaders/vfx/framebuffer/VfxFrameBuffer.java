@@ -107,6 +107,7 @@ public class VfxFrameBuffer implements Disposable {
         fbo.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, boundFboHandle);
 
+        //TODO Maybe we simple can use Matrix4 instead of cam ?
         OrthographicCamera cam = tmpCam;
         cam.setToOrtho(false, width, height);
         localProjection.set(cam.combined);
@@ -262,13 +263,13 @@ public class VfxFrameBuffer implements Disposable {
             preservedProjection.set(getProjection());
             preservedTransform.set(getTransform());
             setProjection(projection);
-            setTransform(transform);
+//            setTransform(transform);
         }
 
         @Override
         public void restoreOwnMatrices() {
             setProjection(preservedProjection);
-            setTransform(preservedTransform);
+//            setTransform(preservedTransform);
         }
 
         protected abstract Matrix4 getProjection();

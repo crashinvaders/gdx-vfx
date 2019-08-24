@@ -5,7 +5,9 @@
 
     <!-- Post processor canvas holder. -->
     <container fill="true">
-        <:actor method="VfxViewController.createCanvas"/>
+        <stack id="canvasTransformWrapper" transform="true">
+            <:actor method="VfxViewController.createCanvas"/>
+        </stack>
     </container>
 
     <table align="left" defaultwidth="128" defaultfillx="true" defaultgrowy="true" defaultalign="topleft">

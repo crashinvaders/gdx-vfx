@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBufferRenderer;
 import com.crashinvaders.vfx.utils.ScreenQuadMesh;
 import com.crashinvaders.vfx.utils.PrioritizedArray;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
@@ -46,36 +47,34 @@ public final class VfxManager implements Disposable {
 
     /** A mesh that is shared among basic filters to draw to full screen. */
     private final ScreenQuadMesh screenQuadMesh = new ScreenQuadMesh();
+    private final com.crashinvaders.vfx.framebuffer.VfxFrameBufferRenderer bufferRenderer = new VfxFrameBufferRenderer();
 
     private final Format fboFormat;
-    private final PingPongBuffer compositeBuffer;
-
-    private final Color clearColor = new Color(Color.CLEAR);
-    private boolean cleanUpBuffers = true;
+    private final PingPongBuffer pingPongBuffer;
 
     private boolean disabled = false;
     private boolean capturing = false;
     private boolean hasCaptured = false;
-    private boolean rendering = false;
+    private boolean applyingEffects = false;
 
     private boolean blendingEnabled = false;
 
     private int width, height;
 
     public VfxManager(Format fboFormat) {
-        this(fboFormat, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this(fboFormat, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
     }
 
     public VfxManager(Format fboFormat, int bufferWidth, int bufferHeight) {
         this.fboFormat = fboFormat;
-        this.compositeBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight);
+        this.pingPongBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight);
         this.width = bufferWidth;
         this.height = bufferHeight;
     }
 
     @Override
     public void dispose() {
-        compositeBuffer.dispose();
+        pingPongBuffer.dispose();
         screenQuadMesh.dispose();
     }
 
@@ -83,10 +82,18 @@ public final class VfxManager implements Disposable {
         this.width = width;
         this.height = height;
 
-        compositeBuffer.resize(width, height);
+        pingPongBuffer.resize(width, height);
 
         for (int i = 0; i < effectsAll.size(); i++) {
             effectsAll.get(i).resize(width, height);
+        }
+    }
+
+    public void rebind() {
+        bufferRenderer.rebind();
+
+        for (int i = 0; i < effectsAll.size(); i++) {
+            effectsAll.get(i).rebind();
         }
     }
 
@@ -97,40 +104,6 @@ public final class VfxManager implements Disposable {
     /** Sets whether or not the post-processor should be disabled */
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
-    }
-
-    /** @see #setCleanUpBuffers(boolean) */
-    public boolean isCleanUpBuffers() {
-        return cleanUpBuffers;
-    }
-
-    /**
-     * Configures off-screen cleanup behavior.
-     * If enabled, the off-screen buffers will be cleaned up prior to capturing stage.
-     * Enabled by default.
-     * @param cleanUpBuffers Whether the buffers should be cleaned up.
-     */
-    public void setCleanUpBuffers(boolean cleanUpBuffers) {
-        this.cleanUpBuffers = cleanUpBuffers;
-    }
-
-    public Color getClearColor() {
-        return clearColor;
-    }
-
-    /** Sets the color that will be used to clean up the off-screen buffers. */
-    public void setClearColor(Color color) {
-        clearColor.set(color);
-    }
-
-    /** Sets the color that will be used to clean up the off-screen buffers. */
-    public void setClearColor(int color) {
-        clearColor.set(color);
-    }
-
-    /** Sets the color that will be used to clean up the off-screen buffers. */
-    public void setClearColor(float r, float g, float b, float a) {
-        clearColor.set(r, g, b, a);
     }
 
     public boolean isBlendingEnabled() {
@@ -154,22 +127,33 @@ public final class VfxManager implements Disposable {
     }
 
     public void setBufferTextureParams(TextureWrap u, TextureWrap v, Texture.TextureFilter min, Texture.TextureFilter mag) {
-        compositeBuffer.setTextureParams(u, v, min, mag);
+        pingPongBuffer.setTextureParams(u, v, min, mag);
     }
 
     public boolean isCapturing() {
         return capturing;
     }
 
-    public boolean isRendering() {
-        return rendering;
+    public boolean isApplyingEffects() {
+        return applyingEffects;
+    }
+
+    public boolean hasResult() {
+        return hasCaptured;
     }
 
     /**
-     * Returns the last active composite buffer.
+     * @return the last active destination buffer.
      */
     public VfxFrameBuffer getResultBuffer() {
-        return compositeBuffer.getDstBuffer();
+        return pingPongBuffer.getDstBuffer();
+    }
+
+    /**
+     * @return the internal ping-pong buffer.
+     */
+    public PingPongBuffer getPingPongBuffer() {
+        return pingPongBuffer;
     }
 
     /**
@@ -189,43 +173,61 @@ public final class VfxManager implements Disposable {
         effect.resize(width, height);
     }
 
-    /** Removes the specified effect from the effect chain. */
+    /**
+     * Removes the specified effect from the effect chain.
+     */
     public void removeEffect(VfxEffect effect) {
         effectsAll.remove(effect);
     }
 
+    /**
+     * Removes all effects from the effect chain.
+     */
     public void removeAllEffects() {
         effectsAll.clear();
     }
 
+    /**
+     * Changes the order of the effect in the effect chain.
+     */
     public void setEffectPriority(VfxEffect effect, int priority) {
         effectsAll.setPriority(effect, priority);
     }
 
     /**
+     * Cleans up managed {@link PingPongBuffer}s' with {@link Color#CLEAR}.
+     */
+    public void cleanUpBuffers() {
+        cleanUpBuffers(Color.CLEAR);
+    }
+
+    /**
+     * Cleans up managed {@link PingPongBuffer}s' with specified color.
+     */
+    public void cleanUpBuffers(Color color) {
+        if (capturing) throw new IllegalStateException("Cannot clean up buffers when capturing.");
+        if (applyingEffects) throw new IllegalStateException("Cannot clean up buffers when applying effects.");
+
+        pingPongBuffer.cleanUpBuffers(color);
+        hasCaptured = false;
+    }
+
+    /**
      * Starts capturing the scene.
-     * If {@link #cleanUpBuffers} is enabled,
-     * the off-screen buffers will be cleaned up with {@link #clearColor}.
      *
-     * @return true or false, whether or not capturing has been initiated. Capturing will fail in case there are no enabled effects
-     * in the chain or this instance is not enabled or capturing is already started.
+     * @return true or false, whether or not capturing has been initiated.
+     * Capturing will fail if the manager is disabled or capturing is already started.
      */
     public boolean beginCapture() {
-        hasCaptured = false;
-
-        if (disabled || capturing) return false;
-
-        // Check if any effects are enabled.
-        if (!checkForAnyActiveEffect()) return false;
-
-        capturing = true;
-
-        compositeBuffer.begin();
-
-        if (cleanUpBuffers) {
-            compositeBuffer.cleanUpBuffers(clearColor);
+        if (applyingEffects) {
+            throw new IllegalStateException("You cannot capture when you're applying the effects.");
         }
 
+        if (disabled) return false;
+        if (capturing) return false;
+
+        capturing = true;
+        pingPongBuffer.begin();
         return true;
     }
 
@@ -234,40 +236,29 @@ public final class VfxManager implements Disposable {
      * @return false if there was no capturing before that call.
      */
     public boolean endCapture() {
-        if (disabled || !capturing) return false;
+        if (!capturing) return false;
 
-        capturing = false;
         hasCaptured = true;
-        compositeBuffer.end();
+        capturing = false;
+        pingPongBuffer.end();
         return true;
     }
 
     /**
-     * Convenience method to render to the screen.
-     * @see #render(VfxFrameBuffer)
-     **/
-    public void render() {
-        render(null);
-    }
-
-    /**
-     * Stops capturing the scene and apply the effect chain, if there is one.
-     * @param dst Target frame buffer, where result will be rendered to.
-     *             If null, rendering will be performed to the screen.
+     * Applies the effect chain, if there is one.
      */
-    public void render(VfxFrameBuffer dst) {
+    public void applyEffects() {
         if (capturing) {
-            throw new IllegalStateException("You should call VfxManager.endCapture() prior effect rendering.");
+            throw new IllegalStateException("You should call VfxManager.endCapture() before applying the effects.");
         }
 
         if (disabled) return;
         if (!hasCaptured) return;
 
-        updateEnabledEffectList();
-        Array<VfxEffect> items = effectsEnabled;
+        Array<VfxEffect> effectChain = updateEnabledEffectList();
 
-        rendering = true;
-        int count = items.size;
+        applyingEffects = true;
+        int count = effectChain.size;
         if (count > 0) {
             // Enable blending to preserve buffer's alpha values.
             if (blendingEnabled) {
@@ -277,45 +268,61 @@ public final class VfxManager implements Disposable {
             Gdx.gl.glDisable(GL20.GL_CULL_FACE);
             Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 
-            // Render effects chain, [0,n-1].
-            if (count > 1) {
-                compositeBuffer.swap(); // Swap buffers to get captured result in src buffer.
-                compositeBuffer.begin();
-                for (int i = 0; i < count - 1; i++) {
-                    VfxEffect effect = items.get(i);
-                    effect.render(screenQuadMesh,
-                            compositeBuffer.getSrcBuffer(),
-                            compositeBuffer.getDstBuffer());
-                    if (i < count - 2) {
-                        compositeBuffer.swap();
-                    }
+            // Render the effect chain.
+            pingPongBuffer.swap(); // Swap buffers to get captured result in src buffer.
+            pingPongBuffer.begin();
+            for (int i = 0; i < count; i++) {
+                VfxEffect effect = effectChain.get(i);
+                effect.render(screenQuadMesh,
+                        pingPongBuffer.getSrcBuffer(),
+                        pingPongBuffer.getDstBuffer());
+                if (i < count - 1) {
+                    pingPongBuffer.swap();
                 }
-                compositeBuffer.end();
             }
-
-            // Render with null dest (to screen).
-            items.get(count - 1).render(screenQuadMesh, compositeBuffer.getDstBuffer(), dst);
+            pingPongBuffer.end();
 
             // Ensure default texture unit #0 is active.
-            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0); //TODO Do we need this?
 
             if (blendingEnabled) {
                 Gdx.gl.glDisable(GL20.GL_BLEND);
             }
         }
-        rendering = false;
+        applyingEffects = false;
     }
 
-    private boolean checkForAnyActiveEffect() {
-        for (int i = 0; i < effectsAll.size(); i++) {
-            if (!effectsAll.get(i).isDisabled()) {
-                return true;
-            }
+    public void renderToScreen() {
+        if (capturing) {
+            throw new IllegalStateException("You should call VfxManager.endCapture() before rendering the result.");
         }
-        return false;
+        if (disabled) return;
+        if (!hasCaptured) return;
+
+        bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer());
     }
 
-    private int updateEnabledEffectList() {
+    public void renderToScreen(int x, int y, int width, int height) {
+        if (capturing) {
+            throw new IllegalStateException("You should call VfxManager.endCapture() before rendering the result.");
+        }
+        if (disabled) return;
+        if (!hasCaptured) return;
+
+        bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer(), x, y, width, height);
+    }
+
+    public void renderToFbo(VfxFrameBuffer output) {
+        if (capturing) {
+            throw new IllegalStateException("You should call VfxManager.endCapture() before rendering the result.");
+        }
+        if (disabled) return;
+        if (!hasCaptured) return;
+
+        bufferRenderer.renderToFbo(pingPongBuffer.getDstBuffer(), output);
+    }
+
+    private Array<VfxEffect> updateEnabledEffectList() {
         // Build up active effects
         effectsEnabled.clear();
         for (int i = 0; i < effectsAll.size(); i++) {
@@ -324,6 +331,6 @@ public final class VfxManager implements Disposable {
                 effectsEnabled.add(effect);
             }
         }
-        return effectsEnabled.size;
+        return effectsEnabled;
     }
 }

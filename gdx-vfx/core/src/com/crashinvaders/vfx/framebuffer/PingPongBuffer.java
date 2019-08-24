@@ -223,7 +223,7 @@ public final class PingPongBuffer {
     /**
      * Cleans up managed {@link VfxFrameBuffer}s' with specified color.
      */
-    private void cleanUpBuffers(float r, float g, float b, float a) {
+    public void cleanUpBuffers(float r, float g, float b, float a) {
         final boolean wasCapturing = this.capturing;
 
         if (!wasCapturing) { begin(); }
