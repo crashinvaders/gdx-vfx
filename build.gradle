@@ -35,17 +35,17 @@ apply plugin: 'io.codearte.nexus-staging'
 if (!ossrhUsername) {
     ossrhUsername = System.getenv('OSSRH_USERNAME')
     if (!ossrhUsername) {
-        logger.warn('ossrhUsername is not defined')
+        println 'ossrhUsername is not defined'
     } else {
-        logger.info('ossrhUsername has been set from environment variable.')
+        println 'ossrhUsername has been set from an environment variable.'
     }
 }
 if (!ossrhPassword) {
     ossrhPassword = System.getenv('OSSRH_PASSWORD')
     if (!ossrhPassword) {
-        logger.warn('ossrhPassword is not defined')
+        println 'ossrhPassword is not defined'
     } else {
-        logger.info('ossrhPassword has been set from environment variable.')
+        println 'ossrhPassword has been set from an environment variable.'
     }
 }
 
