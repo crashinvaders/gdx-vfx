@@ -97,6 +97,14 @@ public final class VfxManager implements Disposable {
         }
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public boolean isDisabled() {
         return disabled;
     }

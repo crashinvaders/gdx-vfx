@@ -40,6 +40,7 @@ import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.demo.App;
 import com.crashinvaders.vfx.demo.screens.demo.controllers.CanvasContentViewController;
 import com.crashinvaders.vfx.demo.screens.demo.controllers.EffectRosterViewController;
+import com.crashinvaders.vfx.demo.screens.demo.controllers.StatisticPanelViewController;
 import com.crashinvaders.vfx.demo.screens.demo.controllers.VfxViewController;
 
 public class DemoScreen extends ScreenAdapter {
@@ -92,6 +93,7 @@ public class DemoScreen extends ScreenAdapter {
         viewControllers.add(new VfxViewController(viewControllers, lmlParser));
         viewControllers.add(new CanvasContentViewController(viewControllers, lmlParser, assets));
         viewControllers.add(new EffectRosterViewController(viewControllers, lmlParser));
+        viewControllers.add(new StatisticPanelViewController(viewControllers, lmlParser));
 
         Group sceneRoot = (Group)lmlParser.parseTemplate(
                 Gdx.files.internal("lml/screen-demo/root.lml")).first();

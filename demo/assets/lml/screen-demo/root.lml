@@ -10,9 +10,21 @@
         </stack>
     </container>
 
+    <!-- Effect roster/chain. -->
     <table align="left" defaultwidth="128" defaultfillx="true" defaultgrowy="true" defaultalign="topleft">
         <verticalgroup id="vgEffectsRoster" groupgrow="true"/>
         <verticalgroup id="vgEffectsChain" groupgrow="true"/>
     </table>
+
+    <!-- Statistic panel. -->
+    <container touchable="disabled" align="bottomright" pad="10">
+        <table>
+            <label text="FPS: " align="right" padright="4"/>
+            <label id="lblFps" align="left"/>
+            <:row/>
+            <label text="FBO Size: " align="right" padright="4"/>
+            <label id="lblFboSize" align="left"/>
+        </table>
+    </container>
 
 </stack>

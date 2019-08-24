@@ -31,8 +31,6 @@ import com.crashinvaders.vfx.common.scene2d.actions.TimeModulationAction;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.scene2d.VfxWidgetGroup;
-import com.github.czyzby.lml.annotation.LmlActor;
-import com.github.czyzby.lml.parser.LmlView;
 
 public class CanvasContentViewController extends LmlViewController {
 
@@ -50,6 +48,7 @@ public class CanvasContentViewController extends LmlViewController {
         final VfxWidgetGroup vfxGroup = sceneRoot.findActor("vfxGroup");
         final WidgetGroup canvasRoot = sceneRoot.findActor("canvasRoot");
         final WidgetGroup canvasTransformWrapper = sceneRoot.findActor("canvasTransformWrapper");
+        final Label lblFboSize = sceneRoot.findActor("lblFboSize");
 
         final Action backgroundAction;
         final Action logoAction;
@@ -61,7 +60,6 @@ public class CanvasContentViewController extends LmlViewController {
             backgroundDrawable.setShift(0.0f, 0.0f);
             Image imgBackground = new Image(backgroundDrawable);
             imgBackground.setFillParent(true);
-//            imgBackground.setScale(3f);
             canvasRoot.addActor(imgBackground);
 
             backgroundAction = new Action() {
@@ -151,7 +149,7 @@ public class CanvasContentViewController extends LmlViewController {
             final Container<Table> container = new Container<>(table);
             container.align(Align.topRight);
             container.setFillParent(true);
-            container.pad(20f);
+            container.pad(10f);
 
             TextButton btnTransformCanvas = new TextButton("Transform VFX canvas", skin);
             btnTransformCanvas.addListener(new ChangeListener() {
