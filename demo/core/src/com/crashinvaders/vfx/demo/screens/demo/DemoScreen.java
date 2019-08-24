@@ -89,7 +89,7 @@ public class DemoScreen extends ScreenAdapter {
                 .build();
 
         viewControllers = new ViewControllerManager(stage);
-        viewControllers.add(new VfxViewController(viewControllers, lmlParser, clearColor));
+        viewControllers.add(new VfxViewController(viewControllers, lmlParser));
         viewControllers.add(new CanvasContentViewController(viewControllers, lmlParser, assets));
         viewControllers.add(new EffectRosterViewController(viewControllers, lmlParser));
 

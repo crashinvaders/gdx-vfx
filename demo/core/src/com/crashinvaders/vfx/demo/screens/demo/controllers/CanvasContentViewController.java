@@ -47,6 +47,7 @@ public class CanvasContentViewController extends LmlViewController {
     public void onViewCreated(Group sceneRoot) {
         super.onViewCreated(sceneRoot);
 
+        final VfxWidgetGroup vfxGroup = sceneRoot.findActor("vfxGroup");
         final WidgetGroup canvasRoot = sceneRoot.findActor("canvasRoot");
         final WidgetGroup canvasTransformWrapper = sceneRoot.findActor("canvasTransformWrapper");
 
@@ -152,8 +153,8 @@ public class CanvasContentViewController extends LmlViewController {
             container.setFillParent(true);
             container.pad(20f);
 
-            TextButton button = new TextButton("Transform VFX canvas", skin);
-            button.addListener(new ChangeListener() {
+            TextButton btnTransformCanvas = new TextButton("Transform VFX canvas", skin);
+            btnTransformCanvas.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     table.clearActions();
@@ -181,12 +182,23 @@ public class CanvasContentViewController extends LmlViewController {
                 }
             });
 
+            CheckBox chbMatchWidgetSize = new CheckBox("Buffer matches widget size.", skin);
+            chbMatchWidgetSize.setChecked(vfxGroup.isMatchWidgetSize());
+            chbMatchWidgetSize.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    vfxGroup.setMatchWidgetSize(!vfxGroup.isMatchWidgetSize());
+                }
+            });
+
             table.defaults().right();
             table.add("These are Scene2D widgets");
             table.row();
             table.add("within VfxWidgetGroup.");
             table.row();
-            table.add(button).padTop(4f);
+            table.add(btnTransformCanvas).padTop(4f);
+            table.row();
+            table.add(chbMatchWidgetSize).padTop(4f);
 
             canvasRoot.addActor(container);
         }

@@ -31,14 +31,11 @@ import com.github.czyzby.lml.annotation.LmlAction;
 
 public class VfxViewController extends LmlViewController {
 
-    private final Color clearColor;
-
     private VfxManager vfxManager;
     private WidgetGroup canvasRoot;
 
-    public VfxViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser, Color clearColor) {
+    public VfxViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser) {
         super(viewControllers, lmlParser);
-        this.clearColor = clearColor;
     }
 
     public VfxManager getVfxManager() {
@@ -55,6 +52,7 @@ public class VfxViewController extends LmlViewController {
         canvasRoot.setFillParent(true);
 
         VfxWidgetGroup vfxGroup = new VfxWidgetGroup(Pixmap.Format.RGBA8888);
+        vfxGroup.setName("vfxGroup");
         vfxGroup.addActor(canvasRoot);
         vfxGroup.setMatchWidgetSize(true);
 

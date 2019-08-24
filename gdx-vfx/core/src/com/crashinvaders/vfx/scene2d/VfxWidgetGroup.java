@@ -17,27 +17,30 @@
 package com.crashinvaders.vfx.scene2d;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer.BatchRendererAdapter;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 public class VfxWidgetGroup extends WidgetGroup {
 
     private final VfxManager vfxManager;
-    private final BatchRendererAdapter batchRendererAdapter;
+    private final CustomRendererAdapter rendererAdapter;
     private boolean initialized = false;
     private boolean resizePending = false;
     private boolean matchWidgetSize = false;
 
     public VfxWidgetGroup(Pixmap.Format pixelFormat) {
         vfxManager = new VfxManager(pixelFormat);
-        batchRendererAdapter = new BatchRendererAdapter();
+        rendererAdapter = new CustomRendererAdapter();
         super.setTransform(false);
     }
 
@@ -85,7 +88,7 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         vfxManager.cleanUpBuffers();
 
-        vfxManager.getPingPongBuffer().addRenderer(batchRendererAdapter);
+        vfxManager.getPingPongBuffer().addRenderer(rendererAdapter);
         vfxManager.beginCapture();
 
         batch.begin();
@@ -96,7 +99,7 @@ public class VfxWidgetGroup extends WidgetGroup {
         batch.end();
 
         vfxManager.endCapture();
-        vfxManager.getPingPongBuffer().removeRenderer(batchRendererAdapter);
+        vfxManager.getPingPongBuffer().removeRenderer(rendererAdapter);
 
         vfxManager.applyEffects();
 
@@ -154,7 +157,7 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         performPendingResize();
 
-        batchRendererAdapter.initialize(getStage().getBatch());
+        rendererAdapter.initialize(getStage().getBatch());
 
         resizePending = false;
         initialized = true;
@@ -165,7 +168,7 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         vfxManager.dispose();
 
-        batchRendererAdapter.reset();
+        rendererAdapter.reset();
 
         resizePending = false;
         initialized = false;
@@ -195,10 +198,53 @@ public class VfxWidgetGroup extends WidgetGroup {
             float ppu = viewport.getScreenWidth() / viewport.getWorldWidth();
             width = MathUtils.floor(getWidth() * ppu);
             height = MathUtils.floor(getHeight() * ppu);
+
+            rendererAdapter.updateOwnProjection();
         }
 
         vfxManager.resize(width, height);
 
         resizePending = false;
+    }
+
+    private class CustomRendererAdapter implements VfxFrameBuffer.Renderer {
+        private final Matrix4 preservedProjection = new Matrix4();
+
+        private final Matrix4 ownProjection = new Matrix4();
+
+        private Batch batch;
+
+        public void initialize(Batch batch) {
+            this.batch = batch;
+        }
+
+        private void reset() {
+            batch = null;
+        }
+
+        @Override
+        public void flush() {
+            batch.flush();
+        }
+
+        @Override
+        public void assignLocalMatrices(Matrix4 projection, Matrix4 transform) {
+            preservedProjection.set(batch.getProjectionMatrix());
+
+            if (!matchWidgetSize) {
+                projection = ownProjection;
+            }
+
+            batch.setProjectionMatrix(projection);
+        }
+
+        @Override
+        public void restoreOwnMatrices() {
+            batch.setProjectionMatrix(preservedProjection);
+        }
+
+        public void updateOwnProjection() {
+            ownProjection.setToOrtho2D(0f, 0f, getWidth(), getHeight());
+        }
     }
 }
