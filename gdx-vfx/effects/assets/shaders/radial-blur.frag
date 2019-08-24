@@ -39,9 +39,10 @@ uniform float u_zoom;
 void main() {
 	vec2 offset = vec2(u_offsetX, u_offsetY);
 	vec4 color = vec4(0.0);
+	float zoom = u_zoom;
 	for( int i = 0; i < passes; ++i )	{
-		color += texture2D(u_texture0, (v_texCoord0 * u_zoom) + offset);
-		u_zoom += u_blurDiv;
+		color += texture2D(u_texture0, (v_texCoord0 * zoom) + offset);
+		zoom += u_blurDiv;
 	}
-	gl_FragColor = color / passes;
+	gl_FragColor = color / vec4(float(passes));
 }
