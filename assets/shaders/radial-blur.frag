@@ -22,42 +22,27 @@
 	#define PRECISION
 #endif
 
+#ifndef PASSES
+#error Please define PASSES
+#endif
+
+const int passes = PASSES;
+
 varying vec2 v_texCoord0;
+
 uniform sampler2D u_texture0;
+uniform float u_blurDiv;
+uniform float u_offsetX;
+uniform float u_offsetY;
+uniform float u_zoom;
 
-uniform float blur_div;
-uniform float offset_x;
-uniform float offset_y;
-uniform float zoom;
-
-#ifndef BLUR_LENGTH
-#error Please define a BLUR_LENGTH
-#endif
-
-#ifndef ONE_ON_BLUR_LENGTH
-#error Please define a ONE_ON_BLUR_LENGTH
-#endif
-
-// avoid compile errors
-#define BLUR_LEN			BLUR_LENGTH
-#define ONE_ON_BLUR_LEN		ONE_ON_BLUR_LENGTH
-
-
-// precompute blur factors (faster, loops will be unrolled)
-const float blur_start = 1.0;
-
-// performant version
-void main()
-{
-    float scale = blur_start * zoom;
-	vec2 o = vec2(offset_x, offset_y);
-
-	vec4 c = vec4(0);
-	for( int i = 0; i < BLUR_LEN; ++i )
-	{
-		c += texture2D(u_texture0, (v_texCoord0 * scale) + o);
-		scale += blur_div;
+void main() {
+	vec2 offset = vec2(u_offsetX, u_offsetY);
+	vec4 color = vec4(0.0);
+	float zoom = u_zoom;
+	for( int i = 0; i < passes; ++i )	{
+		color += texture2D(u_texture0, (v_texCoord0 * zoom) + offset);
+		zoom += u_blurDiv;
 	}
-
-	gl_FragColor = c * ONE_ON_BLUR_LEN;
+	gl_FragColor = color / vec4(float(passes));
 }
