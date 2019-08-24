@@ -55,9 +55,11 @@ public class VfxViewController extends LmlViewController {
         canvasRoot.setFillParent(true);
 
         VfxWidgetGroup vfxGroup = new VfxWidgetGroup(Pixmap.Format.RGBA8888);
+        vfxGroup.addActor(canvasRoot);
+        vfxGroup.setMatchWidgetSize(true);
+
         vfxManager = vfxGroup.getVfxManager();
         vfxManager.setBlendingEnabled(false);
-        vfxGroup.addActor(canvasRoot);
 
         return new IntegerRoundFillContainer(vfxGroup);
     }

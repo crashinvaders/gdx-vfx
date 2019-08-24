@@ -20,12 +20,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer.BatchRendererAdapter;
@@ -36,6 +33,7 @@ public class VfxWidgetGroup extends WidgetGroup {
     private final BatchRendererAdapter batchRendererAdapter;
     private boolean initialized = false;
     private boolean resizePending = false;
+    private boolean matchWidgetSize = false;
 
     public VfxWidgetGroup(Pixmap.Format pixelFormat) {
         vfxManager = new VfxManager(pixelFormat);
@@ -45,6 +43,21 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     public VfxManager getVfxManager() {
         return vfxManager;
+    }
+
+    public boolean isMatchWidgetSize() {
+        return matchWidgetSize;
+    }
+
+    /**
+     * @param matchWidgetSize if true, the internal {@link VfxManager} will be resized
+     *                        to match {@link VfxWidgetGroup}'s size (stage units and not screen pixels).
+     */
+    public void setMatchWidgetSize(boolean matchWidgetSize) {
+        if (this.matchWidgetSize == matchWidgetSize) return;
+
+        this.matchWidgetSize = matchWidgetSize;
+        resizePending = true;
     }
 
     @Override
@@ -68,12 +81,7 @@ public class VfxWidgetGroup extends WidgetGroup {
     public void draw(Batch batch, float parentAlpha) {
         batch.end();
 
-        if (resizePending) {
-            resizePending = false;
-            vfxManager.resize(
-                    MathUtils.floor(getWidth()),
-                    MathUtils.floor(getHeight()));
-        }
+        performPendingResize();
 
         vfxManager.cleanUpBuffers();
 
@@ -144,14 +152,7 @@ public class VfxWidgetGroup extends WidgetGroup {
     private void initialize() {
         if (initialized) return;
 
-        int width = (int)getWidth();
-        int height = (int)getHeight();
-        if (width == 0 || height == 0) {
-            Viewport viewport = getStage().getViewport();
-            width = MathUtils.floor(viewport.getWorldWidth());
-            height = MathUtils.floor(viewport.getWorldHeight());
-        }
-        vfxManager.resize(width, height);
+        performPendingResize();
 
         batchRendererAdapter.initialize(getStage().getBatch());
 
@@ -168,5 +169,36 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         resizePending = false;
         initialized = false;
+    }
+
+    private void performPendingResize() {
+        if (!resizePending) return;
+
+        final int width;
+        final int height;
+
+        // Size may be zero if the widget wasn't laid out yet.
+        if ((int)getWidth() == 0 || (int)getHeight() == 0) {
+            // If the size of the widget is not defined,
+            // just resize to a small buffer to keep the memory footprint low.
+            width = 16;
+            height = 16;
+
+        } else if (matchWidgetSize) {
+            // Set buffer to match the size of the widget.
+            width = MathUtils.floor(getWidth());
+            height = MathUtils.floor(getHeight());
+
+        } else {
+            // Set buffer to match the screen pixel density.
+            Viewport viewport = getStage().getViewport();
+            float ppu = viewport.getScreenWidth() / viewport.getWorldWidth();
+            width = MathUtils.floor(getWidth() * ppu);
+            height = MathUtils.floor(getHeight() * ppu);
+        }
+
+        vfxManager.resize(width, height);
+
+        resizePending = false;
     }
 }
