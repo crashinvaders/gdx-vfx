@@ -25,5 +25,9 @@ before_install:
 - chmod +x gradlew
 
 script:
-  # Assemble only main libarary modules (ignore demo).
-  - ./gradlew --no-daemon clean installAll
+  # Assemble only main library modules (ignore demo).
+  - ./gradlew clean installAll
+
+after_success:
+  # Deploy snapshot version to Maven Central repo.
+  - ./gradlew uploadSnapshotArchivesAll

@@ -29,6 +29,26 @@ buildscript {
 
 apply plugin: 'io.codearte.nexus-staging'
 
+// Setup Nexus repo credentials.
+// They usually defined in user global gradle.properties file.
+// Or as environment variables (Travis-CI).
+if (!ossrhUsername) {
+    ossrhUsername = $System.env.OSSRH_USERNAME
+    if (!ossrhUsername) {
+        logger.warn('ossrhUsername is not defined')
+    } else {
+        logger.info('ossrhUsername has been set from environment variable.')
+    }
+}
+if (!ossrhPassword) {
+    ossrhPassword = $System.env.OSSRH_PASSWORD
+    if (!ossrhPassword) {
+        logger.warn('ossrhPassword is not defined')
+    } else {
+        logger.info('ossrhPassword has been set from environment variable.')
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
@@ -55,3 +75,9 @@ task installAll(dependsOn: ['gdx-vfx:core:build', 'gdx-vfx:core:install',
 task uploadArchivesAll(dependsOn: ['gdx-vfx:core:build', 'gdx-vfx:core:uploadArchives',
                             'gdx-vfx:effects:build', 'gdx-vfx:effects:uploadArchives',
                             'gdx-vfx:gwt:build', 'gdx-vfx:gwt:uploadArchives'])
+
+// Invokes uploadArchives task if the version is a snapshot.
+task uploadSnapshotArchivesAll(dependsOn: ['gdx-vfx:core:uploadSnapshotArchives',
+                                     'gdx-vfx:effects:uploadSnapshotArchives',
+                                     'gdx-vfx:gwt:uploadSnapshotArchives']) {
+}

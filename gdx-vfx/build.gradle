@@ -98,4 +98,14 @@ subprojects {
             }
         }
     }
+
+    // Invokes uploadArchives task if the version is a snapshot.
+    task uploadSnapshotArchives() {
+        if (!snapshotVersion) {
+            println 'Not a snapshot version.'
+            return;
+        }
+        dependsOn 'build'
+        dependsOn 'uploadArchives'
+    }
 }
