@@ -13,4 +13,5 @@
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.CanvasContentViewController" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.EffectRosterViewController" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.VfxViewController" />
+	<extend-configuration-property name="gdx.reflect.include" value="com.crashinvaders.vfx.demo.screens.demo.controllers.StatisticPanelViewController" />
 </module>
