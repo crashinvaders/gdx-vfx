@@ -20,10 +20,10 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class CombineFilter extends VfxFilter<CombineFilter> {
+public final class CombineFilter extends VfxFilterOld<CombineFilter> {
 
     private float s1i, s1s, s2i, s2s;
 

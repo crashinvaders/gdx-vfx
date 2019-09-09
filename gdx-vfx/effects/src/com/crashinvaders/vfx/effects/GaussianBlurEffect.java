@@ -19,15 +19,16 @@ package com.crashinvaders.vfx.effects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.crashinvaders.vfx.VfxEffect;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.VfxEffectOld;
+import com.crashinvaders.vfx.framebuffer.RegularPingPongBuffer;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.crashinvaders.vfx.filters.CopyFilter;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 
-public class GaussianBlurEffect extends VfxEffect {
+public class GaussianBlurEffect extends VfxEffectOld {
 
     private final PingPongBuffer pingPongBuffer;
     private final CopyFilter copy;
@@ -44,7 +45,7 @@ public class GaussianBlurEffect extends VfxEffect {
     }
 
     public GaussianBlurEffect(int blurPasses, GaussianBlurFilter.BlurType blurType) {
-        pingPongBuffer = new PingPongBuffer(Pixmap.Format.RGBA8888);
+        pingPongBuffer = new RegularPingPongBuffer(Pixmap.Format.RGBA8888);
 
         copy = new CopyFilter();
 
@@ -75,7 +76,7 @@ public class GaussianBlurEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         if (blur.getPasses() < 1) {
             // Do not apply blur filter.
             copy.setInput(src).setOutput(dst).render(mesh);

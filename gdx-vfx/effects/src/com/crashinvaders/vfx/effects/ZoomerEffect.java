@@ -17,15 +17,15 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.filters.ZoomFilter;
 
 /**
  * Simple zooming effect.
  */
-public final class ZoomerEffect extends VfxEffect {
+public final class ZoomerEffect extends VfxEffectOld {
     private final ZoomFilter zoom;
 
     /**
@@ -60,7 +60,7 @@ public final class ZoomerEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         zoom.setInput(src).setOutput(dst).render(mesh);
     }
 

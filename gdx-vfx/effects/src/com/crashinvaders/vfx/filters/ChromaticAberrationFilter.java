@@ -17,10 +17,10 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class ChromaticAberrationFilter extends VfxFilter<ChromaticAberrationFilter> {
+public class ChromaticAberrationFilter extends VfxFilterOld<ChromaticAberrationFilter> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),

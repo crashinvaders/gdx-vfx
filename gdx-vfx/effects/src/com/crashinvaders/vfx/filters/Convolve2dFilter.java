@@ -17,7 +17,7 @@
 
 package com.crashinvaders.vfx.filters;
 
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 
 /**
@@ -65,7 +65,7 @@ public final class Convolve2dFilter extends MultipassVfxFilter {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, PingPongBuffer buffer) {
+    public void render(ViewportQuadMesh mesh, PingPongBuffer buffer) {
         hor.setInput(buffer.getSrcTexture())
             .setOutput(buffer.getDstBuffer())
             .render(mesh);

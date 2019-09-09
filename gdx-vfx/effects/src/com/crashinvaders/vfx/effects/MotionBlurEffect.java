@@ -20,9 +20,9 @@ package com.crashinvaders.vfx.effects;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferQueue;
 import com.crashinvaders.vfx.filters.CopyFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter;
@@ -31,7 +31,7 @@ import com.crashinvaders.vfx.filters.MotionBlurFilter.BlurFunction;
 /** A motion blur effect which draws the last frame with a lower opacity. The result is then stored as the next last frame to
  * create the trail effect.
  * @author Toni Sagrista */
-public class MotionBlurEffect extends VfxEffect {
+public class MotionBlurEffect extends VfxEffectOld {
 	private final MotionBlurFilter motionBlurFilter;
 	private final CopyFilter copyFilter;
 	private final VfxFrameBufferQueue localBuffer;
@@ -56,7 +56,7 @@ public class MotionBlurEffect extends VfxEffect {
 		localBuffer.resize(width, height);
 	}
 
-	public MotionBlurEffect blurOpacity(float blurOpacity) {
+	public MotionBlurEffect setBlurOpacity(float blurOpacity) {
 		motionBlurFilter.setBlurOpacity(blurOpacity);
 		return this;
 	}
@@ -76,7 +76,7 @@ public class MotionBlurEffect extends VfxEffect {
 	}
 
 	@Override
-	public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+	public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
 		VfxFrameBuffer prevFrame = this.localBuffer.changeToNext();
 		motionBlurFilter.setInput(src).setOutput(prevFrame).render(mesh);
 		motionBlurFilter.setLastFrameTexture(prevFrame.getFbo().getColorBufferTexture());

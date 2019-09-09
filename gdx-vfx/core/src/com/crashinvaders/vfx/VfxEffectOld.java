@@ -17,7 +17,7 @@
 package com.crashinvaders.vfx;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 /**
@@ -27,7 +27,7 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
  * @author bmanuel
  * @author metaphore
  */
-public abstract class VfxEffect implements Disposable {
+public abstract class VfxEffectOld implements Disposable {
 
     protected boolean disabled = false;
 
@@ -44,7 +44,7 @@ public abstract class VfxEffect implements Disposable {
     public abstract void rebind();
 
     /** Concrete objects shall implements its own rendering, given the source and destination buffers. */
-    public abstract void render(ScreenQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst);
+    public abstract void render(ViewportQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst);
 
     /** Whether or not this effect is disabled and shouldn't be processed */
     public boolean isDisabled() {

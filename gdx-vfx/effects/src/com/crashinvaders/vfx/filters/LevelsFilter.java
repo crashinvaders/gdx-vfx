@@ -32,12 +32,12 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Controls levels of brightness and contrast
  * @author tsagrista */
-public final class LevelsFilter extends VfxFilter<LevelsFilter> {
+public final class LevelsFilter extends VfxFilterOld<LevelsFilter> {
     private float brightness = 0.0f;
     private float contrast = 1.0f;
     private float saturation = 1.0f;

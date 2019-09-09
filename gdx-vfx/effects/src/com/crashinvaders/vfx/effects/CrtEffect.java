@@ -16,12 +16,12 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.filters.CrtFilter;
 
-public class CrtEffect extends VfxEffect {
+public class CrtEffect extends VfxEffectOld {
 
     private final CrtFilter crtFilter;
 
@@ -44,7 +44,7 @@ public class CrtEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         crtFilter.setInput(src).setOutput(dst).render(mesh);
     }
 

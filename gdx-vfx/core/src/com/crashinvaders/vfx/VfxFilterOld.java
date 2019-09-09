@@ -24,13 +24,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 
 /**
  * Base class for any single-pass filter.
  */
 @SuppressWarnings("unchecked")
-public abstract class VfxFilter<T extends VfxFilter> implements Disposable {
+public abstract class VfxFilterOld<T extends VfxFilterOld> implements Disposable {
 
     public interface Parameter {
         String mnemonic();
@@ -49,7 +49,7 @@ public abstract class VfxFilter<T extends VfxFilter> implements Disposable {
 
     private boolean programBegan = false;
 
-    public VfxFilter(ShaderProgram program) {
+    public VfxFilterOld(ShaderProgram program) {
         this.program = program;
     }
 
@@ -73,7 +73,7 @@ public abstract class VfxFilter<T extends VfxFilter> implements Disposable {
     }
 
     /**
-     * This method should be called once filter will be added to {@link VfxEffect}.
+     * This method should be called once filter will be added to {@link VfxEffectOld}.
      * Also it must be called on every application resize as usual.
      */
     public abstract void resize(int width, int height);
@@ -88,7 +88,7 @@ public abstract class VfxFilter<T extends VfxFilter> implements Disposable {
      * Sets the parameter to the specified value for this filter. This is for one-off operations since the shader is being bound
 	 * and unbound once per call: for a batch-ready version of this function see and use setParams instead.
 	 */
-    public void render(ScreenQuadMesh mesh) {
+    public void render(ViewportQuadMesh mesh) {
         boolean manualBufferBind = outputBuffer != null && !outputBuffer.isDrawing();
         if (manualBufferBind) { outputBuffer.begin(); }
 
@@ -134,23 +134,21 @@ public abstract class VfxFilter<T extends VfxFilter> implements Disposable {
     }
 
     /** mat3 */
-    protected T setParam(Parameter param, Matrix3 value) {
+    protected void setParam(Parameter param, Matrix3 value) {
         program.begin();
         program.setUniformMatrix(param.mnemonic(), value);
         program.end();
-        return (T) this;
     }
 
     /** mat4 */
-    protected T setParam(Parameter param, Matrix4 value) {
+    protected void setParam(Parameter param, Matrix4 value) {
         program.begin();
         program.setUniformMatrix(param.mnemonic(), value);
         program.end();
-        return (T) this;
     }
 
     /** float[], vec2[], vec3[], vec4[] */
-    protected T setParamv(Parameter param, float[] values, int offset, int length) {
+    protected void setParamv(Parameter param, float[] values, int offset, int length) {
         program.begin();
 
         switch (param.arrayElementSize()) {
@@ -170,7 +168,6 @@ public abstract class VfxFilter<T extends VfxFilter> implements Disposable {
         }
 
         program.end();
-        return (T) this;
     }
 
     //region

@@ -17,14 +17,14 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
  * Fisheye distortion filter
  * @author tsagrista
  */
-public class FisheyeDistortionFilter extends VfxFilter<FisheyeDistortionFilter> {
+public class FisheyeDistortionFilter extends VfxFilterOld<FisheyeDistortionFilter> {
 
     public enum Param implements Parameter {
         // @formatter:off

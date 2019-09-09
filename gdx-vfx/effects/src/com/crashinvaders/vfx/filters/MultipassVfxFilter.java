@@ -18,9 +18,9 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 
 /**
  * The base class for any multi-pass filter.
@@ -29,11 +29,11 @@ import com.crashinvaders.vfx.VfxFilter;
  */
 public abstract class MultipassVfxFilter implements Disposable {
 
-    /** @see VfxFilter#resize(int, int)  */
+    /** @see VfxFilterOld#resize(int, int)  */
     public abstract void resize(int width, int height);
 
-    /** @see VfxFilter#rebind() */
+    /** @see VfxFilterOld#rebind() */
     public abstract void rebind();
 
-    public abstract void render(ScreenQuadMesh mesh, PingPongBuffer pingPongBuffer);
+    public abstract void render(ViewportQuadMesh mesh, PingPongBuffer pingPongBuffer);
 }

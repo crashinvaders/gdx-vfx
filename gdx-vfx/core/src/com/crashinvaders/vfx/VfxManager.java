@@ -24,33 +24,33 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBufferRenderer;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.framebuffer.*;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.utils.PrioritizedArray;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 
 /**
  * Provides a way to beginCapture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to
  * screen.
  * <p>
- * Effects can be added or removed via {@link #addEffect(VfxEffect)} and {@link #removeEffect(VfxEffect)}.
+ * Effects can be added or removed via {@link #addEffect(VfxEffectOld)} and {@link #removeEffect(VfxEffectOld)}.
  *
  * @author bmanuel
  * @author metaphore
  */
 public final class VfxManager implements Disposable {
 
-    private final PrioritizedArray<VfxEffect> effectsAll = new PrioritizedArray<>();
+    private final PrioritizedArray<VfxEffectOld> effectsAll = new PrioritizedArray<>();
     /** Maintains a per-frame updated list of enabled effects */
-    private final Array<VfxEffect> effectsEnabled = new Array<>();
+    private final Array<VfxEffectOld> effectsEnabled = new Array<>();
 
     /** A mesh that is shared among basic filters to draw to full screen. */
-    private final ScreenQuadMesh screenQuadMesh = new ScreenQuadMesh();
-    private final com.crashinvaders.vfx.framebuffer.VfxFrameBufferRenderer bufferRenderer = new VfxFrameBufferRenderer();
+//    private final ScreenQuadMesh screenQuadMesh = new ScreenQuadMesh();
+//    private final VfxFrameBufferRenderer bufferRenderer = new VfxFrameBufferRenderer();
 
-    private final Format fboFormat;
+//    private final Format fboFormat;
     private final PingPongBuffer pingPongBuffer;
+
+    private final VfxContext context;
 
     private boolean disabled = false;
     private boolean capturing = false;
@@ -66,8 +66,9 @@ public final class VfxManager implements Disposable {
     }
 
     public VfxManager(Format fboFormat, int bufferWidth, int bufferHeight) {
-        this.fboFormat = fboFormat;
-        this.pingPongBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight);
+        this.context = new VfxContext(fboFormat, bufferWidth, bufferHeight);
+//        this.fboFormat = fboFormat;
+        this.pingPongBuffer = new RegularPingPongBuffer(fboFormat, bufferWidth, bufferHeight);
         this.width = bufferWidth;
         this.height = bufferHeight;
     }
@@ -75,7 +76,8 @@ public final class VfxManager implements Disposable {
     @Override
     public void dispose() {
         pingPongBuffer.dispose();
-        screenQuadMesh.dispose();
+        context.dispose();
+//        screenQuadMesh.dispose();
     }
 
     public void resize(int width, int height) {
@@ -90,7 +92,8 @@ public final class VfxManager implements Disposable {
     }
 
     public void rebind() {
-        bufferRenderer.rebind();
+//        bufferRenderer.rebind();
+        context.rebind();
 
         for (int i = 0; i < effectsAll.size(); i++) {
             effectsAll.get(i).rebind();
@@ -127,11 +130,11 @@ public final class VfxManager implements Disposable {
     }
 
     /**
-     * Returns the internal framebuffer format, computed from the parameters specified during construction. NOTE: the returned
+     * Returns the internal framebuffers' pixel format, computed from the parameters specified during construction. NOTE: the returned
      * Format will be valid after construction and NOT early!
      */
-    public Format getFramebufferFormat() {
-        return fboFormat;
+    public Format getPixelFormat() {
+        return context.pixelFormat;
     }
 
     public void setBufferTextureParams(TextureWrap u, TextureWrap v, Texture.TextureFilter min, Texture.TextureFilter mag) {
@@ -164,19 +167,23 @@ public final class VfxManager implements Disposable {
         return pingPongBuffer;
     }
 
+    public VfxContext getContext() {
+        return context;
+    }
+
     /**
      * Adds an effect to the effect chain and transfers ownership to the VfxManager.
      * The order of the inserted effects IS important, since effects will be applied in a FIFO fashion,
      * the first added is the first being applied.
      * <p>
-     * For more control over the order supply the effect with a priority - {@link #addEffect(VfxEffect, int)}.
-     * @see #addEffect(VfxEffect, int)
+     * For more control over the order supply the effect with a priority - {@link #addEffect(VfxEffectOld, int)}.
+     * @see #addEffect(VfxEffectOld, int)
      */
-    public void addEffect(VfxEffect effect) {
+    public void addEffect(VfxEffectOld effect) {
         addEffect(effect, 0);
     }
 
-    public void addEffect(VfxEffect effect, int priority) {
+    public void addEffect(VfxEffectOld effect, int priority) {
         effectsAll.add(effect, priority);
         effect.resize(width, height);
     }
@@ -184,7 +191,7 @@ public final class VfxManager implements Disposable {
     /**
      * Removes the specified effect from the effect chain.
      */
-    public void removeEffect(VfxEffect effect) {
+    public void removeEffect(VfxEffectOld effect) {
         effectsAll.remove(effect);
     }
 
@@ -198,7 +205,7 @@ public final class VfxManager implements Disposable {
     /**
      * Changes the order of the effect in the effect chain.
      */
-    public void setEffectPriority(VfxEffect effect, int priority) {
+    public void setEffectPriority(VfxEffectOld effect, int priority) {
         effectsAll.setPriority(effect, priority);
     }
 
@@ -263,7 +270,7 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
-        Array<VfxEffect> effectChain = updateEnabledEffectList();
+        Array<VfxEffectOld> effectChain = updateEnabledEffectList();
 
         applyingEffects = true;
         int count = effectChain.size;
@@ -280,7 +287,7 @@ public final class VfxManager implements Disposable {
             pingPongBuffer.swap(); // Swap buffers to get captured result in src buffer.
             pingPongBuffer.begin();
             for (int i = 0; i < count; i++) {
-                VfxEffect effect = effectChain.get(i);
+                VfxEffectOld effect = effectChain.get(i);
                 effect.render(screenQuadMesh,
                         pingPongBuffer.getSrcBuffer(),
                         pingPongBuffer.getDstBuffer());
@@ -307,7 +314,7 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
-        bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer());
+        context.bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer());
     }
 
     public void renderToScreen(int x, int y, int width, int height) {
@@ -317,7 +324,7 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
-        bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer(), x, y, width, height);
+        context.bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer(), x, y, width, height);
     }
 
     public void renderToFbo(VfxFrameBuffer output) {
@@ -327,18 +334,72 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
-        bufferRenderer.renderToFbo(pingPongBuffer.getDstBuffer(), output);
+        context.bufferRenderer.renderToFbo(pingPongBuffer.getDstBuffer(), output);
     }
 
-    private Array<VfxEffect> updateEnabledEffectList() {
+    private Array<VfxEffectOld> updateEnabledEffectList() {
         // Build up active effects
         effectsEnabled.clear();
         for (int i = 0; i < effectsAll.size(); i++) {
-            VfxEffect effect = effectsAll.get(i);
+            VfxEffectOld effect = effectsAll.get(i);
             if (!effect.isDisabled()) {
                 effectsEnabled.add(effect);
             }
         }
         return effectsEnabled;
+    }
+
+    public static class VfxContext implements Disposable {
+
+        final VfxFrameBufferPool bufferPool;
+        final VfxFrameBufferRenderer bufferRenderer;
+        final Format pixelFormat;
+        int bufferWidth;
+        int bufferHeight;
+
+        public VfxContext(Format pixelFormat, int bufferWidth, int bufferHeight) {
+            this.bufferPool = new VfxFrameBufferPool(pixelFormat, bufferWidth, bufferHeight, 8);
+            this.bufferRenderer = new VfxFrameBufferRenderer();
+            this.pixelFormat = pixelFormat;
+            this.bufferWidth = bufferWidth;
+            this.bufferHeight = bufferHeight;
+        }
+
+        @Override
+        public void dispose() {
+            bufferPool.dispose();
+            bufferRenderer.dispose();
+        }
+
+        public void resize(int bufferWidth, int bufferHeight) {
+            this.bufferWidth = bufferWidth;
+            this.bufferHeight = bufferHeight;
+            this.bufferPool.resize(bufferWidth, bufferHeight);
+        }
+
+        public void rebind() {
+            bufferRenderer.rebind();
+        }
+
+        public VfxFrameBufferPool getBufferPool() {
+            return bufferPool;
+        }
+
+        public VfxFrameBufferRenderer getBufferRenderer() {
+            return bufferRenderer;
+        }
+
+        public ViewportQuadMesh getViewportQuadMesh() {
+            return bufferRenderer.getMesh();
+        }
+
+        public int getBufferWidth() {
+            return bufferWidth;
+        }
+
+        public int getBufferHeight() {
+            return bufferHeight;
+        }
+
     }
 }

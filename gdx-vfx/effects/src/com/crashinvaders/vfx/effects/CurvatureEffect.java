@@ -17,12 +17,12 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.filters.RadialDistortionFilter;
 
-public final class CurvatureEffect extends VfxEffect {
+public final class CurvatureEffect extends VfxEffectOld {
 
     private RadialDistortionFilter distort;
 
@@ -46,7 +46,7 @@ public final class CurvatureEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         distort.setInput(src).setOutput(dst).render(mesh);
     }
 

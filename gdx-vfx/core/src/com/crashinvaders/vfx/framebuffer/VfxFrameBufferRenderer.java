@@ -19,7 +19,7 @@ package com.crashinvaders.vfx.framebuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 
 /**
  * Simple renderer that is capable of drawing
@@ -29,11 +29,11 @@ import com.crashinvaders.vfx.utils.ScreenQuadMesh;
  */
 public class VfxFrameBufferRenderer implements Disposable {
 
-    private final ScreenQuadMesh mesh;
+    private final ViewportQuadMesh mesh;
     private final ShaderProgram shader;
 
     public VfxFrameBufferRenderer() {
-        mesh = new ScreenQuadMesh();
+        mesh = new ViewportQuadMesh();
 
         shader = new ShaderProgram(
                 "#ifdef GL_ES\n" +
@@ -103,7 +103,7 @@ public class VfxFrameBufferRenderer implements Disposable {
         output.end();
     }
 
-    public ScreenQuadMesh getMesh() {
+    public ViewportQuadMesh getMesh() {
         return mesh;
     }
 }

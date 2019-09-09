@@ -16,16 +16,16 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.filters.HdrFilter;
 
 /**
  * Light scattering implementation.
  * @author Toni Sagrista
  */
-public final class HdrEffect extends VfxEffect {
+public final class HdrEffect extends VfxEffectOld {
 
     private final HdrFilter filter;
 
@@ -55,7 +55,7 @@ public final class HdrEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         filter.setInput(src).setOutput(dst).render(mesh);
     }
 

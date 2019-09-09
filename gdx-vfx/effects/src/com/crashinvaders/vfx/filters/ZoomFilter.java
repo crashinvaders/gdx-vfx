@@ -19,10 +19,10 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class ZoomFilter extends VfxFilter<ZoomFilter> {
+public final class ZoomFilter extends VfxFilterOld<ZoomFilter> {
 
 	public enum Param implements Parameter {
 		Texture("u_texture0", 0),

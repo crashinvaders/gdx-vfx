@@ -18,12 +18,12 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Fast approximate anti-aliasing filter.
  * @author Toni Sagrista */
-public final class FxaaFilter extends VfxFilter<FxaaFilter> {
+public final class FxaaFilter extends VfxFilterOld<FxaaFilter> {
 
 	private final Vector2 viewportInverse = new Vector2();
 	private float fxaaReduceMin;

@@ -20,11 +20,11 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class MixFilter extends VfxFilter<MixFilter> {
+public final class MixFilter extends VfxFilterOld<MixFilter> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),

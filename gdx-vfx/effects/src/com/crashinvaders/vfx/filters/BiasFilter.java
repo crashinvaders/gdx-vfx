@@ -17,14 +17,14 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
  * Bias filter.
  * @author Toni Sagrista
  */
-public final class BiasFilter extends VfxFilter<BiasFilter> {
+public final class BiasFilter extends VfxFilterOld<BiasFilter> {
 
     private float bias;
 

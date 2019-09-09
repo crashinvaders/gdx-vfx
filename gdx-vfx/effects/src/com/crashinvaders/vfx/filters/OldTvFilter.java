@@ -18,10 +18,10 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class OldTvFilter extends VfxFilter<OldTvFilter> {
+public class OldTvFilter extends VfxFilterOld<OldTvFilter> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),

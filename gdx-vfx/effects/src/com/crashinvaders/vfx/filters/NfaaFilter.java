@@ -18,12 +18,12 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Normal filtered anti-aliasing filter.
  * @author Toni Sagrista */
-public final class NfaaFilter extends VfxFilter<NfaaFilter> {
+public final class NfaaFilter extends VfxFilterOld<NfaaFilter> {
 
 	private final Vector2 viewportInverse = new Vector2();
 

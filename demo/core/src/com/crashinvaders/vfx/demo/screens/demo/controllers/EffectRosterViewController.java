@@ -31,12 +31,11 @@ import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.effects.*;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.CrtFilter;
 import com.crashinvaders.vfx.filters.MotionBlurFilter;
-import com.crashinvaders.vfx.filters.RadialBlurFilter;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.LmlParser;
 
@@ -152,9 +151,9 @@ public class EffectRosterViewController extends LmlViewController {
 
     private static class EffectEntryModel implements Disposable {
         private final String name;
-        private final VfxEffect effect;
+        private final VfxEffectOld effect;
 
-        public EffectEntryModel(String name, VfxEffect effect) {
+        public EffectEntryModel(String name, VfxEffectOld effect) {
             this.name = name;
             this.effect = effect;
         }
@@ -168,7 +167,7 @@ public class EffectRosterViewController extends LmlViewController {
             return name;
         }
 
-        public VfxEffect getEffect() {
+        public VfxEffectOld getEffect() {
             return effect;
         }
     }

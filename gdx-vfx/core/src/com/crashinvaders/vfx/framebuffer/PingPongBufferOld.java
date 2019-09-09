@@ -19,7 +19,10 @@ package com.crashinvaders.vfx.framebuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -38,29 +41,49 @@ import com.badlogic.gdx.utils.Disposable;
  *
  * @author metaphore
  */
-public abstract class PingPongBuffer implements Disposable {
+public class PingPongBufferOld implements Disposable {
 
-    protected VfxFrameBuffer bufDst;
-    protected VfxFrameBuffer bufSrc;
+    private VfxFrameBuffer bufDst;
+    private VfxFrameBuffer bufSrc;
 
     /** Where capturing is started. Should be true between {@link #begin()} and {@link #end()}. */
-    protected boolean capturing;
+    private boolean capturing;
 
-    private Texture.TextureWrap wrapU = Texture.TextureWrap.ClampToEdge;
-    private Texture.TextureWrap wrapV = Texture.TextureWrap.ClampToEdge;
-    private Texture.TextureFilter filterMin = Texture.TextureFilter.Nearest;
-    private Texture.TextureFilter filterMag = Texture.TextureFilter.Nearest;
+    private TextureWrap wrapU = TextureWrap.ClampToEdge;
+    private TextureWrap wrapV = TextureWrap.ClampToEdge;
+    private TextureFilter filterMin = TextureFilter.Nearest;
+    private TextureFilter filterMag = TextureFilter.Nearest;
+
+    /**
+     * Initializes ping-pong buffer with the size of the LibGDX client's area (usually window size).
+     * If you use different OpenGL viewport, better use {@link #PingPongBuffer(Format, int, int)}
+     * and specify the size manually.
+     * @param fbFormat Pixel format of encapsulated {@link VfxFrameBuffer}s.
+     */
+    public PingPongBufferOld(Format fbFormat) {
+        this(fbFormat, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+    }
+
+    /**
+     * Initializes ping-pong buffer with the given size.
+     * @param fbFormat Pixel format of encapsulated {@link VfxFrameBuffer}s.
+     */
+    public PingPongBufferOld(Format fbFormat, int width, int height) {
+        this.bufDst = new VfxFrameBuffer(fbFormat);
+        this.bufSrc = new VfxFrameBuffer(fbFormat);
+        resize(width, height);
+    }
+
+    @Override
+    public void dispose() {
+        bufDst.dispose();
+        bufSrc.dispose();
+    }
 
     public void resize(int width, int height) {
         this.bufDst.initialize(width, height);
         this.bufSrc.initialize(width, height);
         rebind();
-    }
-
-    @Override
-    public void dispose() {
-        this.bufDst.dispose();
-        this.bufSrc.dispose();
     }
 
     /**
@@ -95,17 +118,6 @@ public abstract class PingPongBuffer implements Disposable {
     }
 
     /**
-     * Finishes ping-ponging. Must be called after {@link #begin()}.
-     **/
-    public void end() {
-        if (!capturing) {
-            throw new IllegalStateException("Ping pong is not in capturing state. You should call begin() before calling end().");
-        }
-        bufDst.end();
-        capturing = false;
-    }
-
-    /**
      * Swaps source/target buffers.
      * May be called outside of capturing state.
      */
@@ -124,8 +136,15 @@ public abstract class PingPongBuffer implements Disposable {
         }
     }
 
-    public boolean isCapturing() {
-        return capturing;
+    /**
+     * Finishes ping-ponging. Must be called after {@link #begin()}.
+     **/
+    public void end() {
+        if (!capturing) {
+            throw new IllegalStateException("Ping pong is not in capturing state. You should call begin() before calling end().");
+        }
+        bufDst.end();
+        capturing = false;
     }
 
     /** @return the source texture of the current ping-pong chain. */
@@ -148,19 +167,12 @@ public abstract class PingPongBuffer implements Disposable {
         return bufDst;
     }
 
-    public void setTextureParams(Texture.TextureWrap u, Texture.TextureWrap v, Texture.TextureFilter min, Texture.TextureFilter mag) {
+    public void setTextureParams(TextureWrap u, TextureWrap v, TextureFilter min, TextureFilter mag) {
         wrapU = u;
         wrapV = v;
         filterMin = min;
         filterMag = mag;
-
-        Texture texDst = bufDst.getFbo().getColorBufferTexture();
-        texDst.setWrap(wrapU, wrapV);
-        texDst.setFilter(filterMin, filterMag);
-
-        Texture texSrc = bufSrc.getFbo().getColorBufferTexture();
-        texSrc.setWrap(wrapU, wrapV);
-        texSrc.setFilter(filterMin, filterMag);
+        rebind();
     }
 
     /** @see VfxFrameBuffer#addRenderer(VfxFrameBuffer.Renderer) ) */

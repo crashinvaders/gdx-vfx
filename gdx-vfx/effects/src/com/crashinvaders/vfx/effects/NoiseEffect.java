@@ -16,12 +16,12 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.VfxEffect;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.VfxEffectOld;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.filters.NoiseFilter;
 
-public class NoiseEffect extends VfxEffect implements UpdateableEffect {
+public class NoiseEffect extends VfxEffectOld implements UpdateableEffect {
 
     private final NoiseFilter filter;
 
@@ -62,7 +62,7 @@ public class NoiseEffect extends VfxEffect implements UpdateableEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         filter.setInput(src).setOutput(dst).render(mesh);
     }
 

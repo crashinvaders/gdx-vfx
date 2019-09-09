@@ -19,12 +19,12 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Motion blur filter that draws the last frame (motion filter included) with a lower opacity.
  * @author Toni Sagrista */
-public class MotionBlurFilter extends VfxFilter<MotionBlurFilter> {
+public class MotionBlurFilter extends VfxFilterOld<MotionBlurFilter> {
 
 	private float blurOpacity = 0.5f;
 	private Texture lastFrameTex;

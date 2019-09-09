@@ -16,14 +16,14 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.filters.LensFlareFilter;
 
 /** Lens flare effect.
  * @author Toni Sagrista */
-public final class LensFlareEffect extends VfxEffect {
+public final class LensFlareEffect extends VfxEffectOld {
 
     private final LensFlareFilter lensFlare = new LensFlareFilter();
 
@@ -43,7 +43,7 @@ public final class LensFlareEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
 //		restoreViewport(dest);
         lensFlare.setInput(src).setOutput(dst).render(mesh);
     }

@@ -19,10 +19,10 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
-import com.crashinvaders.vfx.VfxFilter;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialBlurFilter extends VfxFilter<RadialBlurFilter> {
+public final class RadialBlurFilter extends VfxFilterOld<RadialBlurFilter> {
 
 	public enum Param implements Parameter {
 		Texture("u_texture0", 0), 

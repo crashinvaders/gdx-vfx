@@ -16,12 +16,12 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.filters.ChromaticAberrationFilter;
 
-public class ChromaticAberrationEffect extends VfxEffect {
+public class ChromaticAberrationEffect extends VfxEffectOld {
 
     private final ChromaticAberrationFilter caFilter;
 
@@ -44,7 +44,7 @@ public class ChromaticAberrationEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
         caFilter.setInput(src).setOutput(dst).render(mesh);
     }
 

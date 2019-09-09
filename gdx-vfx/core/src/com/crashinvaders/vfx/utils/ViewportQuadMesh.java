@@ -25,21 +25,21 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /**
- * Encapsulates a fullscreen quad mesh. Geometry is aligned to the screen corners.
+ * Encapsulates a fullscreen quad mesh. Geometry is aligned to the viewport corners.
  * 
  * @author bmanuel
  * @author metaphore
  */
-public class ScreenQuadMesh {
+public class ViewportQuadMesh {
 
 	private final Mesh mesh;
 
-	public ScreenQuadMesh() {
+	public ViewportQuadMesh() {
 		this(new VertexAttribute(Usage.Position, 2, "a_position"),
 				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0"));
 	}
 
-	public ScreenQuadMesh(VertexAttribute... vertexAttributes) {
+	public ViewportQuadMesh(VertexAttribute... vertexAttributes) {
 		mesh = new Mesh(VertexDataType.VertexArray, true, 4, 0, vertexAttributes);
 		mesh.setVertices(verts);
 	}

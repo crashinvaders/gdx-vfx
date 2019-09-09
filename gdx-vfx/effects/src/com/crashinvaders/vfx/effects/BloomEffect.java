@@ -21,17 +21,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.utils.ScreenQuadMesh;
+import com.crashinvaders.vfx.framebuffer.RegularPingPongBuffer;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.VfxEffect;
+import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter.BlurType;
 import com.crashinvaders.vfx.filters.CombineFilter;
 import com.crashinvaders.vfx.filters.ThresholdFilter;
 
-public final class BloomEffect extends VfxEffect {
+public final class BloomEffect extends VfxEffectOld {
 
     private final PingPongBuffer pingPongBuffer;
 
@@ -49,7 +50,7 @@ public final class BloomEffect extends VfxEffect {
     }
 
     public BloomEffect(Pixmap.Format bufferFormat, Settings settings) {
-        pingPongBuffer = new PingPongBuffer(bufferFormat);
+        pingPongBuffer = new RegularPingPongBuffer(bufferFormat);
 
         blur = new GaussianBlurFilter();
         threshold = new ThresholdFilter();
@@ -184,7 +185,7 @@ public final class BloomEffect extends VfxEffect {
     }
 
     @Override
-    public void render(ScreenQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst) {
+    public void render(ViewportQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst) {
         Texture texSrc = src.getFbo().getColorBufferTexture();
 
         boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
