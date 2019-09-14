@@ -19,13 +19,13 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.LensFlareFilter;
+import com.crashinvaders.vfx.filters.LensFlareFilterOld;
 
 /** Lens flare effect.
  * @author Toni Sagrista */
 public final class LensFlareEffect extends VfxEffectOld {
 
-    private final LensFlareFilter lensFlare = new LensFlareFilter();
+    private final LensFlareFilterOld lensFlare = new LensFlareFilterOld();
 
     @Override
     public void dispose() {

@@ -6,7 +6,6 @@
 	</source>
 
 	<!-- Shader code -->
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/bias.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/blur.vert" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/chromatic-aberration.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/combine.frag" />
@@ -17,12 +16,9 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/film-grain.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/fisheye.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/fxaa.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/hdr.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/lensflare.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/lens-flare.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/levels.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/mix.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-max.frag" />
-	<extend-configuration-property name="gdx.files.classpath" value="shaders/motionblur-mix.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/nfaa.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/noise.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/old-tv.frag" />

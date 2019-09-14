@@ -19,16 +19,16 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.LevelsFilter;
+import com.crashinvaders.vfx.filters.LevelsFilterOld;
 
 /** Implements brightness, contrast, hue and saturation levels
  * @author tsagrista */
 public final class LevelsEffect extends VfxEffectOld {
-    private final LevelsFilter filter;
+    private final LevelsFilterOld filter;
 
     /** Creates the effect */
     public LevelsEffect() {
-        filter = new LevelsFilter();
+        filter = new LevelsFilterOld();
     }
 
     @Override

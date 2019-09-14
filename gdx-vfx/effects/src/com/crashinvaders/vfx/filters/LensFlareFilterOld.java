@@ -32,52 +32,53 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/**
- * Lens flare effect.
- * @author Toni Sagrista
- **/
-public final class LensFlareFilter extends ShaderVfxFilter {
-
-    private static final String U_TEXTURE0 = "u_texture0";
-    private static final String U_LIGHT_POSITION = "u_lightPosition";
-    private static final String U_INTENSITY = "u_intensity";
-    private static final String U_COLOR = "u_color";
-    private static final String U_VIEWPORT = "u_viewport";
+/** Lens flare effect.
+ * @author Toni Sagrista **/
+public final class LensFlareFilterOld extends VfxFilterOld<LensFlareFilterOld> {
 
     private final Vector2 lightPosition = new Vector2(0.5f, 0.5f);
     private final Vector2 viewport = new Vector2();
     private final Vector3 color = new Vector3(1f, 0.8f, 0.2f);
     private float intensity = 5.0f;
 
-    public LensFlareFilter() {
+    public enum Param implements Parameter {
+        // @formatter:off
+        Texture("u_texture0", 0),
+        LightPosition("u_lightPosition", 2),
+        Intensity("u_intensity", 0),
+        Color("u_color", 3),
+        Viewport("u_viewport", 2);
+        // @formatter:on
+
+        private String mnemonic;
+        final int elementSize;
+
+        private Param(String mnemonic, int arrayElementSize) {
+            this.mnemonic = mnemonic;
+            this.elementSize = arrayElementSize;
+        }
+
+        @Override
+        public String mnemonic() {
+            return this.mnemonic;
+        }
+
+        @Override
+        public int arrayElementSize() {
+            return this.elementSize;
+        }
+    }
+
+    public LensFlareFilterOld() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/lens-flare.frag")));
+                Gdx.files.classpath("shaders/lensflare.frag")));
         rebind();
-    }
-
-    @Override
-    public void rebind() {
-        super.rebind();
-        program.begin();
-        program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
-        program.setUniformf(U_LIGHT_POSITION, lightPosition);
-        program.setUniformf(U_INTENSITY, intensity);
-        program.setUniformf(U_COLOR, color);
-        program.setUniformf(U_VIEWPORT, viewport);
-        program.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-        viewport.set(width, height);
-        setUniform(U_VIEWPORT, viewport);
     }
 
     public Vector2 getLightPosition() {
@@ -88,12 +89,10 @@ public final class LensFlareFilter extends ShaderVfxFilter {
         setLightPosition(lightPosition.x, lightPosition.y);
     }
 
-    /** Sets the light position in screen normalized coordinates [0..1].
-     * @param x Light position x screen coordinate,
-     * @param y Light position y screen coordinate. */
+    /** Sets the light position in screen normalized coordinates [0..1]. */
     public void setLightPosition(float x, float y) {
         lightPosition.set(x, y);
-        setUniform(U_LIGHT_POSITION, lightPosition);
+        rebind();
     }
 
     public float getIntensity() {
@@ -102,19 +101,36 @@ public final class LensFlareFilter extends ShaderVfxFilter {
 
     public void setIntensity(float intensity) {
         this.intensity = intensity;
-        setUniform(U_INTENSITY, intensity);
+        rebind();
     }
 
     public Vector3 getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
-        setColor(color.r, color.g, color.b);
-    }
-
     public void setColor(float r, float g, float b) {
         color.set(r, g, b);
-        setUniform(U_COLOR, color);
+        rebind();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.set(width, height);
+        rebind();
+    }
+
+    @Override
+    public void rebind() {
+        setParams(Param.Texture, u_texture0);
+        setParams(Param.LightPosition, lightPosition);
+        setParams(Param.Intensity, intensity);
+        setParams(Param.Color, color);
+        setParams(Param.Viewport, viewport);
+        endParams();
+    }
+
+    @Override
+    protected void onBeforeRender() {
+        inputTexture.bind(u_texture0);
     }
 }

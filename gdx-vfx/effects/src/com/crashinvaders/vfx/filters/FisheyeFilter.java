@@ -14,29 +14,31 @@
  * limitations under the License.
  ******************************************************************************/
 
-// Simple hdr implementation by Toni Sagrista
-// see https://learnopengl.com/#!Advanced-Lighting/HDR
-//#version 120
-#ifdef GL_ES
-precision mediump float;
-precision mediump int;
-#endif
+package com.crashinvaders.vfx.filters;
 
-varying vec2 v_texCoords;
+import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.VfxFilterOld;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
- // Unprocessed image
-uniform sampler2D u_texture0;
+/**
+ * Fisheye distortion filter
+ * @author tsagrista
+ * @author metaphore
+ */
+public class FisheyeFilter extends ShaderVfxFilter {
 
-uniform float u_exposure;
-uniform float u_gamma;
+    private static final String U_TEXTURE0 = "u_texture0";
 
-void main() {
-    vec3 hdrColor = texture2D(u_texture0, v_texCoords).rgb;
+    public FisheyeFilter() {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/fisheye.frag")));
+        rebind();
+    }
 
-     // Exposure tone mapping
-    vec3 mapped = vec3(1.0) - exp(-hdrColor * u_exposure);
-    // Gamma correction
-    mapped = pow(mapped, vec3(1.0 / u_gamma));
-
-    gl_FragColor = vec4(mapped, 1.0);
+    @Override
+    public void rebind() {
+        super.rebind();
+        setUniform(U_TEXTURE0, TEXTURE_HANDLE0);
+    }
 }

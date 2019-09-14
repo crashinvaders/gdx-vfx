@@ -21,7 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Convolve1dFilter extends VfxFilterOld<Convolve1dFilter> {
+public final class Convolve1DFilterOld extends VfxFilterOld<Convolve1DFilterOld> {
 
     public enum Param implements Parameter {
         Texture("u_texture0", 0),
@@ -52,15 +52,15 @@ public final class Convolve1dFilter extends VfxFilterOld<Convolve1dFilter> {
     public float[] weights;
     public float[] offsets;
 
-    public Convolve1dFilter(int length) {
+    public Convolve1DFilterOld(int length) {
         this(length, new float[length], new float[length * 2]);
     }
 
-    public Convolve1dFilter(int length, float[] weights_data) {
+    public Convolve1DFilterOld(int length, float[] weights_data) {
         this(length, weights_data, new float[length * 2]);
     }
 
-    public Convolve1dFilter(int length, float[] weights_data, float[] offsets) {
+    public Convolve1DFilterOld(int length, float[] weights_data, float[] offsets) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
                 Gdx.files.classpath("shaders/convolve-1d.frag"),

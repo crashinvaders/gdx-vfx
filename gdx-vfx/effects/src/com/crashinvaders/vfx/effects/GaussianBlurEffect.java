@@ -25,13 +25,13 @@ import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
-import com.crashinvaders.vfx.filters.CopyFilter;
+import com.crashinvaders.vfx.filters.CopyFilterOld;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 
 public class GaussianBlurEffect extends VfxEffectOld {
 
     private final PingPongBuffer pingPongBuffer;
-    private final CopyFilter copy;
+    private final CopyFilterOld copy;
     private final GaussianBlurFilter blur;
 
     private boolean blending = false;
@@ -47,7 +47,7 @@ public class GaussianBlurEffect extends VfxEffectOld {
     public GaussianBlurEffect(int blurPasses, GaussianBlurFilter.BlurType blurType) {
         pingPongBuffer = new RegularPingPongBuffer(Pixmap.Format.RGBA8888);
 
-        copy = new CopyFilter();
+        copy = new CopyFilterOld();
 
         blur = new GaussianBlurFilter();
         blur.setPasses(blurPasses);

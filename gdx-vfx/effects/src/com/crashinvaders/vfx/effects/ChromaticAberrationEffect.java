@@ -19,18 +19,18 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.ChromaticAberrationFilter;
+import com.crashinvaders.vfx.filters.ChromaticAberrationFilterOld;
 
 public class ChromaticAberrationEffect extends VfxEffectOld {
 
-    private final ChromaticAberrationFilter caFilter;
+    private final ChromaticAberrationFilterOld caFilter;
 
     public ChromaticAberrationEffect() {
         this(12);
     }
 
     public ChromaticAberrationEffect(int passes) {
-        caFilter = new ChromaticAberrationFilter(passes);
+        caFilter = new ChromaticAberrationFilterOld(passes);
     }
 
     @Override

@@ -17,58 +17,68 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/**
- * Fisheye distortion filter
- * @author tsagrista
- */
-public class FisheyeDistortionFilter extends VfxFilterOld<FisheyeDistortionFilter> {
+public class OldTvFilterOld extends VfxFilterOld<OldTvFilterOld> {
 
     public enum Param implements Parameter {
-        // @formatter:off
-        Texture0("u_texture0", 0);
-        // @formatter:on
+        Texture0("u_texture0", 0),
+        Resolution("u_resolution", 2),
+        Time("u_time", 0),
+        ;
 
         final String mnemonic;
         final int elementSize;
 
-        private Param(String m, int elementSize) {
+        Param(String m, int elementSize) {
             this.mnemonic = m;
             this.elementSize = elementSize;
         }
 
         @Override
-        public String mnemonic() {
+        public String mnemonic () {
             return this.mnemonic;
         }
 
         @Override
-        public int arrayElementSize() {
+        public int arrayElementSize () {
             return this.elementSize;
         }
     }
 
-    public FisheyeDistortionFilter() {
+    private final Vector2 resolution = new Vector2();
+    private float time = 0f;
+
+    public OldTvFilterOld() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/fisheye.frag")));
+                Gdx.files.classpath("shaders/old-tv.frag")));
+        rebind();
+    }
+
+    public void setTime(float time) {
+        this.time = time;
+        setParam(Param.Time, time);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        this.resolution.set(width, height);
         rebind();
     }
 
     @Override
-    protected void onBeforeRender() {
-        inputTexture.bind(u_texture0);
+    public void rebind () {
+        setParams(Param.Texture0, u_texture0);
+        setParams(Param.Resolution, resolution);
+        setParams(Param.Time, time);
+        endParams();
     }
 
     @Override
-    public void rebind() {
-        setParams(Param.Texture0, u_texture0);
-        endParams();
-    }
-    @Override
-    public void resize(int width, int height) {
-        // Do nothing.
+    protected void onBeforeRender () {
+        inputTexture.bind(u_texture0);
     }
 }

@@ -17,18 +17,18 @@
 package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.OldTvFilter;
+import com.crashinvaders.vfx.filters.OldTvFilterOld;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 public class OldTvEffect extends VfxEffectOld implements UpdateableEffect {
 
-    private final OldTvFilter oldTvFilter;
+    private final OldTvFilterOld oldTvFilter;
 
     private float time;
 
     public OldTvEffect() {
-        oldTvFilter = new OldTvFilter();
+        oldTvFilter = new OldTvFilterOld();
     }
 
     @Override

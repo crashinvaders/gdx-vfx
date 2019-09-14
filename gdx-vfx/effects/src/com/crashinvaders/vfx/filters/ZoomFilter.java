@@ -1,5 +1,4 @@
 /*******************************************************************************
- * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,117 +18,91 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
-import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class ZoomFilter extends VfxFilterOld<ZoomFilter> {
+/** Simple zooming effect. */
+public final class ZoomFilter extends ShaderVfxFilter {
 
-	public enum Param implements Parameter {
-		Texture("u_texture0", 0),
-		OffsetX("u_offsetX", 0),
-		OffsetY("u_offsetY", 0),
-		Zoom("u_zoom", 0), ;
+    private static final String U_TEXTURE0 = "u_texture0";
+    private static final String U_OFFSET_X = "u_offsetX";
+    private static final String U_OFFSET_Y = "u_offsetY";
+    private static final String U_ZOOM = "u_zoom";
 
-		private String mnemonic;
-		final int elementSize;
+    private float originX = 0.5f;
+    private float originY = 0.5f;
+    private float zoom = 1f;
 
-		Param(String mnemonic, int arrayElementSize) {
-			this.mnemonic = mnemonic;
-			this.elementSize = arrayElementSize;
-		}
-
-		@Override
-		public String mnemonic () {
-			return this.mnemonic;
-		}
-
-		@Override
-		public int arrayElementSize () {
-			return this.elementSize;
-		}
-	}
-
-	private float originX = 0.5f;
-	private float originY = 0.5f;
-	private float zoom = 1f;
-
-	public ZoomFilter() {
-		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/zoom.vert"),
-				Gdx.files.classpath("shaders/zoom.frag")));
-		rebind();
-	}
-
-	public float getOriginX () {
-		return originX;
-	}
-
-	public float getOriginY () {
-		return originY;
-	}
-
-	/**
-	 * Specify the zoom origin in {@link Align} bits.
-	 * @see Align
-	 */
-	public void setOrigin(int align) {
-		final float originX;
-		final float originY;
-		if ((align & Align.left) != 0) {
-			originX = 0f;
-		} else if ((align & Align.right) != 0) {
-			originX = 1f;
-		} else {
-			originX = 0.5f;
-		}
-		if ((align & Align.bottom) != 0) {
-			originY = 0f;
-		} else if ((align & Align.top) != 0) {
-			originY = 1f;
-		} else {
-			originY = 0.5f;
-		}
-		setOrigin(originX, originY);
-	}
-
-	/**
-	 * Specify the zoom origin in normalized screen coordinates.
-	 * @param originX horizontal origin [0..1].
-	 * @param originY vertical origin [0..1].
-	 */
-	public void setOrigin (float originX, float originY) {
-		this.originX = originX;
-		this.originY = originY;
-		setParams(Param.OffsetX, this.originX);
-		setParams(Param.OffsetY, this.originY);
-		endParams();
-	}
-
-	public float getZoom () {
-		return zoom;
-	}
-
-	public void setZoom (float zoom) {
-		this.zoom = zoom;
-		setParam(Param.Zoom, this.zoom);
-	}
-
-    @Override
-    public void resize(int width, int height) {
-		// Do nothing.
+    public ZoomFilter() {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/zoom.vert"),
+                Gdx.files.classpath("shaders/zoom.frag")));
+        rebind();
     }
 
     @Override
-	public void rebind () {
-		setParams(Param.Texture, u_texture0);
-		setParams(Param.OffsetX, originX);
-		setParams(Param.OffsetY, originY);
-		setParams(Param.Zoom, zoom);
-		endParams();
-	}
+    public void rebind() {
+        super.rebind();
+        program.begin();
+        program.setUniformi(U_TEXTURE0, 0);
+        program.setUniformf(U_OFFSET_X, originX);
+        program.setUniformf(U_OFFSET_Y, originY);
+        program.setUniformf(U_ZOOM, zoom);
+        program.end();
+    }
 
-	@Override
-	protected void onBeforeRender () {
-		inputTexture.bind(u_texture0);
-	}
+    public float getOriginX() {
+        return originX;
+    }
+
+    public float getOriginY() {
+        return originY;
+    }
+
+    /**
+     * Specify the zoom origin in {@link Align} bits.
+     * @see Align
+     */
+    public void setOrigin(int align) {
+        final float originX;
+        final float originY;
+        if ((align & Align.left) != 0) {
+            originX = 0f;
+        } else if ((align & Align.right) != 0) {
+            originX = 1f;
+        } else {
+            originX = 0.5f;
+        }
+        if ((align & Align.bottom) != 0) {
+            originY = 0f;
+        } else if ((align & Align.top) != 0) {
+            originY = 1f;
+        } else {
+            originY = 0.5f;
+        }
+        setOrigin(originX, originY);
+    }
+
+    /**
+     * Specify the zoom origin in normalized screen coordinates.
+     * @param originX horizontal origin [0..1].
+     * @param originY vertical origin [0..1].
+     */
+    public void setOrigin(float originX, float originY) {
+        this.originX = originX;
+        this.originY = originY;
+
+        program.begin();
+        program.setUniformf(U_OFFSET_X, originX);
+        program.setUniformf(U_OFFSET_Y, originY);
+        program.end();
+    }
+
+    public float getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
+        setUniform(U_ZOOM, zoom);
+    }
 }

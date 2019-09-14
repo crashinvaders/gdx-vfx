@@ -21,15 +21,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.VignettingFilter;
+import com.crashinvaders.vfx.filters.VignettingFilterOld;
 
 public final class VignetteEffect extends VfxEffectOld {
-    private VignettingFilter vignetting;
+    private VignettingFilterOld vignetting;
     private boolean controlSaturation;
 
     public VignetteEffect(boolean controlSaturation) {
         this.controlSaturation = controlSaturation;
-        vignetting = new VignettingFilter(controlSaturation);
+        vignetting = new VignettingFilterOld(controlSaturation);
     }
 
     @Override

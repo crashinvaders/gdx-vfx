@@ -17,38 +17,63 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-//TODO Should be updatable.
-public class FilmGrainFilter extends ShaderVfxFilter {
+public class FilmGrainFilterOld extends VfxFilterOld<FilmGrainFilterOld> {
 
-    private static final String U_TEXTURE0 = "u_texture0";
-    private static final String U_SEED = "u_seed";
+    public enum Param implements Parameter {
+        Texture0("u_texture0", 0),
+        Seed("u_seed", 0),
+        ;
+
+        final String mnemonic;
+        final int elementSize;
+
+        Param(String m, int elementSize) {
+            this.mnemonic = m;
+            this.elementSize = elementSize;
+        }
+
+        @Override
+        public String mnemonic () {
+            return this.mnemonic;
+        }
+
+        @Override
+        public int arrayElementSize () {
+            return this.elementSize;
+        }
+    }
 
     private float seed = 0f;
 
-    public FilmGrainFilter() {
+    public FilmGrainFilterOld() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
                 Gdx.files.classpath("shaders/film-grain.frag")));
         rebind();
     }
 
-    @Override
-    public void rebind () {
-        super.rebind();
-        program.begin();
-        program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
-        program.setUniformf(U_SEED, seed);
-        program.begin();
-    }
-
-    public float getSeed() {
-        return seed;
-    }
-
     public void setSeed(float seed) {
         this.seed = seed;
         rebind();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Do nothing.
+    }
+
+    @Override
+    public void rebind () {
+        setParams(Param.Texture0, u_texture0);
+        setParams(Param.Seed, seed);
+        endParams();
+    }
+
+    @Override
+    protected void onBeforeRender () {
+        inputTexture.bind(u_texture0);
     }
 }

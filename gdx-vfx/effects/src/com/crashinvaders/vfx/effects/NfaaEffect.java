@@ -19,20 +19,20 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.NfaaFilter;
+import com.crashinvaders.vfx.filters.NfaaFilterOld;
 
 /** Implements the normal filter anti-aliasing. Very fast and useful for combining with other post-processing effects.
  * @author Toni Sagrista */
 public final class NfaaEffect extends VfxEffectOld {
 
-	private final NfaaFilter nfaaFilter;
+	private final NfaaFilterOld nfaaFilter;
 
 	public NfaaEffect() {
 		this(false);
 	}
 
 	public NfaaEffect(boolean supportAlpha) {
-		nfaaFilter = new NfaaFilter(supportAlpha);
+		nfaaFilter = new NfaaFilterOld(supportAlpha);
 	}
 
 	@Override

@@ -14,23 +14,19 @@
  * limitations under the License.
  ******************************************************************************/
 
-// Simple motion blur implementation by Toni Sagrista
-// Last frame is drawn with lower opacity
+package com.crashinvaders.vfx.filters;
 
-#ifdef GL_ES
-precision mediump float;
-precision mediump int;
-#endif
+public abstract class AbstractVfxFilter implements VfxFilter {
 
-// Unprocessed image
-uniform sampler2D u_texture0;
-// Last frame
-uniform sampler2D u_texture1;
-// Last frame alpha
-uniform float u_blurOpacity;
+    private boolean disabled;
 
-varying vec2 v_texCoords;
+    @Override
+    public boolean isDisabled() {
+        return disabled;
+    }
 
-void main() {
-    gl_FragColor = mix(texture2D(u_texture0, v_texCoords), texture2D(u_texture1, v_texCoords), u_blurOpacity);
+    @Override
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
 }

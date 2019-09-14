@@ -19,18 +19,18 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.CrtFilter;
+import com.crashinvaders.vfx.filters.CrtFilterOld;
 
 public class CrtEffect extends VfxEffectOld {
 
-    private final CrtFilter crtFilter;
+    private final CrtFilterOld crtFilter;
 
     public CrtEffect() {
-        crtFilter = new CrtFilter();
+        crtFilter = new CrtFilterOld();
     }
 
-    public CrtEffect(CrtFilter.LineStyle lineStyle, float scanLineBrightness0, float scanLineBrightness1) {
-        crtFilter = new CrtFilter(lineStyle, scanLineBrightness0, scanLineBrightness1);
+    public CrtEffect(CrtFilterOld.LineStyle lineStyle, float scanLineBrightness0, float scanLineBrightness1) {
+        crtFilter = new CrtFilterOld(lineStyle, scanLineBrightness0, scanLineBrightness1);
     }
 
     @Override
@@ -53,11 +53,11 @@ public class CrtEffect extends VfxEffectOld {
         crtFilter.dispose();
     }
 
-    public CrtFilter.SizeSource getSizeSource() {
+    public CrtFilterOld.SizeSource getSizeSource() {
         return crtFilter.getSizeSource();
     }
 
-    public CrtEffect setSizeSource(CrtFilter.SizeSource sizeSource) {
+    public CrtEffect setSizeSource(CrtFilterOld.SizeSource sizeSource) {
         crtFilter.setSizeSource(sizeSource);
         return this;
     }

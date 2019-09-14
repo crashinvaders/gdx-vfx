@@ -21,16 +21,16 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.FilmGrainFilter;
+import com.crashinvaders.vfx.filters.FilmGrainFilterOld;
 
 public class FilmGrainEffect extends VfxEffectOld implements UpdateableEffect {
 
-    private final FilmGrainFilter filmGrainFilter;
+    private final FilmGrainFilterOld filmGrainFilter;
 
     private float time = 0f;
 
     public FilmGrainEffect() {
-        filmGrainFilter = new FilmGrainFilter();
+        filmGrainFilter = new FilmGrainFilterOld();
     }
 
     @Override

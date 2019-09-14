@@ -19,26 +19,22 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.badlogic.gdx.math.MathUtils;
 import com.crashinvaders.vfx.VfxFilterOld;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class CombineFilter extends VfxFilterOld<CombineFilter> {
-
-    private float s1i, s1s, s2i, s2s;
+public final class MixFilterOld extends VfxFilterOld<MixFilterOld> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
         Texture1("u_texture1", 0),
-        Source1Intensity("u_src1Intensity", 0),
-        Source1Saturation("u_src1Saturation", 0),
-        Source2Intensity("u_src2Intensity", 0),
-        Source2Saturation("u_src2Saturation", 0);
+        Mix("u_mix", 0);
 
         final String mnemonic;
         final int elementSize;
 
-        private Param(String m, int elementSize) {
+        Param(String m, int elementSize) {
             this.mnemonic = m;
             this.elementSize = elementSize;
         }
@@ -55,65 +51,46 @@ public final class CombineFilter extends VfxFilterOld<CombineFilter> {
     }
 
     private Texture inputTexture2 = null;
+    private float mix = 0.5f;
 
-    public CombineFilter() {
+    public MixFilterOld() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/combine.frag")));
-        s1i = 1f;
-        s2i = 1f;
-        s1s = 1f;
-        s2s = 1f;
+                Gdx.files.classpath("shaders/mix.frag")));
 
         rebind();
     }
 
-    public CombineFilter setInput(VfxFrameBuffer buffer1, VfxFrameBuffer buffer2) {
+    public MixFilterOld setInput(VfxFrameBuffer buffer1, VfxFrameBuffer buffer2) {
         this.inputTexture = buffer1.getFbo().getColorBufferTexture();
         this.inputTexture2 = buffer2.getFbo().getColorBufferTexture();
         return this;
     }
 
-    public CombineFilter setInput(Texture texture1, Texture texture2) {
+    public MixFilterOld setInput(Texture texture1, Texture texture2) {
         this.inputTexture = texture1;
         this.inputTexture2 = texture2;
         return this;
     }
 
-    public void setSource1Intensity(float intensity) {
-        s1i = intensity;
-        setParam(CombineFilter.Param.Source1Intensity, intensity);
+    /** @deprecated use {@link #setInput(VfxFrameBuffer, VfxFrameBuffer)} instead. */
+    @Override
+    public MixFilterOld setInput(VfxFrameBuffer input) {
+        throw new UnsupportedOperationException("Use #setInput(FboWrapper, FboWrapper)} instead.");
     }
 
-    public void setSource2Intensity(float intensity) {
-        s2i = intensity;
-        setParam(CombineFilter.Param.Source2Intensity, intensity);
+    /** @deprecated use {@link #setInput(Texture, Texture)} instead. */
+    @Override
+    public MixFilterOld setInput(Texture input) {
+        throw new UnsupportedOperationException("Use #setInput(Texture, Texture)} instead.");
     }
 
-    public void setSource1Saturation(float saturation) {
-        s1s = saturation;
-        setParam(CombineFilter.Param.Source1Saturation, saturation);
+    public float getMix() {
+        return mix;
     }
 
-    public void setSource2Saturation(float saturation) {
-        s2s = saturation;
-        setParam(CombineFilter.Param.Source2Saturation, saturation);
-    }
-
-    public float getSource1Intensity() {
-        return s1i;
-    }
-
-    public float getSource2Intensity() {
-        return s2i;
-    }
-
-    public float getSource1Saturation() {
-        return s1s;
-    }
-
-    public float getSource2Saturation() {
-        return s2s;
+    public void setMix(float mix) {
+        this.mix = MathUtils.clamp(0f, 1f, mix);
     }
 
     @Override
@@ -125,10 +102,7 @@ public final class CombineFilter extends VfxFilterOld<CombineFilter> {
     public void rebind() {
         setParams(Param.Texture0, u_texture0);
         setParams(Param.Texture1, u_texture1);
-        setParams(Param.Source1Intensity, s1i);
-        setParams(Param.Source2Intensity, s2i);
-        setParams(Param.Source1Saturation, s1s);
-        setParams(Param.Source2Saturation, s2s);
+        setParams(Param.Mix, mix);
         endParams();
     }
 

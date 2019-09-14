@@ -20,17 +20,17 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.RadialBlurFilter;
+import com.crashinvaders.vfx.filters.RadialBlurFilterOld;
 
 public final class RadialBlurEffect extends VfxEffectOld {
-    private final RadialBlurFilter radialBlur;
+    private final RadialBlurFilterOld radialBlur;
 
     public RadialBlurEffect() {
         this(8);
     }
 
     public RadialBlurEffect(int passes) {
-        radialBlur = new RadialBlurFilter(passes);
+        radialBlur = new RadialBlurFilterOld(passes);
     }
 
     @Override
@@ -53,13 +53,13 @@ public final class RadialBlurEffect extends VfxEffectOld {
         radialBlur.setInput(src).setOutput(dst).render(mesh);
     }
 
-    /** @see RadialBlurFilter#setOrigin(int)  */
+    /** @see RadialBlurFilterOld#setOrigin(int)  */
     public RadialBlurEffect setOrigin(int align) {
         radialBlur.setOrigin(align);
         return this;
     }
 
-    /** @see RadialBlurFilter#setOrigin(float, float)  */
+    /** @see RadialBlurFilterOld#setOrigin(float, float)  */
     public RadialBlurEffect setOrigin(float x, float y) {
         radialBlur.setOrigin(x, y);
         return this;

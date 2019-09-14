@@ -1,4 +1,5 @@
 /*******************************************************************************
+ * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,41 +18,43 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialDistortionFilter extends ShaderVfxFilter {
+public final class RadialDistortionFilterOld extends VfxFilterOld<RadialDistortionFilterOld> {
 
-	private static final String U_TEXTURE0 = "u_texture0";
-	private static final String U_DISTORTION = "distortion";
-	private static final String U_ZOOM = "zoom";
+	public enum Param implements Parameter {
+		Texture0("u_texture0", 0),
+		Distortion("distortion", 0),
+		Zoom("zoom", 0);
+
+		final String mnemonic;
+		final int elementSize;
+
+		Param(String m, int elementSize) {
+			this.mnemonic = m;
+			this.elementSize = elementSize;
+		}
+
+		@Override
+		public String mnemonic () {
+			return this.mnemonic;
+		}
+
+		@Override
+		public int arrayElementSize () {
+			return this.elementSize;
+		}
+	}
 
 	private float zoom = 1f;
 	private float distortion = 0.3f;
 
-	public RadialDistortionFilter() {
+	public RadialDistortionFilterOld() {
 		super(VfxGLUtils.compileShader(
 				Gdx.files.classpath("shaders/screenspace.vert"),
 				Gdx.files.classpath("shaders/radial-distortion.frag")));
 		rebind();
-	}
-
-	@Override
-	public void rebind () {
-		super.rebind();
-		program.begin();
-		program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
-		program.setUniformf(U_DISTORTION, distortion);
-		program.setUniformf(U_ZOOM, zoom);
-		program.end();
-	}
-
-	public float getZoom () {
-		return zoom;
-	}
-
-	public void setZoom (float zoom) {
-		this.zoom = zoom;
-		setUniform(U_ZOOM, this.zoom);
 	}
 
 	public float getDistortion () {
@@ -60,6 +63,33 @@ public final class RadialDistortionFilter extends ShaderVfxFilter {
 
 	public void setDistortion (float distortion) {
 		this.distortion = distortion;
-		setUniform(U_DISTORTION, this.distortion);
+		setParam(Param.Distortion, this.distortion);
+	}
+
+	public float getZoom () {
+		return zoom;
+	}
+
+	public void setZoom (float zoom) {
+		this.zoom = zoom;
+		setParam(Param.Zoom, this.zoom);
+	}
+
+	@Override
+	protected void onBeforeRender () {
+		inputTexture.bind(u_texture0);
+	}
+
+    @Override
+    public void resize(int width, int height) {
+		// Do nothing.
+    }
+
+    @Override
+	public void rebind () {
+		setParams(Param.Texture0, u_texture0);
+		setParams(Param.Distortion, distortion);
+		setParams(Param.Zoom, zoom);
+		endParams();
 	}
 }

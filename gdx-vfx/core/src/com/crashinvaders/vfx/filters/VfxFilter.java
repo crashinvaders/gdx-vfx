@@ -14,27 +14,29 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx;
+package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.utils.Disposable;
+import com.crashinvaders.vfx.VfxManager;
+import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 
-public interface VfxFilterNew extends Disposable {
+public interface VfxFilter extends Disposable {
     /**
-     * This method will be called once effect will be added to {@link VfxManager}.
-     * Also it will be called on every application resize as usual.
+     * The method will be called on every application resize as usual.
+     * Also it will be called once the filter has been added to {@link VfxManager}.
      */
     void resize(int width, int height);
 
     /**
-     * Concrete objects shall be responsible to recreate or rebind its own resources whenever its needed, usually when the OpenGL
-     * context is lost. Eg., framebuffer textures should be updated and shader parameters should be reuploaded/rebound.
+     * Concrete objects shall be responsible to recreate or rebind its own resources whenever its needed,
+     * usually when the OpenGL context is lost (e.g. framebuffer textures should be updated
+     * and shader parameters should be reuploaded/rebound.
      */
     void rebind();
 
-    /** Concrete objects shall implements its own rendering, given the source and destination buffers. */
-    void render(ViewportQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst);
+    /** Concrete filters shall implement their own rendering, given the source and destination buffers. */
+    void render(VfxRenderContext context, final VfxFrameBuffer src, final VfxFrameBuffer dst);
 
     /** Whether or not this effect is disabled and shouldn't be processed */
     boolean isDisabled();

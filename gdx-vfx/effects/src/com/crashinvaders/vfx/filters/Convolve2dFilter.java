@@ -33,14 +33,14 @@ public final class Convolve2dFilter extends MultipassVfxFilter {
 
     private final float[] weights, offsetsHor, offsetsVert;
 
-    private Convolve1dFilter hor, vert;
+    private Convolve1DFilterOld hor, vert;
 
     public Convolve2dFilter(int radius) {
         this.radius = radius;
         length = (radius * 2) + 1;
 
-        hor = new Convolve1dFilter(length);
-        vert = new Convolve1dFilter(length, hor.weights);
+        hor = new Convolve1DFilterOld(length);
+        vert = new Convolve1DFilterOld(length, hor.weights);
 
         weights = hor.weights;
         offsetsHor = hor.offsets;

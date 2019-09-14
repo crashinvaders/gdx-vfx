@@ -31,11 +31,8 @@ import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.effects.*;
-import com.crashinvaders.vfx.filters.GaussianBlurFilter;
-import com.crashinvaders.vfx.filters.CrtFilter;
-import com.crashinvaders.vfx.filters.MotionBlurFilter;
+import com.crashinvaders.vfx.filters.*;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.LmlParser;
 
@@ -57,34 +54,101 @@ public class EffectRosterViewController extends LmlViewController {
     public void onViewCreated(Group sceneRoot) {
         super.onViewCreated(sceneRoot);
 
-        effectsRoster.addAll(
-                new EffectEntryModel("Bloom", new BloomEffect(Pixmap.Format.RGBA8888)),
-                new EffectEntryModel("CRT", new CrtEffect(CrtFilter.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f)
-                        .setSizeSource(CrtFilter.SizeSource.VIEWPORT)),
-                new EffectEntryModel("Old TV", new OldTvEffect()),
-                new EffectEntryModel("Noise", new NoiseEffect(0.35f, 2f)),
-                new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
-                new EffectEntryModel("Film Grain", new FilmGrainEffect()),
-                new EffectEntryModel("Gaussian Blur", new GaussianBlurEffect(8, GaussianBlurFilter.BlurType.Gaussian5x5)),
-                new EffectEntryModel("Motion Blur (MAX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MAX, 0.75f)),
-                new EffectEntryModel("Motion Blur (MIX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilter.BlurFunction.MIX, 0.75f)),
-                new EffectEntryModel("Radial Blur", new RadialBlurEffect(8)),
-                new EffectEntryModel("Curvature", new CurvatureEffect()),
-                new EffectEntryModel("Lens Flare", new LensFlareEffect()
-                        .setIntensity(10f)),
-                new EffectEntryModel("Vignette", new VignetteEffect(false)),
-                new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
-                new EffectEntryModel("FXAA", new FxaaEffect()),
-                new EffectEntryModel("NFAA", new NfaaEffect()),
-                new EffectEntryModel("Fisheye", new FisheyeEffect()),
-                new EffectEntryModel("HDR", new HdrEffect(3.0f, 2.2f)),
-                new EffectEntryModel("Levels", new LevelsEffect()
-                        .setBrightness(0.1f)
-                        .setSaturation(1.8f)
-                        .setContrast(1.5f)
-                        .setHue(0.9f)
-                        .setGamma(1.0f))
-        );
+        // Copy
+        {
+            CopyFilter filter = new CopyFilter();
+            effectsRoster.add(new EffectEntryModel("Copy", filter));
+        }
+        // Radial Distortion
+        {
+            RadialDistortionFilter filter = new RadialDistortionFilter();
+            filter.setZoom(0.9f);
+            filter.setDistortion(0.3f);
+            effectsRoster.add(new EffectEntryModel("Radial Distortion", filter));
+        }
+        // Gamma Threshold
+        {
+            GammaThresholdFilter filter = new GammaThresholdFilter(GammaThresholdFilter.Type.RGB);
+            filter.setGamma(0.9f);
+            effectsRoster.add(new EffectEntryModel("Gamma Threshold", filter));
+        }
+        // Zoom
+        {
+            ZoomFilter filter = new ZoomFilter();
+            filter.setZoom(0.9f);
+            effectsRoster.add(new EffectEntryModel("Zoom", filter));
+        }
+        // Vignetting
+        {
+            VignettingFilter filter = new VignettingFilter(false);
+            effectsRoster.add(new EffectEntryModel("Vignetting", filter));
+        }
+        // CRT
+        {
+            CrtFilter filter = new CrtFilter(CrtFilter.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f);
+            filter.setSizeSource(CrtFilter.SizeSource.VIEWPORT);
+            effectsRoster.add(new EffectEntryModel("CRT", filter));
+        }
+        // FXAA
+        {
+            FxaaFilter filter = new FxaaFilter();
+            effectsRoster.add(new EffectEntryModel("FXAA", filter));
+        }
+        // NFAA
+        {
+            NfaaFilter filter = new NfaaFilter(false);
+            effectsRoster.add(new EffectEntryModel("NFAA", filter));
+        }
+        // Lens Flare
+        {
+            LensFlareFilter filter = new LensFlareFilter();
+            effectsRoster.add(new EffectEntryModel("Lens Flare", filter));
+        }
+        // Fisheye
+        {
+            FisheyeFilter filter = new FisheyeFilter();
+            effectsRoster.add(new EffectEntryModel("Fisheye", filter));
+        }
+        // Film Grain
+        {
+            FilmGrainFilter filter = new FilmGrainFilter();
+            effectsRoster.add(new EffectEntryModel("Film Grain", filter));
+        }
+        // Motion Blur
+        {
+            MotionBlurFilter filter = new MotionBlurFilter(Pixmap.Format.RGBA8888, MixFilter.Method.MIX, 0.8f);
+            effectsRoster.add(new EffectEntryModel("Motion Blur", filter));
+        }
+
+
+//        effectsRoster.addAll(
+//                new EffectEntryModel("Bloom", new BloomEffect(Pixmap.Format.RGBA8888)),
+//                new EffectEntryModel("CRT", new CrtEffect(CrtFilterOld.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f)
+//                        .setSizeSource(CrtFilterOld.SizeSource.VIEWPORT)),
+//                new EffectEntryModel("Old TV", new OldTvEffect()),
+//                new EffectEntryModel("Noise", new NoiseEffect(0.35f, 2f)),
+//                new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
+//                new EffectEntryModel("Film Grain", new FilmGrainEffect()),
+//                new EffectEntryModel("Gaussian Blur", new GaussianBlurEffect(8, GaussianBlurFilter.BlurType.Gaussian5x5)),
+//                new EffectEntryModel("Motion Blur (MAX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilterOld.BlurFunction.MAX, 0.75f)),
+//                new EffectEntryModel("Motion Blur (MIX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilterOld.BlurFunction.MIX, 0.75f)),
+//                new EffectEntryModel("Radial Blur", new RadialBlurEffect(8)),
+//                new EffectEntryModel("Curvature", new CurvatureEffect()),
+//                new EffectEntryModel("Lens Flare", new LensFlareEffect()
+//                        .setIntensity(10f)),
+//                new EffectEntryModel("Vignette", new VignetteEffect(false)),
+//                new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
+//                new EffectEntryModel("FXAA", new FxaaEffect()),
+//                new EffectEntryModel("NFAA", new NfaaEffect()),
+//                new EffectEntryModel("Fisheye", new FisheyeEffect()),
+//                new EffectEntryModel("HDR", new HdrEffect(3.0f, 2.2f)),
+//                new EffectEntryModel("Levels", new LevelsEffect()
+//                        .setBrightness(0.1f)
+//                        .setSaturation(1.8f)
+//                        .setContrast(1.5f)
+//                        .setHue(0.9f)
+//                        .setGamma(1.0f))
+//        );
 
         vfxManager = getController(VfxViewController.class).getVfxManager();
 
@@ -151,9 +215,9 @@ public class EffectRosterViewController extends LmlViewController {
 
     private static class EffectEntryModel implements Disposable {
         private final String name;
-        private final VfxEffectOld effect;
+        private final VfxFilter effect;
 
-        public EffectEntryModel(String name, VfxEffectOld effect) {
+        public EffectEntryModel(String name, VfxFilter effect) {
             this.name = name;
             this.effect = effect;
         }
@@ -167,7 +231,7 @@ public class EffectRosterViewController extends LmlViewController {
             return name;
         }
 
-        public VfxEffectOld getEffect() {
+        public VfxFilter getEffect() {
             return effect;
         }
     }

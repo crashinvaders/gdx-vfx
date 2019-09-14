@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright 2012 tsagrista
+ * Copyright 2012 bmanuel
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +21,16 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/**
- * Bias filter.
- * @author Toni Sagrista
- */
-public final class BiasFilter extends VfxFilterOld<BiasFilter> {
-
-    private float bias;
+public class CopyFilterOld extends VfxFilterOld<CopyFilterOld> {
 
     public enum Param implements Parameter {
-        Texture("u_texture0", 0),
-        Bias("u_bias", 0);
+        Texture0("u_texture0", 0);
 
         final String mnemonic;
         final int elementSize;
 
-        Param(String mnemonic, int elementSize) {
-            this.mnemonic = mnemonic;
+        Param(String m, int elementSize) {
+            this.mnemonic = m;
             this.elementSize = elementSize;
         }
 
@@ -51,25 +45,10 @@ public final class BiasFilter extends VfxFilterOld<BiasFilter> {
         }
     }
 
-    public BiasFilter() {
+    public CopyFilterOld() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("bias")));
-        rebind();
-    }
-
-    public float getBias() {
-        return bias;
-    }
-
-    public void setBias(float bias) {
-        this.bias = bias;
-        setParam(Param.Bias, this.bias);
-    }
-
-    @Override
-    protected void onBeforeRender() {
-        inputTexture.bind(u_texture0);
+                Gdx.files.classpath("shaders/copy.frag")));
     }
 
     @Override
@@ -79,7 +58,11 @@ public final class BiasFilter extends VfxFilterOld<BiasFilter> {
 
     @Override
     public void rebind() {
-        setParams(Param.Texture, u_texture0);
-        setBias(this.bias);
+        setParam(Param.Texture0, u_texture0);
+    }
+
+    @Override
+    protected void onBeforeRender() {
+        inputTexture.bind(u_texture0);
     }
 }

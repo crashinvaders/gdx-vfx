@@ -17,26 +17,23 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/**
- * Normal filtered anti-aliasing filter.
- * @author Toni Sagrista
- * @author metaphore
- */
-public final class NfaaFilter extends ShaderVfxFilter {
+/** Keeps only values brighter than the specified gamma. */
+public final class GammaThresholdFilter extends ShaderVfxFilter {
 
     private static final String U_TEXTURE0 = "u_texture0";
-    private static final String U_VIEWPORT_INVERSE = "u_viewportInverse";
+    private static final String U_THRESHOLD = "u_threshold";
+    private static final String U_THRESHOLD_INV = "u_thresholdInv";
 
-    private final Vector2 viewportInverse = new Vector2();
+    private float gamma;
 
-    public NfaaFilter(boolean supportAlpha) {
+    public GammaThresholdFilter(Type type) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/nfaa.frag"),
-                supportAlpha ? "#define SUPPORT_ALPHA" : ""));
+        		Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/gamma-threshold.frag"),
+                "#define THRESHOLD_TYPE " + type.name()));
+        rebind();
     }
 
     @Override
@@ -44,14 +41,24 @@ public final class NfaaFilter extends ShaderVfxFilter {
         super.rebind();
         program.begin();
         program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
-        program.setUniformf(U_VIEWPORT_INVERSE, viewportInverse);
+        program.setUniformf(U_THRESHOLD, gamma);
+        program.setUniformf(U_THRESHOLD_INV, 1f / (1f - gamma));
         program.end();
     }
 
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-        this.viewportInverse.set(1f / width, 1f / height);
-        setUniform(U_VIEWPORT_INVERSE, this.viewportInverse);
+    public void setGamma(float gamma) {
+        this.gamma = gamma;
+        setUniform(U_THRESHOLD, gamma);
+        setUniform(U_THRESHOLD_INV, 1f / (1f - gamma));
+    }
+
+    public float getGamma() {
+        return gamma;
+    }
+
+    public enum Type {
+        RGBA,
+        RGB,
+        ALPHA_PREMULTIPLIED,
     }
 }

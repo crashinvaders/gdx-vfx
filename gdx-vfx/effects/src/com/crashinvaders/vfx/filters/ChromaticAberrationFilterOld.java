@@ -17,16 +17,14 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class OldTvFilter extends VfxFilterOld<OldTvFilter> {
+public class ChromaticAberrationFilterOld extends VfxFilterOld<ChromaticAberrationFilterOld> {
 
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
-        Resolution("u_resolution", 2),
-        Time("u_time", 0),
+        MaxDistortion("u_maxDistortion", 0),
         ;
 
         final String mnemonic;
@@ -38,47 +36,49 @@ public class OldTvFilter extends VfxFilterOld<OldTvFilter> {
         }
 
         @Override
-        public String mnemonic () {
+        public String mnemonic() {
             return this.mnemonic;
         }
 
         @Override
-        public int arrayElementSize () {
+        public int arrayElementSize() {
             return this.elementSize;
         }
     }
 
-    private final Vector2 resolution = new Vector2();
-    private float time = 0f;
+    private float maxDistortion = 1.2f;
 
-    public OldTvFilter() {
+    public ChromaticAberrationFilterOld(int passes) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/old-tv.frag")));
+                Gdx.files.classpath("shaders/chromatic-aberration.frag"),
+                "#define PASSES " + passes));
         rebind();
     }
 
-    public void setTime(float time) {
-        this.time = time;
-        setParam(Param.Time, time);
+    public float getMaxDistortion() {
+        return maxDistortion;
+    }
+
+    public void setMaxDistortion(float maxDistortion) {
+        this.maxDistortion = maxDistortion;
+        setParam(Param.MaxDistortion, maxDistortion);
     }
 
     @Override
     public void resize(int width, int height) {
-        this.resolution.set(width, height);
-        rebind();
+        // Do nothing.
     }
 
     @Override
-    public void rebind () {
+    public void rebind() {
         setParams(Param.Texture0, u_texture0);
-        setParams(Param.Resolution, resolution);
-        setParams(Param.Time, time);
+        setParams(Param.MaxDistortion, maxDistortion);
         endParams();
     }
 
     @Override
-    protected void onBeforeRender () {
+    protected void onBeforeRender() {
         inputTexture.bind(u_texture0);
     }
 }

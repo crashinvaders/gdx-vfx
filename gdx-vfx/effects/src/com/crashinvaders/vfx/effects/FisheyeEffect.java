@@ -19,7 +19,7 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.FisheyeDistortionFilter;
+import com.crashinvaders.vfx.filters.FisheyeDistortionFilterOld;
 
 /**
  * Fisheye effect
@@ -27,10 +27,10 @@ import com.crashinvaders.vfx.filters.FisheyeDistortionFilter;
  */
 public final class FisheyeEffect extends VfxEffectOld {
 
-    private final FisheyeDistortionFilter distort;
+    private final FisheyeDistortionFilterOld distort;
 
     public FisheyeEffect() {
-        distort = new FisheyeDistortionFilter();
+        distort = new FisheyeDistortionFilterOld();
     }
 
     @Override

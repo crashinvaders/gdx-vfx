@@ -19,11 +19,11 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.filters.NoiseFilter;
+import com.crashinvaders.vfx.filters.NoiseFilterOld;
 
 public class NoiseEffect extends VfxEffectOld implements UpdateableEffect {
 
-    private final NoiseFilter filter;
+    private final NoiseFilterOld filter;
 
     private float time;
 
@@ -32,7 +32,7 @@ public class NoiseEffect extends VfxEffectOld implements UpdateableEffect {
     }
 
     public NoiseEffect(float amount, float speed) {
-        filter = new NoiseFilter(amount, speed);
+        filter = new NoiseFilterOld(amount, speed);
     }
 
     public float getAmount() {

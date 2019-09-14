@@ -23,7 +23,7 @@
 #endif
 
 #ifndef LENGTH
-#error Please define a LENGTH
+#error Please define LENGTH
 #endif
 
 varying vec2 v_texCoords;
@@ -31,13 +31,11 @@ uniform PRECISION sampler2D u_texture0;
 uniform PRECISION vec2 SampleOffsets[LENGTH];
 uniform PRECISION float SampleWeights[LENGTH];
 
-void main()
-{
+void main() {
 	vec4 c = vec4(0);
 
 	// Combine a number of weighted image filter taps.
-	for (int i = 0; i < LENGTH; i++)
-	{
+	for (int i = 0; i < LENGTH; i++) 	{
 		c += texture2D(u_texture0, v_texCoords + SampleOffsets[i]) * SampleWeights[i];
 	}
 

@@ -19,20 +19,20 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.FxaaFilter;
+import com.crashinvaders.vfx.filters.FxaaFilterOld;
 
 /** Implements the fast approximate anti-aliasing. Very fast and useful for combining with other post-processing effects.
  * @author Toni Sagrista */
 public final class FxaaEffect extends VfxEffectOld {
 
-	private final FxaaFilter fxaaFilter;
+	private final FxaaFilterOld fxaaFilter;
 
     public FxaaEffect() {
         this(1f/128f, 1f/8f, 8f, true);
     }
 
     public FxaaEffect(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha) {
-        fxaaFilter = new FxaaFilter(fxaaReduceMin, fxaaReduceMul, fxaaSpanMax, supportAlpha);
+        fxaaFilter = new FxaaFilterOld(fxaaReduceMin, fxaaReduceMul, fxaaSpanMax, supportAlpha);
     }
 
     @Override

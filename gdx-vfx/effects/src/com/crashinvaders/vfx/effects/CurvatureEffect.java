@@ -20,14 +20,14 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.RadialDistortionFilter;
+import com.crashinvaders.vfx.filters.RadialDistortionFilterOld;
 
 public final class CurvatureEffect extends VfxEffectOld {
 
-    private RadialDistortionFilter distort;
+    private RadialDistortionFilterOld distort;
 
     public CurvatureEffect() {
-        distort = new RadialDistortionFilter();
+        distort = new RadialDistortionFilterOld();
     }
 
     @Override

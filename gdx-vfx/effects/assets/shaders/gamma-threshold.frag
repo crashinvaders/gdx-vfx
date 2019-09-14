@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 tsagrista
+ * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +16,36 @@
  ******************************************************************************/
 
 #ifdef GL_ES
-precision mediump float;
-precision mediump int;
+	#define PRECISION mediump
+	precision PRECISION float;
+#else
+	#define PRECISION
 #endif
 
-varying vec2 v_texCoords;
+#ifndef THRESHOLD_TYPE
+#error Please define THRESHOLD_TYPE
+#endif
 
-uniform sampler2D u_texture0;
-uniform float u_bias;
+uniform PRECISION sampler2D u_texture0;
+uniform float u_threshold;
+uniform float u_thresholdInv;
+varying vec2 v_texCoords;
 
 void main() {
 	vec4 tex = texture2D(u_texture0, v_texCoords);
-	float avg = (tex.r + tex.g + tex.b) / 3.0;
-	gl_FragColor = vec4(max(0.0, avg + u_bias)) * 50.0;
+
+#if THRESHOLD_TYPE == RGBA
+	gl_FragColor = (tex - u_threshold) * u_thresholdInv;
+
+#elif THRESHOLD_TYPE == RGB
+	gl_FragColor.a = tex.a;
+	gl_FragColor.rgb = (tex.rgb - u_threshold) * u_thresholdInv;
+
+#elif THRESHOLD_TYPE == ALPHA_PREMULTIPLIED
+	gl_FragColor = (tex.rgb - u_threshold) * u_thresholdInv * tex.a, tex.a;
+
+#else
+	#error Unexpected THRESHOLD_TYPE value
+
+#endif
 }

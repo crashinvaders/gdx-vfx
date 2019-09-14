@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialBlurFilter extends VfxFilterOld<RadialBlurFilter> {
+public final class RadialBlurFilterOld extends VfxFilterOld<RadialBlurFilterOld> {
 
 	public enum Param implements Parameter {
 		Texture("u_texture0", 0), 
@@ -56,7 +56,7 @@ public final class RadialBlurFilter extends VfxFilterOld<RadialBlurFilter> {
 	private float originY = 0.5f;
 	private float zoom = 1f;
 
-	public RadialBlurFilter(int passes) {
+	public RadialBlurFilterOld(int passes) {
 		super(VfxGLUtils.compileShader(
 				Gdx.files.classpath("shaders/radial-blur.vert"),
 				Gdx.files.classpath("shaders/radial-blur.frag"),
@@ -105,8 +105,8 @@ public final class RadialBlurFilter extends VfxFilterOld<RadialBlurFilter> {
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
-		setParams(ZoomFilter.Param.OffsetX, this.originX);
-		setParams(ZoomFilter.Param.OffsetY, this.originY);
+		setParams(ZoomFilterOld.Param.OffsetX, this.originX);
+		setParams(ZoomFilterOld.Param.OffsetY, this.originY);
 		endParams();
 	}
 

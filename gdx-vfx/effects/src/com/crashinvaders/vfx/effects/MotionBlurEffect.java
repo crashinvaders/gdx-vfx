@@ -24,23 +24,23 @@ import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferQueue;
-import com.crashinvaders.vfx.filters.CopyFilter;
-import com.crashinvaders.vfx.filters.MotionBlurFilter;
-import com.crashinvaders.vfx.filters.MotionBlurFilter.BlurFunction;
+import com.crashinvaders.vfx.filters.CopyFilterOld;
+import com.crashinvaders.vfx.filters.MotionBlurFilterOld;
+import com.crashinvaders.vfx.filters.MotionBlurFilterOld.BlurFunction;
 
 /** A motion blur effect which draws the last frame with a lower opacity. The result is then stored as the next last frame to
  * create the trail effect.
  * @author Toni Sagrista */
 public class MotionBlurEffect extends VfxEffectOld {
-	private final MotionBlurFilter motionBlurFilter;
-	private final CopyFilter copyFilter;
+	private final MotionBlurFilterOld motionBlurFilter;
+	private final CopyFilterOld copyFilter;
 	private final VfxFrameBufferQueue localBuffer;
 
 	public MotionBlurEffect(Pixmap.Format pixelFormat, BlurFunction blurFunction, float blurOpacity) {
-		motionBlurFilter = new MotionBlurFilter(blurFunction);
+		motionBlurFilter = new MotionBlurFilterOld(blurFunction);
 		motionBlurFilter.setBlurOpacity(blurOpacity);
 
-		copyFilter = new CopyFilter();
+		copyFilter = new CopyFilterOld();
 
 		localBuffer = new VfxFrameBufferQueue(pixelFormat,
 				// On WebGL (GWT) we cannot render from/into the same texture simultaneously.

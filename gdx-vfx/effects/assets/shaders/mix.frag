@@ -14,11 +14,18 @@
  * limitations under the License.
  ******************************************************************************/
 
+// Simple motion blur implementation by Toni Sagrista
+// Last frame is drawn with lower opacity
+
 #ifdef GL_ES
-	#define PRECISION mediump
-	precision PRECISION float;
+#define PRECISION mediump
+precision PRECISION float;
 #else
-	#define PRECISION
+#define PRECISION
+#endif
+
+#ifndef METHOD
+#error Please define METHOD
 #endif
 
 uniform PRECISION sampler2D u_texture0;
@@ -28,8 +35,16 @@ uniform float u_mix;
 varying vec2 v_texCoords;
 
 void main() {
-	gl_FragColor = mix(
-		texture2D(u_texture0, v_texCoords),
-		texture2D(u_texture1, v_texCoords),
-		u_mix);
+#if METHOD == MAX
+    gl_FragColor = max(
+        texture2D(u_texture0, v_texCoords),
+        texture2D(u_texture1, v_texCoords) * u_mix);
+#elif METHOD = MIX
+    gl_FragColor = mix(
+        texture2D(u_texture0, v_texCoords),
+        texture2D(u_texture1, v_texCoords),
+        u_mix);
+#else
+    #error Unexpected METHOD value
+#endif
 }

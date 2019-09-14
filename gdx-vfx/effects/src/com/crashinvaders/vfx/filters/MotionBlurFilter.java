@@ -17,93 +17,71 @@
 
 package com.crashinvaders.vfx.filters;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.VfxFilterOld;
-import com.crashinvaders.vfx.gl.VfxGLUtils;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBufferQueue;
 
-/** Motion blur filter that draws the last frame (motion filter included) with a lower opacity.
- * @author Toni Sagrista */
-public class MotionBlurFilter extends VfxFilterOld<MotionBlurFilter> {
+/** A motion blur effect which draws the last frame with a lower opacity.
+ * The result is then stored as the next last frame to create the trail effect. */
+public class MotionBlurFilter extends AbstractVfxFilter {
 
-	private float blurOpacity = 0.5f;
-	private Texture lastFrameTex;
+	private final MixFilter mixFilter;
+	private final CopyFilter copyFilter;
 
-	/** Defines which function will be used to mix the two frames to produce motion blur effect. */
-	public enum BlurFunction {
-		MAX("motionblur-max"),
-		MIX("motionblur-mix");
+	private final VfxFrameBufferQueue localBuffer;
 
-		final String fragmentShaderName;
+	private boolean firstFrameRendered = false;
 
-		BlurFunction(String fragmentShaderName) {
-			this.fragmentShaderName = fragmentShaderName;
-		}
+	public MotionBlurFilter(Pixmap.Format pixelFormat, MixFilter.Method mixMethod, float blurFactor) {
+		mixFilter = new MixFilter(mixMethod);
+		mixFilter.setMixFactor(blurFactor);
+
+		copyFilter = new CopyFilter();
+
+		localBuffer = new VfxFrameBufferQueue(pixelFormat,
+				// On WebGL (GWT) we cannot render from/into the same texture simultaneously.
+				// Will use ping-pong approach to avoid "writing into itself".
+				Gdx.app.getType() == Application.ApplicationType.WebGL ? 2 : 1
+		);
 	}
 
-	public enum Param implements Parameter {
-        Texture("u_texture0", 0),
-        LastFrame("u_texture1", 0),
-        BlurOpacity("u_blurOpacity", 0);
-
-        private String mnemonic;
-        final int elementSize;
-
-        Param(String mnemonic, int arrayElementSize) {
-            this.mnemonic = mnemonic;
-            this.elementSize = arrayElementSize;
-        }
-
-        @Override
-        public String mnemonic() {
-            return this.mnemonic;
-        }
-
-        @Override
-        public int arrayElementSize() {
-            return this.elementSize;
-        }
-    }
-
-	public MotionBlurFilter(BlurFunction blurFunction) {
-		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/" + blurFunction.fragmentShaderName + ".frag")));
-		rebind();
-	}
-
-	public void setBlurOpacity (float blurOpacity) {
-		this.blurOpacity = blurOpacity;
-		setParam(Param.BlurOpacity, this.blurOpacity);
-	}
-
-	public void setLastFrameTexture (Texture tex) {
-		this.lastFrameTex = tex;
-		if (lastFrameTex != null) {
-			setParam(Param.LastFrame, u_texture1);
-		}
+	@Override
+	public void dispose() {
+		mixFilter.dispose();
+		copyFilter.dispose();
+		localBuffer.dispose();
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		mixFilter.resize(width, height);
+		copyFilter.resize(width, height);
+		localBuffer.resize(width, height);
 
+		firstFrameRendered = false;
 	}
 
 	@Override
-	public void rebind () {
-		setParams(Param.Texture, u_texture0);
-		if (lastFrameTex != null) {
-			setParams(Param.LastFrame, u_texture1);
-		}
-		setParams(Param.BlurOpacity, this.blurOpacity);
-		endParams();
+	public void rebind() {
+		mixFilter.rebind();
+		copyFilter.rebind();
+		localBuffer.rebind();
 	}
 
 	@Override
-	protected void onBeforeRender () {
-		inputTexture.bind(u_texture0);
-		if (lastFrameTex != null) {
-			lastFrameTex.bind(u_texture1);
+	public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+		VfxFrameBuffer prevFrame = this.localBuffer.changeToNext();
+		if (!firstFrameRendered) {
+			// Mix filter requires two frames to render, so we gonna skip the first call.
+			copyFilter.render(context, src, prevFrame);
+			firstFrameRendered = true;
+		} else {
+			mixFilter.render(context, src, prevFrame);
 		}
+		mixFilter.setSecondInput(prevFrame);
+		copyFilter.render(context, prevFrame, dst);
 	}
 }

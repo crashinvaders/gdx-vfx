@@ -1,5 +1,4 @@
 /*******************************************************************************
- * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,20 +20,20 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class ThresholdFilter extends VfxFilterOld<ThresholdFilter> {
+public class NoiseFilterOld extends VfxFilterOld<NoiseFilterOld> {
 
     public enum Param implements Parameter {
-        // @formatter:off
-        Texture("u_texture0", 0),
-        Threshold("treshold", 0),
-        ThresholdInvTx("tresholdInvTx", 0);
-        // @formatter:on
+        Texture0("u_texture0", 0),
+        Amount("u_amount", 0),
+        Speed("u_speed", 0),
+        Time("u_time", 0),
+        ;
 
-        private String mnemonic;
+        final String mnemonic;
         final int elementSize;
 
-        private Param(String mnemonic, int elementSize) {
-            this.mnemonic = mnemonic;
+        Param(String m, int elementSize) {
+            this.mnemonic = m;
             this.elementSize = elementSize;
         }
 
@@ -49,38 +48,61 @@ public final class ThresholdFilter extends VfxFilterOld<ThresholdFilter> {
         }
     }
 
-    private float gamma = 0;
+    private float amount;
+    private float speed;
+    private float time = 0f;
 
-    public ThresholdFilter() {
+    public NoiseFilterOld(float amount, float speed) {
         super(VfxGLUtils.compileShader(
-        		Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/threshold.frag")));
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/noise.frag")));
+        this.amount = amount;
+        this.speed = speed;
         rebind();
     }
 
-    public void setTreshold(float gamma) {
-        this.gamma = gamma;
-        setParams(Param.Threshold, gamma);
-        setParams(Param.ThresholdInvTx, 1f / (1 - gamma)).endParams();
+    public float getTime() {
+        return time;
     }
 
-    public float getThreshold() {
-        return gamma;
+    public void setTime(float time) {
+        this.time = time;
+        setParam(Param.Time, time);
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Do nothing.
+    }
+
+    @Override
+    public void rebind() {
+        setParams(Param.Texture0, u_texture0);
+        setParams(Param.Amount, amount);
+        setParams(Param.Speed, speed);
+        setParams(Param.Time, time);
+        endParams();
     }
 
     @Override
     protected void onBeforeRender() {
         inputTexture.bind(u_texture0);
     }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void rebind() {
-        setParams(Param.Texture, u_texture0);
-        setTreshold(this.gamma);
-    }
 }
+

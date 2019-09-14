@@ -20,13 +20,13 @@ package com.crashinvaders.vfx.effects;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.ZoomFilter;
+import com.crashinvaders.vfx.filters.ZoomFilterOld;
 
 /**
  * Simple zooming effect.
  */
 public final class ZoomerEffect extends VfxEffectOld {
-    private final ZoomFilter zoom;
+    private final ZoomFilterOld zoom;
 
     /**
      * Creating a Zoomer effect with zoom factor of 1.0.
@@ -40,7 +40,7 @@ public final class ZoomerEffect extends VfxEffectOld {
      * @param zoomFactor initial zoom factor.
      */
     public ZoomerEffect(float zoomFactor) {
-        zoom = new ZoomFilter();
+        zoom = new ZoomFilterOld();
         setZoom(zoomFactor);
     }
 
@@ -72,12 +72,12 @@ public final class ZoomerEffect extends VfxEffectOld {
         return zoom.getOriginY();
     }
 
-    /** @see ZoomFilter#setOrigin(int) */
+    /** @see ZoomFilterOld#setOrigin(int) */
     public void setOrigin(int align) {
         zoom.setOrigin(align);
     }
 
-    /** @see ZoomFilter#setOrigin(float, float) */
+    /** @see ZoomFilterOld#setOrigin(float, float) */
     public void setOrigin(float x, float y) {
         zoom.setOrigin(x, y);
     }

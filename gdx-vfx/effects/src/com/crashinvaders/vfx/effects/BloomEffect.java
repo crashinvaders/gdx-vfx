@@ -29,16 +29,16 @@ import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter;
 import com.crashinvaders.vfx.filters.GaussianBlurFilter.BlurType;
-import com.crashinvaders.vfx.filters.CombineFilter;
-import com.crashinvaders.vfx.filters.ThresholdFilter;
+import com.crashinvaders.vfx.filters.CombineFilterOld;
+import com.crashinvaders.vfx.filters.ThresholdFilterOld;
 
 public final class BloomEffect extends VfxEffectOld {
 
     private final PingPongBuffer pingPongBuffer;
 
     private final GaussianBlurFilter blur;
-    private final ThresholdFilter threshold;
-    private final CombineFilter combine;
+    private final ThresholdFilterOld threshold;
+    private final CombineFilterOld combine;
 
     private Settings settings;
 
@@ -53,8 +53,8 @@ public final class BloomEffect extends VfxEffectOld {
         pingPongBuffer = new RegularPingPongBuffer(bufferFormat);
 
         blur = new GaussianBlurFilter();
-        threshold = new ThresholdFilter();
-        combine = new CombineFilter();
+        threshold = new ThresholdFilterOld();
+        combine = new CombineFilterOld();
 
         setSettings(settings);
     }

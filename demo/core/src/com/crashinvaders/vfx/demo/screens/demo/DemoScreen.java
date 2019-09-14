@@ -44,7 +44,7 @@ import com.crashinvaders.vfx.demo.screens.demo.controllers.StatisticPanelViewCon
 import com.crashinvaders.vfx.demo.screens.demo.controllers.VfxViewController;
 
 public class DemoScreen extends ScreenAdapter {
-    private static final Color clearColor = new Color(0x006ba6ff);
+    private static final Color clearColor = new Color(0x80ff80ff);
 
     private final AssetManager assets;
     private final Batch batch;

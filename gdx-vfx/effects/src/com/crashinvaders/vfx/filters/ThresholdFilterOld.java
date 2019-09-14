@@ -1,4 +1,5 @@
 /*******************************************************************************
+ * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,18 +21,20 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class ChromaticAberrationFilter extends VfxFilterOld<ChromaticAberrationFilter> {
+public final class ThresholdFilterOld extends VfxFilterOld<ThresholdFilterOld> {
 
     public enum Param implements Parameter {
-        Texture0("u_texture0", 0),
-        MaxDistortion("u_maxDistortion", 0),
-        ;
+        // @formatter:off
+        Texture("u_texture0", 0),
+        Threshold("treshold", 0),
+        ThresholdInvTx("tresholdInvTx", 0);
+        // @formatter:on
 
-        final String mnemonic;
+        private String mnemonic;
         final int elementSize;
 
-        Param(String m, int elementSize) {
-            this.mnemonic = m;
+        private Param(String mnemonic, int elementSize) {
+            this.mnemonic = mnemonic;
             this.elementSize = elementSize;
         }
 
@@ -46,39 +49,38 @@ public class ChromaticAberrationFilter extends VfxFilterOld<ChromaticAberrationF
         }
     }
 
-    private float maxDistortion = 1.2f;
+    private float gamma = 0;
 
-    public ChromaticAberrationFilter(int passes) {
+    public ThresholdFilterOld() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/chromatic-aberration.frag"),
-                "#define PASSES " + passes));
+        		Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/gamma-threshold.frag")));
         rebind();
     }
 
-    public float getMaxDistortion() {
-        return maxDistortion;
+    public void setTreshold(float gamma) {
+        this.gamma = gamma;
+        setParams(Param.Threshold, gamma);
+        setParams(Param.ThresholdInvTx, 1f / (1 - gamma)).endParams();
     }
 
-    public void setMaxDistortion(float maxDistortion) {
-        this.maxDistortion = maxDistortion;
-        setParam(Param.MaxDistortion, maxDistortion);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        // Do nothing.
-    }
-
-    @Override
-    public void rebind() {
-        setParams(Param.Texture0, u_texture0);
-        setParams(Param.MaxDistortion, maxDistortion);
-        endParams();
+    public float getThreshold() {
+        return gamma;
     }
 
     @Override
     protected void onBeforeRender() {
         inputTexture.bind(u_texture0);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void rebind() {
+        setParams(Param.Texture, u_texture0);
+        setTreshold(this.gamma);
     }
 }
