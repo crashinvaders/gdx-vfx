@@ -26,6 +26,10 @@
 #error Please define THRESHOLD_TYPE
 #endif
 
+#define RGBA 0
+#define RGB 1
+#define ALPHA_PREMULTIPLIED 2
+
 uniform PRECISION sampler2D u_texture0;
 uniform float u_threshold;
 uniform float u_thresholdInv;
@@ -35,7 +39,7 @@ void main() {
 	vec4 tex = texture2D(u_texture0, v_texCoords);
 
 #if THRESHOLD_TYPE == RGBA
-	gl_FragColor = (tex - u_threshold) * u_thresholdInv;
+	gl_FragColor = (tex - vec4(u_threshold)) * u_thresholdInv;
 
 #elif THRESHOLD_TYPE == RGB
 	gl_FragColor.a = tex.a;
