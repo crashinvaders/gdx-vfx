@@ -30,10 +30,10 @@ public final class CombineFilterOld extends VfxFilterOld<CombineFilterOld> {
     public enum Param implements Parameter {
         Texture0("u_texture0", 0),
         Texture1("u_texture1", 0),
+        Source0Intensity("u_src0Intensity", 0),
+        Source0Saturation("u_src0Saturation", 0),
         Source1Intensity("u_src1Intensity", 0),
-        Source1Saturation("u_src1Saturation", 0),
-        Source2Intensity("u_src2Intensity", 0),
-        Source2Saturation("u_src2Saturation", 0);
+        Source1Saturation("u_src1Saturation", 0);
 
         final String mnemonic;
         final int elementSize;
@@ -82,22 +82,22 @@ public final class CombineFilterOld extends VfxFilterOld<CombineFilterOld> {
 
     public void setSource1Intensity(float intensity) {
         s1i = intensity;
-        setParam(CombineFilterOld.Param.Source1Intensity, intensity);
+        setParam(CombineFilterOld.Param.Source0Intensity, intensity);
     }
 
     public void setSource2Intensity(float intensity) {
         s2i = intensity;
-        setParam(CombineFilterOld.Param.Source2Intensity, intensity);
+        setParam(CombineFilterOld.Param.Source1Intensity, intensity);
     }
 
     public void setSource1Saturation(float saturation) {
         s1s = saturation;
-        setParam(CombineFilterOld.Param.Source1Saturation, saturation);
+        setParam(CombineFilterOld.Param.Source0Saturation, saturation);
     }
 
     public void setSource2Saturation(float saturation) {
         s2s = saturation;
-        setParam(CombineFilterOld.Param.Source2Saturation, saturation);
+        setParam(CombineFilterOld.Param.Source1Saturation, saturation);
     }
 
     public float getSource1Intensity() {
@@ -125,10 +125,10 @@ public final class CombineFilterOld extends VfxFilterOld<CombineFilterOld> {
     public void rebind() {
         setParams(Param.Texture0, u_texture0);
         setParams(Param.Texture1, u_texture1);
-        setParams(Param.Source1Intensity, s1i);
-        setParams(Param.Source2Intensity, s2i);
-        setParams(Param.Source1Saturation, s1s);
-        setParams(Param.Source2Saturation, s2s);
+        setParams(Param.Source0Intensity, s1i);
+        setParams(Param.Source1Intensity, s2i);
+        setParams(Param.Source0Saturation, s1s);
+        setParams(Param.Source1Saturation, s2s);
         endParams();
     }
 

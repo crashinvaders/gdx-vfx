@@ -1,4 +1,5 @@
 /*******************************************************************************
+ * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +17,10 @@
 
 package com.crashinvaders.vfx.filters;
 
-import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 
-public final class GaussianBlurFilter extends AbstractVfxFilter {
+public final class GaussianBlurFilterOld extends MultipassVfxFilter {
 
     private enum Tap {
         Tap3x3(1),
@@ -35,10 +36,8 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
     }
 
     public enum BlurType {
-        Gaussian3x3(Tap.Tap3x3),
-        Gaussian3x3b(Tap.Tap3x3), // R=5 (11x11, policy "higher-then-discard")
-        Gaussian5x5(Tap.Tap5x5),
-        Gaussian5x5b(Tap.Tap5x5), // R=9 (19x19, policy "higher-then-discard")
+        Gaussian3x3(Tap.Tap3x3), Gaussian3x3b(Tap.Tap3x3), // R=5 (11x11, policy "higher-then-discard")
+        Gaussian5x5(Tap.Tap5x5), Gaussian5x5b(Tap.Tap5x5), // R=9 (19x19, policy "higher-then-discard")
         ;
 
         public final Tap tap;
@@ -53,13 +52,13 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
     private int passes = 1;
 
     private float invWidth, invHeight;
-    private Convolve2DFilter convolve;
+    private Convolve2DFilterOld convolve;
 
-    public GaussianBlurFilter() {
+    public GaussianBlurFilterOld() {
         this(BlurType.Gaussian5x5);
     }
 
-    public GaussianBlurFilter(BlurType blurType) {
+    public GaussianBlurFilterOld(BlurType blurType) {
         this.setType(blurType);
     }
 
@@ -84,12 +83,12 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+    public void render(ViewportQuadMesh mesh, PingPongBuffer buffer) {
         for (int i = 0; i < this.passes; i++) {
-            convolve.render(context, pingPongBuffer);
+            convolve.render(mesh, buffer);
 
             if (i < this.passes - 1) {
-                pingPongBuffer.swap();
+                buffer.swap();
             }
         }
     }
@@ -109,7 +108,7 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
             if (convolve != null) {
                 convolve.dispose();
             }
-            convolve = new Convolve2DFilter(this.type.tap.radius);
+            convolve = new Convolve2DFilterOld(this.type.tap.radius);
 
             computeBlurWeightings();
         }
@@ -131,8 +130,6 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
     }
 
     public void setPasses(int passes) {
-        if (passes < 1) throw new IllegalArgumentException("Passes should be greater than 0.");
-
         this.passes = passes;
     }
 

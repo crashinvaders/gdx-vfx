@@ -119,6 +119,38 @@ public class EffectRosterViewController extends LmlViewController {
             MotionBlurFilter filter = new MotionBlurFilter(Pixmap.Format.RGBA8888, MixFilter.Method.MIX, 0.8f);
             effectsRoster.add(new EffectEntryModel("Motion Blur", filter));
         }
+        // Noise
+        {
+            NoiseFilter filter = new NoiseFilter(0.35f, 2f);
+            effectsRoster.add(new EffectEntryModel("Noise", filter));
+        }
+        // Old TV
+        {
+            OldTvFilter filter = new OldTvFilter();
+            effectsRoster.add(new EffectEntryModel("Old TV", filter));
+        }
+        // Levels
+        {
+            LevelsFilter filter = new LevelsFilter();
+            filter.setHue(0.95f);
+            effectsRoster.add(new EffectEntryModel("Levels", filter));
+        }
+        // Chrom. Aberration
+        {
+            ChromaticAberrationFilter filter = new ChromaticAberrationFilter(12);
+            effectsRoster.add(new EffectEntryModel("Chrom. Aberration", filter));
+        }
+        // Radial Blur
+        {
+            RadialBlurFilter filter = new RadialBlurFilter(8);
+            effectsRoster.add(new EffectEntryModel("Radial Blur", filter));
+        }
+        // Gaussian Blur
+        {
+            GaussianBlurFilter filter = new GaussianBlurFilter(GaussianBlurFilter.BlurType.Gaussian5x5);
+            filter.setPasses(8);
+            effectsRoster.add(new EffectEntryModel("Gaussian Blur", filter));
+        }
 
 
 //        effectsRoster.addAll(

@@ -21,6 +21,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferQueue;
 
@@ -72,16 +73,18 @@ public class MotionBlurFilter extends AbstractVfxFilter {
 	}
 
 	@Override
-	public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+	public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
 		VfxFrameBuffer prevFrame = this.localBuffer.changeToNext();
 		if (!firstFrameRendered) {
 			// Mix filter requires two frames to render, so we gonna skip the first call.
-			copyFilter.render(context, src, prevFrame);
+			copyFilter.render(context, pingPongBuffer.getSrcBuffer(), prevFrame);
+			pingPongBuffer.swap();
 			firstFrameRendered = true;
-		} else {
-			mixFilter.render(context, src, prevFrame);
+			return;
 		}
+
 		mixFilter.setSecondInput(prevFrame);
-		copyFilter.render(context, prevFrame, dst);
+		mixFilter.render(context, pingPongBuffer);
+		copyFilter.render(context, pingPongBuffer.getDstBuffer(), prevFrame);
 	}
 }

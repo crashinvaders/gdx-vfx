@@ -18,28 +18,31 @@ package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/** Mixes two frames with a factor of {@link #mixFactor}.
- * Second frame texture should be provided through {@link #setSecondInput(Texture)} prior rendering. */
-public final class MixFilter extends ShaderVfxFilter {
+public final class CombineFilter extends ShaderVfxFilter {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_TEXTURE1 = "u_texture1";
-    private static final String U_MIX = "u_mix";
+    private static final String U_SOURCE0_INTENSITY = "u_src0Intensity";
+    private static final String U_SOURCE0_SATURATION = "u_src0Saturation";
+    private static final String U_SOURCE1_INTENSITY = "u_src1Intensity";
+    private static final String U_SOURCE1_SATURATION = "u_src1Saturation";
 
     private Texture secondTexture = null;
-    private float mixFactor = 0.5f;
+    private float s1i, s1s, s2i, s2s;
 
-    public MixFilter(Method method) {
+    public CombineFilter() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/mix.frag"),
-                "#define METHOD " + method.name()));
+                Gdx.files.classpath("shaders/combine.frag")));
+        s1i = 1f;
+        s2i = 1f;
+        s1s = 1f;
+        s2s = 1f;
         rebind();
     }
 
@@ -48,8 +51,11 @@ public final class MixFilter extends ShaderVfxFilter {
         super.rebind();
         program.begin();
         program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
-        program.setUniformi(U_TEXTURE1, TEXTURE_HANDLE1);
-        program.setUniformf(U_MIX, mixFactor);
+        program.setUniformf(U_TEXTURE1, TEXTURE_HANDLE1);
+        program.setUniformf(U_SOURCE0_INTENSITY, s1i);
+        program.setUniformf(U_SOURCE1_INTENSITY, s2i);
+        program.setUniformf(U_SOURCE0_SATURATION, s1s);
+        program.setUniformf(U_SOURCE1_SATURATION, s2s);
         program.end();
     }
 
@@ -61,12 +67,6 @@ public final class MixFilter extends ShaderVfxFilter {
         secondTexture.bind(TEXTURE_HANDLE1);
 
         super.render(context, pingPongBuffer);
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        secondTexture = null;
     }
 
     public void setSecondInput(VfxFrameBuffer buffer) {
@@ -84,18 +84,39 @@ public final class MixFilter extends ShaderVfxFilter {
         }
     }
 
-    public float getMixFactor() {
-        return mixFactor;
+    public float getSource1Intensity() {
+        return s1i;
     }
 
-    public void setMixFactor(float mixFactor) {
-        this.mixFactor = MathUtils.clamp(0f, 1f, mixFactor);
-        setUniform(U_MIX, mixFactor);
+    public void setSource1Intensity(float intensity) {
+        s1i = intensity;
+        setUniform(U_SOURCE0_INTENSITY, intensity);
     }
 
-    /** Defines which function will be used to mix the two frames to produce motion blur effect. */
-    public enum Method {
-        MAX,
-        MIX;
+    public float getSource2Intensity() {
+        return s2i;
+    }
+
+    public void setSource2Intensity(float intensity) {
+        s2i = intensity;
+        setUniform(U_SOURCE1_INTENSITY, intensity);
+    }
+
+    public float getSource1Saturation() {
+        return s1s;
+    }
+
+    public void setSource1Saturation(float saturation) {
+        s1s = saturation;
+        setUniform(U_SOURCE0_SATURATION, saturation);
+    }
+
+    public float getSource2Saturation() {
+        return s2s;
+    }
+
+    public void setSource2Saturation(float saturation) {
+        s2s = saturation;
+        setUniform(U_SOURCE1_SATURATION, saturation);
     }
 }

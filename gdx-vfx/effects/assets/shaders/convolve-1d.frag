@@ -28,16 +28,16 @@
 
 varying vec2 v_texCoords;
 uniform PRECISION sampler2D u_texture0;
-uniform PRECISION vec2 SampleOffsets[LENGTH];
-uniform PRECISION float SampleWeights[LENGTH];
+uniform PRECISION float u_sampleWeights[LENGTH];
+uniform PRECISION vec2 u_sampleOffsets[LENGTH];
 
 void main() {
-	vec4 c = vec4(0);
+	vec4 color = vec4(0);
 
 	// Combine a number of weighted image filter taps.
-	for (int i = 0; i < LENGTH; i++) 	{
-		c += texture2D(u_texture0, v_texCoords + SampleOffsets[i]) * SampleWeights[i];
+	for (int i = 0; i < LENGTH; i++) {
+		color += texture2D(u_texture0, v_texCoords + u_sampleOffsets[i]) * u_sampleWeights[i];
 	}
 
-	gl_FragColor = c;
+	gl_FragColor = color;
 }

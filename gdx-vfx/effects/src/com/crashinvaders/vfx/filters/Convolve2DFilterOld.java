@@ -1,4 +1,5 @@
 /*******************************************************************************
+ * Copyright 2012 bmanuel
  * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +17,8 @@
 
 package com.crashinvaders.vfx.filters;
 
-import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBufferPool;
 
 /**
  * Encapsulates a separable 2D convolution kernel filter
@@ -27,20 +26,21 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBufferPool;
  * @author bmanuel
  * @author metaphore
  */
-public final class Convolve2DFilter extends AbstractVfxFilter {
+public final class Convolve2DFilterOld extends MultipassVfxFilter {
 
     private final int radius;
     private final int length; // NxN taps filter, w/ N=length
+
     private final float[] weights, offsetsHor, offsetsVert;
 
-    private Convolve1DFilter hor, vert;
+    private Convolve1DFilterOld hor, vert;
 
-    public Convolve2DFilter(int radius) {
+    public Convolve2DFilterOld(int radius) {
         this.radius = radius;
         length = (radius * 2) + 1;
 
-        hor = new Convolve1DFilter(length);
-        vert = new Convolve1DFilter(length, hor.weights);
+        hor = new Convolve1DFilterOld(length);
+        vert = new Convolve1DFilterOld(length, hor.weights);
 
         weights = hor.weights;
         offsetsHor = hor.offsets;
@@ -54,21 +54,27 @@ public final class Convolve2DFilter extends AbstractVfxFilter {
     }
 
     @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
     public void rebind() {
         hor.rebind();
         vert.rebind();
     }
 
     @Override
-    public void resize(int width, int height) {
-        // Do nothing.
-    }
+    public void render(ViewportQuadMesh mesh, PingPongBuffer buffer) {
+        hor.setInput(buffer.getSrcTexture())
+            .setOutput(buffer.getDstBuffer())
+            .render(mesh);
 
-    @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        hor.render(context, pingPongBuffer);
-        pingPongBuffer.swap();
-        vert.render(context, pingPongBuffer);
+        buffer.swap();
+
+        vert.setInput(buffer.getSrcTexture())
+            .setOutput(buffer.getDstBuffer())
+            .render(mesh);
     }
 
     public int getRadius() {

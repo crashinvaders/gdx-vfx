@@ -27,8 +27,8 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
-import com.crashinvaders.vfx.filters.GaussianBlurFilter;
-import com.crashinvaders.vfx.filters.GaussianBlurFilter.BlurType;
+import com.crashinvaders.vfx.filters.GaussianBlurFilterOld;
+import com.crashinvaders.vfx.filters.GaussianBlurFilterOld.BlurType;
 import com.crashinvaders.vfx.filters.CombineFilterOld;
 import com.crashinvaders.vfx.filters.ThresholdFilterOld;
 
@@ -36,7 +36,7 @@ public final class BloomEffect extends VfxEffectOld {
 
     private final PingPongBuffer pingPongBuffer;
 
-    private final GaussianBlurFilter blur;
+    private final GaussianBlurFilterOld blur;
     private final ThresholdFilterOld threshold;
     private final CombineFilterOld combine;
 
@@ -52,7 +52,7 @@ public final class BloomEffect extends VfxEffectOld {
     public BloomEffect(Pixmap.Format bufferFormat, Settings settings) {
         pingPongBuffer = new RegularPingPongBuffer(bufferFormat);
 
-        blur = new GaussianBlurFilter();
+        blur = new GaussianBlurFilterOld();
         threshold = new ThresholdFilterOld();
         combine = new CombineFilterOld();
 

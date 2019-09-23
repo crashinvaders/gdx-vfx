@@ -17,43 +17,38 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class CopyFilter extends ShaderVfxFilter {
+public class ChromaticAberrationFilter extends ShaderVfxFilter {
 
     private static final String U_TEXTURE0 = "u_texture0";
+    private static final String U_MAX_DISTORTION = "u_maxDistortion";
 
-    public CopyFilter() {
+    private float maxDistortion = 1.2f;
+
+    public ChromaticAberrationFilter(int passes) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/copy.frag")));
+                Gdx.files.classpath("shaders/chromatic-aberration.frag"),
+                "#define PASSES " + passes));
         rebind();
     }
 
     @Override
     public void rebind() {
-        setUniform(U_TEXTURE0, TEXTURE_HANDLE0);
-    }
-
-    @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        this.render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
-    }
-
-    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        boolean manualBufferBind = !dst.isDrawing();
-        if (manualBufferBind) { dst.begin(); }
-
-        // Bind src buffer's texture as a primary one.
-        src.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE0);
-
+        super.rebind();
         program.begin();
-        context.getViewportMesh().render(program);
+        program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
+        program.setUniformf(U_MAX_DISTORTION, maxDistortion);
         program.end();
+    }
 
-        if (manualBufferBind) { dst.end(); }
+    public float getMaxDistortion() {
+        return maxDistortion;
+    }
+
+    public void setMaxDistortion(float maxDistortion) {
+        this.maxDistortion = maxDistortion;
+        setUniform(U_MAX_DISTORTION, maxDistortion);
     }
 }

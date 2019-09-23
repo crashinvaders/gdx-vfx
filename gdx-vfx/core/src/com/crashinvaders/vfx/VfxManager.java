@@ -283,7 +283,7 @@ public final class VfxManager implements Disposable {
             pingPongBuffer.begin();
             for (int i = 0; i < count; i++) {
                 VfxFilter effect = effectChain.get(i);
-                effect.render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+                effect.render(context, pingPongBuffer);
                 if (i < count - 1) {
                     pingPongBuffer.swap();
                 }

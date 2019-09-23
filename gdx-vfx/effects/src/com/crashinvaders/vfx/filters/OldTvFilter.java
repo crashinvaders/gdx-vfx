@@ -17,43 +17,45 @@
 package com.crashinvaders.vfx.filters;
 
 import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.badlogic.gdx.math.Vector2;
+import com.crashinvaders.vfx.VfxFilterOld;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class CopyFilter extends ShaderVfxFilter {
+public class OldTvFilter extends ShaderVfxFilter {
 
-    private static final String U_TEXTURE0 = "u_texture0";
+    private static final String Texture0 = "u_texture0";
+    private static final String Resolution = "u_resolution";
+    private static final String Time = "u_time";
 
-    public CopyFilter() {
+    private final Vector2 resolution = new Vector2();
+    private float time = 0f;
+
+    public OldTvFilter() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/copy.frag")));
+                Gdx.files.classpath("shaders/old-tv.frag")));
         rebind();
     }
 
     @Override
-    public void rebind() {
-        setUniform(U_TEXTURE0, TEXTURE_HANDLE0);
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        this.resolution.set(width, height);
+        rebind();
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        this.render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public void rebind () {
+        super.rebind();
+        program.begin();
+        program.setUniformi(Texture0, TEXTURE_HANDLE0);
+        program.setUniformf(Resolution, resolution);
+        program.setUniformf(Time, time);
+        program.end();
     }
 
-    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        boolean manualBufferBind = !dst.isDrawing();
-        if (manualBufferBind) { dst.begin(); }
-
-        // Bind src buffer's texture as a primary one.
-        src.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE0);
-
-        program.begin();
-        context.getViewportMesh().render(program);
-        program.end();
-
-        if (manualBufferBind) { dst.end(); }
+    public void setTime(float time) {
+        this.time = time;
+        setUniform(Time, time);
     }
 }

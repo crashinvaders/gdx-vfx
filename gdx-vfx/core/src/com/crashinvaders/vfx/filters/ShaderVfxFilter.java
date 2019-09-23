@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 /** Base class for any shader based single-pass filter. */
@@ -55,18 +56,18 @@ public abstract class ShaderVfxFilter extends AbstractVfxFilter {
     }
 
     @Override
-    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        boolean manualBufferBind = dst != null && !dst.isDrawing();
-        if (manualBufferBind) { dst.begin(); }
+    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+        boolean manualBufferBind = !pingPongBuffer.isCapturing();
+        if (manualBufferBind) { pingPongBuffer.begin(); }
 
         // Bind src buffer's texture as a primary one.
-        src.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE0);
+        pingPongBuffer.getSrcTexture().bind(TEXTURE_HANDLE0);
 
         program.begin();
         context.getViewportMesh().render(program);
         program.end();
 
-        if (manualBufferBind) { dst.end(); }
+        if (manualBufferBind) { pingPongBuffer.end(); }
     }
 
     public ShaderProgram getProgram() {

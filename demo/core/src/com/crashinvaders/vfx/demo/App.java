@@ -17,6 +17,7 @@
 package com.crashinvaders.vfx.demo;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.crashinvaders.vfx.common.PrioritizedInputMultiplexer;
 import com.crashinvaders.vfx.demo.screens.demo.DemoScreen;
 
@@ -24,10 +25,9 @@ public class App extends Game {
 
 	private static App instance;
 
-//	static {
-//		ShaderLoader.basePath = "shaders/";
-//		ShaderLoader.pedantic = true;
-//	}
+	static {
+		ShaderProgram.pedantic = false;
+	}
 
 	private final PrioritizedInputMultiplexer inputMultiplexer;
 

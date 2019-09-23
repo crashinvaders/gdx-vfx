@@ -19,7 +19,7 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 
 public interface VfxFilter extends Disposable {
     /**
@@ -36,7 +36,7 @@ public interface VfxFilter extends Disposable {
     void rebind();
 
     /** Concrete filters shall implement their own rendering, given the source and destination buffers. */
-    void render(VfxRenderContext context, final VfxFrameBuffer src, final VfxFrameBuffer dst);
+    void render(VfxRenderContext context, PingPongBuffer pingPongBuffer);
 
     /** Whether or not this effect is disabled and shouldn't be processed */
     boolean isDisabled();
