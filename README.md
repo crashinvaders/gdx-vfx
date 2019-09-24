@@ -105,6 +105,9 @@ public class VfxExample extends ApplicationAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Clean up internal buffers, as we don't need any information from the last render.
+        vfxManager.cleanUpBuffers();
+
         // Begin render to an off-screen buffer.
         vfxManager.beginCapture();
 
@@ -119,8 +122,11 @@ public class VfxExample extends ApplicationAdapter {
         // End render to an off-screen buffer.
         vfxManager.endCapture();
 
-        // Perform effect chain processing and render result to the screen.
-        vfxManager.render();
+        // Perform effect chain processing.
+        vfxManager.applyEffects();
+
+        // Render result to the screen.
+        vfxManager.renderToScreen();
     }
 
     @Override
