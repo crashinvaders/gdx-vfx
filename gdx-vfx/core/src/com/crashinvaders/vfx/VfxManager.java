@@ -307,7 +307,10 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
+        // Enable blending to preserve buffer's alpha values.
+        if (blendingEnabled) { Gdx.gl.glEnable(GL20.GL_BLEND); }
         bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer());
+        if (blendingEnabled) { Gdx.gl.glDisable(GL20.GL_BLEND); }
     }
 
     public void renderToScreen(int x, int y, int width, int height) {
@@ -317,7 +320,10 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
+        // Enable blending to preserve buffer's alpha values.
+        if (blendingEnabled) { Gdx.gl.glEnable(GL20.GL_BLEND); }
         bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer(), x, y, width, height);
+        if (blendingEnabled) { Gdx.gl.glDisable(GL20.GL_BLEND); }
     }
 
     public void renderToFbo(VfxFrameBuffer output) {
@@ -327,7 +333,10 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
+        // Enable blending to preserve buffer's alpha values.
+        if (blendingEnabled) { Gdx.gl.glEnable(GL20.GL_BLEND); }
         bufferRenderer.renderToFbo(pingPongBuffer.getDstBuffer(), output);
+        if (blendingEnabled) { Gdx.gl.glDisable(GL20.GL_BLEND); }
     }
 
     private Array<VfxEffect> updateEnabledEffectList() {
