@@ -90,6 +90,13 @@ public class CommonLmlSyntax extends DefaultLmlSyntax {
     }
 
     @Override
+    protected void registerImageAttributes() {
+        super.registerImageAttributes();
+
+        addAttributeProcessor(new ImageDrawableLmlAttribute(), "drawable");
+    }
+
+    @Override
     protected void registerHorizontalGroupAttributes() {
         super.registerHorizontalGroupAttributes();
 

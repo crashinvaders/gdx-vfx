@@ -3,6 +3,9 @@
 
 <stack id="root" fillparent="true">
 
+    <!-- Screen background / transparency checkerboard. -->
+    <image drawable="createCheckerboardDrawable"/>
+
     <!-- Post processor canvas holder. -->
     <container fill="true">
         <stack id="canvasTransformWrapper" transform="true">
@@ -16,7 +19,7 @@
         <verticalgroup id="vgEffectsChain" groupgrow="true"/>
     </table>
 
-    <!-- Statistic panel. -->
+    <!-- Statistics panel. -->
     <container touchable="disabled" align="bottomright" pad="10">
         <table>
             <label text="FPS: " align="right" padright="4"/>

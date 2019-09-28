@@ -38,10 +38,7 @@ import com.crashinvaders.vfx.common.lml.CommonLmlSyntax;
 import com.crashinvaders.vfx.common.lml.EmptyActorConsumer;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.demo.App;
-import com.crashinvaders.vfx.demo.screens.demo.controllers.CanvasContentViewController;
-import com.crashinvaders.vfx.demo.screens.demo.controllers.EffectRosterViewController;
-import com.crashinvaders.vfx.demo.screens.demo.controllers.StatisticPanelViewController;
-import com.crashinvaders.vfx.demo.screens.demo.controllers.VfxViewController;
+import com.crashinvaders.vfx.demo.screens.demo.controllers.*;
 
 public class DemoScreen extends ScreenAdapter {
     private static final Color clearColor = new Color(0x80ff80ff);
@@ -73,7 +70,8 @@ public class DemoScreen extends ScreenAdapter {
                 paramsRepeat.wrapV = Texture.TextureWrap.Repeat;
 
                 assets.load("gdx-vfx-logo.png", Texture.class, paramsRegular);
-                assets.load("bg-pattern.png", Texture.class, paramsRepeat);
+                assets.load("bg-scene-pattern.png", Texture.class, paramsRepeat);
+                assets.load("bg-transparency-tile.png", Texture.class, paramsRegular);
             }
 
             assets.finishLoading();
@@ -90,6 +88,7 @@ public class DemoScreen extends ScreenAdapter {
                 .build();
 
         viewControllers = new ViewControllerManager(stage);
+        viewControllers.add(new ScreenBackgroundViewController(lmlParser, assets));
         viewControllers.add(new VfxViewController(viewControllers, lmlParser));
         viewControllers.add(new CanvasContentViewController(viewControllers, lmlParser, assets));
         viewControllers.add(new EffectRosterViewController(viewControllers, lmlParser));

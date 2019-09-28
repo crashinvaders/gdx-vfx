@@ -16,6 +16,7 @@
 
 package com.crashinvaders.vfx.demo.screens.demo.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
@@ -25,16 +26,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.vfx.common.lml.CommonLmlParser;
+import com.crashinvaders.vfx.common.lml.LmlUtils;
 import com.crashinvaders.vfx.common.scene2d.RepeatTextureDrawable;
 import com.crashinvaders.vfx.common.scene2d.actions.ActionsExt;
 import com.crashinvaders.vfx.common.scene2d.actions.TimeModulationAction;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.scene2d.VfxWidgetGroup;
+import com.github.czyzby.lml.annotation.LmlAction;
 
 public class CanvasContentViewController extends LmlViewController {
 
     private final AssetManager assets;
+
+    private WidgetGroup widgetsRoot;
+    private VfxWidgetGroup vfxGroup;
+    private WidgetGroup canvasTransformWrapper;
+    private Image imgBackground;
 
     public CanvasContentViewController(ViewControllerManager viewControllers, CommonLmlParser lmlParser, AssetManager assets) {
         super(viewControllers, lmlParser);
@@ -45,10 +53,9 @@ public class CanvasContentViewController extends LmlViewController {
     public void onViewCreated(Group sceneRoot) {
         super.onViewCreated(sceneRoot);
 
-        final VfxWidgetGroup vfxGroup = sceneRoot.findActor("vfxGroup");
+        vfxGroup = sceneRoot.findActor("vfxGroup");
+        canvasTransformWrapper = sceneRoot.findActor("canvasTransformWrapper");
         final WidgetGroup canvasRoot = sceneRoot.findActor("canvasRoot");
-        final WidgetGroup canvasTransformWrapper = sceneRoot.findActor("canvasTransformWrapper");
-        final Label lblFboSize = sceneRoot.findActor("lblFboSize");
 
         final Action backgroundAction;
         final Action logoAction;
@@ -56,9 +63,9 @@ public class CanvasContentViewController extends LmlViewController {
         // Background
         {
             final RepeatTextureDrawable backgroundDrawable = new RepeatTextureDrawable(
-                    assets.get("bg-pattern.png", Texture.class));
+                    assets.get("bg-scene-pattern.png", Texture.class));
             backgroundDrawable.setShift(0.0f, 0.0f);
-            Image imgBackground = new Image(backgroundDrawable);
+            imgBackground = new Image(backgroundDrawable);
             imgBackground.setFillParent(true);
             canvasRoot.addActor(imgBackground);
 
@@ -142,63 +149,49 @@ public class CanvasContentViewController extends LmlViewController {
             }
         });
 
-        // Add some Scene2D widgets on canvas.
+        // Add some Scene2D widgets to canvas.
         {
-            final Table table = new Table(skin);
-
-            final Container<Table> container = new Container<>(table);
-            container.align(Align.topRight);
-            container.setFillParent(true);
-            container.pad(10f);
-
-            TextButton btnTransformCanvas = new TextButton("Transform VFX canvas", skin);
-            btnTransformCanvas.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    table.clearActions();
-                    table.setOrigin(Align.center);
-                    table.addAction(Actions.sequence(
-                            ActionsExt.transform(true),
-                            Actions.scaleTo(1.3f, 1.3f, 0.15f, Interpolation.sineOut),
-                            Actions.scaleTo(1f, 1f, 0.75f, Interpolation.elasticOut),
-                            ActionsExt.transform(false)
-                    ));
-
-                    canvasTransformWrapper.clearActions();
-                    canvasTransformWrapper.setOrigin(Align.center);
-                    canvasTransformWrapper.addAction(Actions.sequence(
-                            Actions.rotateTo(0f),
-                            Actions.scaleTo(1f, 1f),
-                            Actions.parallel(
-                                    Actions.rotateTo(360f, 3f, Interpolation.exp10),
-                                    Actions.sequence(
-                                            Actions.scaleTo(0.6f, 0.6f, 1.5f, Interpolation.exp5In),
-                                            Actions.scaleTo(1.0f, 1.0f, 1.5f, Interpolation.exp5Out)
-                                    )
-                            )
-                    ));
-                }
-            });
-
-            CheckBox chbMatchWidgetSize = new CheckBox("Buffer matches widget size.", skin);
-            chbMatchWidgetSize.setChecked(vfxGroup.isMatchWidgetSize());
-            chbMatchWidgetSize.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    vfxGroup.setMatchWidgetSize(!vfxGroup.isMatchWidgetSize());
-                }
-            });
-
-            table.defaults().right();
-            table.add("These are Scene2D widgets");
-            table.row();
-            table.add("within VfxWidgetGroup.");
-            table.row();
-            table.add(btnTransformCanvas).padTop(4f);
-            table.row();
-            table.add(chbMatchWidgetSize).padTop(4f);
-
-            canvasRoot.addActor(container);
+            lmlParser.getData().addArgument("cwMatchWidgetSize", vfxGroup.isMatchWidgetSize());
+            widgetsRoot = LmlUtils.parseLmlTemplate(lmlParser, this,
+                    Gdx.files.internal("lml/screen-demo/vfx-canvas-widgets.lml"));
+            widgetsRoot.setFillParent(true);
+            canvasRoot.addActor(widgetsRoot);
         }
+    }
+
+    @LmlAction void transformVfxCanvas() {
+        Actor widgetPanel = widgetsRoot.findActor("cwRightPanel");
+        widgetPanel.clearActions();
+        widgetPanel.setOrigin(Align.center);
+        widgetPanel.addAction(Actions.sequence(
+                ActionsExt.transform(true),
+                Actions.scaleTo(1.3f, 1.3f, 0.15f, Interpolation.sineOut),
+                Actions.scaleTo(1f, 1f, 0.75f, Interpolation.elasticOut),
+                ActionsExt.transform(false)
+        ));
+
+        canvasTransformWrapper.clearActions();
+        canvasTransformWrapper.setOrigin(Align.center);
+        canvasTransformWrapper.addAction(Actions.sequence(
+                Actions.rotateTo(0f),
+                Actions.scaleTo(1f, 1f),
+                Actions.parallel(
+                        Actions.rotateTo(360f, 3f, Interpolation.exp10),
+                        Actions.sequence(
+                                Actions.scaleTo(0.6f, 0.6f, 1.5f, Interpolation.exp5In),
+                                Actions.scaleTo(1.0f, 1.0f, 1.5f, Interpolation.exp5Out)
+                        )
+                )
+        ));
+    }
+
+    @LmlAction void onMatchWidgetSizeChanged(CheckBox checkBox) {
+        boolean checked = checkBox.isChecked();
+        vfxGroup.setMatchWidgetSize(checked);
+    }
+
+    @LmlAction void onTransparentBackgroundChanged(CheckBox checkBox) {
+        boolean checked = checkBox.isChecked();
+        imgBackground.setVisible(!checked);
     }
 }

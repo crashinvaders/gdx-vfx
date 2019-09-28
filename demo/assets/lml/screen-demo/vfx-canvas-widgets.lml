@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE stack SYSTEM "/demo/dtd/common.dtd">
+
+<!--
+    The widgets that will be added to VFX canvas.
+    The effects chain will be applied to them.
+-->
+<stack id="canvasWidgetsRoot">
+
+    <container align="topright">
+        <table id="cwRightPanel" pad="10" defaultalign="left">
+
+            <label textalign="left"
+                   text="These are Scene2D widgets
+    within VfxWidgetGroup"/>
+
+            <:row padtop="4"/>
+
+            <textbutton text="Transform VFX canvas"
+                        change="transformVfxCanvas" fillx="true"/>
+
+            <:row padtop="4"/>
+
+            <checkbox text="Buffer matches widget size"
+                      checked="{cwMatchWidgetSize}"
+                      change="onMatchWidgetSizeChanged"/>
+
+            <:row padtop="0"/>
+
+            <checkbox text="Transparent background"
+                      change="onTransparentBackgroundChanged"/>
+
+        </table>
+    </container>
+</stack>
