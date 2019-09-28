@@ -58,8 +58,7 @@ public class VfxFrameBufferRenderer implements Disposable {
                 "varying vec2 v_texCoords;\n" +
                 "uniform sampler2D u_texture0;\n" +
                 "void main() {\n" +
-                "    vec3 col = texture2D(u_texture0,v_texCoords).xyz;\n" +
-                "    gl_FragColor = vec4(col, 1.0);\n" +
+                "    gl_FragColor = texture2D(u_texture0, v_texCoords);\n" +
                 "}"
         );
 
