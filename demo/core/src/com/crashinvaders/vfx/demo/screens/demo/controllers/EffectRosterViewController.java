@@ -120,12 +120,12 @@ public class EffectRosterViewController extends LmlViewController {
         }
         // Motion Blur (MIX)
         {
-            MotionBlurEffect filter = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MIX, 0.8f);
+            MotionBlurEffect filter = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MIX, 0.75f);
             effectsRoster.add(new EffectEntryModel("Motion Blur (MIX)", filter));
         }
         // Motion Blur (MAX)
         {
-            MotionBlurEffect filter = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MAX, 0.8f);
+            MotionBlurEffect filter = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MAX, 0.75f);
             effectsRoster.add(new EffectEntryModel("Motion Blur (MAX)", filter));
         }
         // Noise

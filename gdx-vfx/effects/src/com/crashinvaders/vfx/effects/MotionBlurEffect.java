@@ -19,6 +19,7 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
@@ -79,7 +80,9 @@ public class MotionBlurEffect extends CompositeVfxEffect {
 			return;
 		}
 
-		mixFilter.render(context, prevFrame, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+//		Gdx.gl.glEnable(GL20.GL_BLEND);
+//		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		mixFilter.render(context, pingPongBuffer.getSrcBuffer(), prevFrame, pingPongBuffer.getDstBuffer());
 		copyFilter.render(context, pingPongBuffer.getDstBuffer(), prevFrame);
 	}
 }

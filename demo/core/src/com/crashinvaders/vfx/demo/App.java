@@ -26,7 +26,7 @@ public class App extends Game {
 	private static App instance;
 
 	static {
-		ShaderProgram.pedantic = false;
+//		ShaderProgram.pedantic = false;
 	}
 
 	private final PrioritizedInputMultiplexer inputMultiplexer;

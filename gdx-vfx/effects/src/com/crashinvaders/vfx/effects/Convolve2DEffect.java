@@ -25,7 +25,7 @@ import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
  * @author bmanuel
  * @author metaphore
  */
-public final class Convolve2DEffect extends AbstractVfxEffect {
+public final class Convolve2DEffect extends CompositeVfxEffect {
 
     private final int radius;
     private final int length; // NxN taps filter, w/ N=length
@@ -37,34 +37,12 @@ public final class Convolve2DEffect extends AbstractVfxEffect {
         this.radius = radius;
         length = (radius * 2) + 1;
 
-        hor = new Convolve1DEffect(length);
-        vert = new Convolve1DEffect(length, hor.weights);
+        hor = register(new Convolve1DEffect(length));
+        vert = register(new Convolve1DEffect(length, hor.weights));
 
         weights = hor.weights;
         offsetsHor = hor.offsets;
         offsetsVert = vert.offsets;
-    }
-
-    @Override
-    public void dispose() {
-        hor.dispose();
-        vert.dispose();
-    }
-
-    @Override
-    public void rebind() {
-        hor.rebind();
-        vert.rebind();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        // Do nothing.
-    }
-
-    @Override
-    public void update(float delta) {
-        // Do nothing.
     }
 
     @Override
