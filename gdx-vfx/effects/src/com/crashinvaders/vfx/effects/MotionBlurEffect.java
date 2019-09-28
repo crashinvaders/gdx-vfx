@@ -80,8 +80,6 @@ public class MotionBlurEffect extends CompositeVfxEffect {
 			return;
 		}
 
-//		Gdx.gl.glEnable(GL20.GL_BLEND);
-//		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		mixFilter.render(context, pingPongBuffer.getSrcBuffer(), prevFrame, pingPongBuffer.getDstBuffer());
 		copyFilter.render(context, pingPongBuffer.getDstBuffer(), prevFrame);
 	}
