@@ -23,8 +23,10 @@ public class FilmGrainEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_SEED = "u_seed";
+    private static final String U_NOISE_AMOUNT = "u_noiseAmount";
 
     private float seed = 0f;
+    private float noiseAmount = 0.18f;
 
     public FilmGrainEffect() {
         super(VfxGLUtils.compileShader(
@@ -39,6 +41,7 @@ public class FilmGrainEffect extends ShaderVfxEffect {
         program.begin();
         program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
         program.setUniformf(U_SEED, seed);
+        program.setUniformf(U_NOISE_AMOUNT, noiseAmount);
         program.begin();
     }
 
@@ -55,6 +58,15 @@ public class FilmGrainEffect extends ShaderVfxEffect {
 
     public void setSeed(float seed) {
         this.seed = seed;
-        rebind();
+        setUniform(U_SEED, seed);
+    }
+
+    public float getNoiseAmount() {
+        return noiseAmount;
+    }
+
+    public void setNoiseAmount(float noiseAmount) {
+        this.noiseAmount = noiseAmount;
+        setUniform(U_NOISE_AMOUNT, noiseAmount);
     }
 }

@@ -116,6 +116,7 @@ public class EffectRosterViewController extends LmlViewController {
         // Film Grain
         {
             FilmGrainEffect filter = new FilmGrainEffect();
+            filter.setNoiseAmount(0.18f);
             effectsRoster.add(new EffectEntryModel("Film Grain", filter));
         }
         // Motion Blur (MIX)
@@ -127,11 +128,6 @@ public class EffectRosterViewController extends LmlViewController {
         {
             MotionBlurEffect filter = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MAX, 0.75f);
             effectsRoster.add(new EffectEntryModel("Motion Blur (MAX)", filter));
-        }
-        // Noise
-        {
-            NoiseEffect filter = new NoiseEffect(0.35f, 2f);
-            effectsRoster.add(new EffectEntryModel("Noise", filter));
         }
         // Old TV
         {

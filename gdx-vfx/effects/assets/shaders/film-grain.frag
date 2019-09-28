@@ -23,17 +23,18 @@
 	#define PRECISION
 #endif
 
-const float NOISE_AMOUNT = 0.18;
+uniform sampler2D u_texture0;
 
 varying vec2 v_texCoords;
-uniform sampler2D u_texture0;
+
 uniform float u_seed;
+uniform float u_noiseAmount;
 
 void main() {
 	vec2 uv = v_texCoords;
     vec4 color = texture2D(u_texture0, v_texCoords);
 
     float n = fract(sin(dot(uv, vec2(u_seed + 12.9898, 78.233))) * 43758.5453);
-    color *= (1.0 - NOISE_AMOUNT + n * NOISE_AMOUNT) * 1.1;
+    color.rgb *= (1.0 - u_noiseAmount + n * u_noiseAmount) * 1.1;
 	gl_FragColor = color;
 }
