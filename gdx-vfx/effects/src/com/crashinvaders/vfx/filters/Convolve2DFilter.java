@@ -65,6 +65,11 @@ public final class Convolve2DFilter extends AbstractVfxFilter {
     }
 
     @Override
+    public void update(float delta) {
+        // Do nothing.
+    }
+
+    @Override
     public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
         hor.render(context, pingPongBuffer);
         pingPongBuffer.swap();

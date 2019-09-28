@@ -79,26 +79,6 @@ public final class VfxManager implements Disposable {
 //        screenQuadMesh.dispose();
     }
 
-    public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
-
-        pingPongBuffer.resize(width, height);
-
-        for (int i = 0; i < effectsAll.size(); i++) {
-            effectsAll.get(i).resize(width, height);
-        }
-    }
-
-    public void rebind() {
-//        bufferRenderer.rebind();
-        context.rebind();
-
-        for (int i = 0; i < effectsAll.size(); i++) {
-            effectsAll.get(i).rebind();
-        }
-    }
-
     public int getWidth() {
         return width;
     }
@@ -220,6 +200,32 @@ public final class VfxManager implements Disposable {
 
         pingPongBuffer.cleanUpBuffers(color);
         hasCaptured = false;
+    }
+
+    public void resize(int width, int height) {
+        this.width = width;
+        this.height = height;
+
+        pingPongBuffer.resize(width, height);
+
+        for (int i = 0; i < effectsAll.size(); i++) {
+            effectsAll.get(i).resize(width, height);
+        }
+    }
+
+    public void rebind() {
+//        bufferRenderer.rebind();
+        context.rebind();
+
+        for (int i = 0; i < effectsAll.size(); i++) {
+            effectsAll.get(i).rebind();
+        }
+    }
+
+    public void update(float delta) {
+        for (int i = 0; i < effectsAll.size(); i++) {
+            effectsAll.get(i).update(delta);
+        }
     }
 
     /**

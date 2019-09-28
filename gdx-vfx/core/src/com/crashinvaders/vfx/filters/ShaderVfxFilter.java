@@ -56,6 +56,11 @@ public abstract class ShaderVfxFilter extends AbstractVfxFilter {
     }
 
     @Override
+    public void update(float delta) {
+        // Do nothing by default.
+    }
+
+    @Override
     public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
         boolean manualBufferBind = !pingPongBuffer.isCapturing();
         if (manualBufferBind) { pingPongBuffer.begin(); }

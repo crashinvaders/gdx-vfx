@@ -19,7 +19,6 @@ package com.crashinvaders.vfx.filters;
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-//TODO Should be updatable.
 public class FilmGrainFilter extends ShaderVfxFilter {
 
     private static final String U_TEXTURE0 = "u_texture0";
@@ -41,6 +40,13 @@ public class FilmGrainFilter extends ShaderVfxFilter {
         program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
         program.setUniformf(U_SEED, seed);
         program.begin();
+    }
+
+    @Override
+    public void update(float delta) {
+        super.update(delta);
+        float newSeedValue = (this.seed + delta) % 1f;
+        setSeed(newSeedValue);
     }
 
     public float getSeed() {

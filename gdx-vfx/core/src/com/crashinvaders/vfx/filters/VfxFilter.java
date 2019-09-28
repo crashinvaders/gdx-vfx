@@ -35,6 +35,12 @@ public interface VfxFilter extends Disposable {
      */
     void rebind();
 
+    /**
+     * Update any time based values.
+     * @param delta in seconds.
+     */
+    void update(float delta);
+
     /** Concrete filters shall implement their own rendering, given the source and destination buffers. */
     void render(VfxRenderContext context, PingPongBuffer pingPongBuffer);
 

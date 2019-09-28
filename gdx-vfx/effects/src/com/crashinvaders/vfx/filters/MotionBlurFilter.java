@@ -73,6 +73,11 @@ public class MotionBlurFilter extends AbstractVfxFilter {
 	}
 
 	@Override
+	public void update(float delta) {
+		// Do nothing.
+	}
+
+	@Override
 	public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
 		VfxFrameBuffer prevFrame = this.localBuffer.changeToNext();
 		if (!firstFrameRendered) {

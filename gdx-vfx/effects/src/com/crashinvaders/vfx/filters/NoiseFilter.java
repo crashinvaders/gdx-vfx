@@ -51,6 +51,12 @@ public class NoiseFilter extends ShaderVfxFilter {
         program.end();
     }
 
+    @Override
+    public void update(float delta) {
+        super.update(delta);
+        setTime(this.time + delta);
+    }
+
     public float getTime() {
         return time;
     }

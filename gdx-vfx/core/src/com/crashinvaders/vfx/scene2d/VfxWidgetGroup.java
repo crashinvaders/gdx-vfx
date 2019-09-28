@@ -81,6 +81,14 @@ public class VfxWidgetGroup extends WidgetGroup {
     }
 
     @Override
+    public void act(float delta) {
+        super.act(delta);
+
+        // Update effects chain.
+        vfxManager.update(delta);
+    }
+
+    @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.end();
 

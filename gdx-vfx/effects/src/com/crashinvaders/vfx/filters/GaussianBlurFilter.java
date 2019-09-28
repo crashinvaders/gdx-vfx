@@ -94,6 +94,11 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
         }
     }
 
+    @Override
+    public void update(float delta) {
+        // Do nothing.
+    }
+
     public BlurType getType() {
         return type;
     }

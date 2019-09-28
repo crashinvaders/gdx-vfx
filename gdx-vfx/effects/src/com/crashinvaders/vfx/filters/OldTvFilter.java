@@ -45,13 +45,23 @@ public class OldTvFilter extends ShaderVfxFilter {
     }
 
     @Override
-    public void rebind () {
+    public void rebind() {
         super.rebind();
         program.begin();
         program.setUniformi(Texture0, TEXTURE_HANDLE0);
         program.setUniformf(Resolution, resolution);
         program.setUniformf(Time, time);
         program.end();
+    }
+
+    @Override
+    public void update(float delta) {
+        super.update(delta);
+        setTime(this.time + delta);
+    }
+
+    public float getTime() {
+        return time;
     }
 
     public void setTime(float time) {
