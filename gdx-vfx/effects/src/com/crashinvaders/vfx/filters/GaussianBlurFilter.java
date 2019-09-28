@@ -53,7 +53,7 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
     private int passes = 1;
 
     private float invWidth, invHeight;
-    private Convolve2DFilter convolve;
+    private Convolve2DFilter1 convolve;
 
     public GaussianBlurFilter() {
         this(BlurType.Gaussian5x5);
@@ -109,7 +109,7 @@ public final class GaussianBlurFilter extends AbstractVfxFilter {
             if (convolve != null) {
                 convolve.dispose();
             }
-            convolve = new Convolve2DFilter(this.type.tap.radius);
+            convolve = new Convolve2DFilter1(this.type.tap.radius);
 
             computeBlurWeightings();
         }

@@ -27,7 +27,7 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBufferPool;
  * @author bmanuel
  * @author metaphore
  */
-public final class Convolve2DFilter extends AbstractVfxFilter {
+public final class Convolve2DFilter1 extends AbstractVfxFilter {
 
     private final int radius;
     private final int length; // NxN taps filter, w/ N=length
@@ -35,7 +35,7 @@ public final class Convolve2DFilter extends AbstractVfxFilter {
 
     private Convolve1DFilter hor, vert;
 
-    public Convolve2DFilter(int radius) {
+    public Convolve2DFilter1(int radius) {
         this.radius = radius;
         length = (radius * 2) + 1;
 
