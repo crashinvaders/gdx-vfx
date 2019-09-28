@@ -14,14 +14,14 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 
-public interface VfxFilter extends Disposable {
+public interface VfxEffect extends Disposable {
     /**
      * The method will be called on every application resize as usual.
      * Also it will be called once the filter has been added to {@link VfxManager}.

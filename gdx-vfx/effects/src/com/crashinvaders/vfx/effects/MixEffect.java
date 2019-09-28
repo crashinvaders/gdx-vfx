@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,17 +25,16 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Mixes two frames with a factor of {@link #mixFactor}.
- * Second frame texture should be provided through {@link #setSecondInput(Texture)} prior rendering. */
-public final class MixFilter extends ShaderVfxFilter {
+ * Second texture should be provided via {@link #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer)} overload. */
+public final class MixEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_TEXTURE1 = "u_texture1";
     private static final String U_MIX = "u_mix";
 
-    private Texture secondTexture = null;
     private float mixFactor = 0.5f;
 
-    public MixFilter(Method method) {
+    public MixEffect(Method method) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
                 Gdx.files.classpath("shaders/mix.frag"),
@@ -54,34 +53,20 @@ public final class MixFilter extends ShaderVfxFilter {
     }
 
     @Override
+    @Deprecated
     public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        if (secondTexture == null) {
-            throw new IllegalStateException("Second texture is not set. Use #setSecondInput() prior rendering.");
-        }
-        secondTexture.bind(TEXTURE_HANDLE1);
-
-        super.render(context, pingPongBuffer);
+        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
     }
 
     @Override
-    public void dispose() {
-        super.dispose();
-        secondTexture = null;
+    @Deprecated
+    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
     }
 
-    public void setSecondInput(VfxFrameBuffer buffer) {
-        if (buffer != null) {
-            setSecondInput(buffer.getFbo().getColorBufferTexture());
-        } else {
-            setSecondInput((Texture) null);
-        }
-    }
-
-    public void setSecondInput(Texture texture) {
-        secondTexture = texture;
-        if (texture != null) {
-            setUniform(U_TEXTURE1, TEXTURE_HANDLE1);
-        }
+    public void render(VfxRenderContext context, VfxFrameBuffer src0, VfxFrameBuffer src1, VfxFrameBuffer dst) {
+        src1.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE1);
+        super.render(context, src0, dst);
     }
 
     public float getMixFactor() {

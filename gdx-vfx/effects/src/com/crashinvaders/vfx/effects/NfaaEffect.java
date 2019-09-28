@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 tsagrista
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,42 +16,42 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.NfaaFilterOld;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/** Implements the normal filter anti-aliasing. Very fast and useful for combining with other post-processing effects.
- * @author Toni Sagrista */
-public final class NfaaEffect extends VfxEffectOld {
+/**
+ * Normal filtered anti-aliasing filter.
+ * @author Toni Sagrista
+ * @author metaphore
+ */
+public final class NfaaEffect extends ShaderVfxEffect {
 
-	private final NfaaFilterOld nfaaFilter;
+    private static final String U_TEXTURE0 = "u_texture0";
+    private static final String U_VIEWPORT_INVERSE = "u_viewportInverse";
 
-	public NfaaEffect() {
-		this(false);
-	}
+    private final Vector2 viewportInverse = new Vector2();
 
-	public NfaaEffect(boolean supportAlpha) {
-		nfaaFilter = new NfaaFilterOld(supportAlpha);
-	}
+    public NfaaEffect(boolean supportAlpha) {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/nfaa.frag"),
+                supportAlpha ? "#define SUPPORT_ALPHA" : ""));
+    }
 
-	@Override
-	public void dispose() {
-		nfaaFilter.dispose();
-	}
+    @Override
+    public void rebind() {
+        super.rebind();
+        program.begin();
+        program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
+        program.setUniformf(U_VIEWPORT_INVERSE, viewportInverse);
+        program.end();
+    }
 
-	@Override
-	public void rebind() {
-		nfaaFilter.rebind();
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		nfaaFilter.resize(width, height);
-	}
-
-	@Override
-	public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-		nfaaFilter.setInput(src).setOutput(dst).render(mesh);
-	}
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        this.viewportInverse.set(1f / width, 1f / height);
+        setUniform(U_VIEWPORT_INVERSE, this.viewportInverse);
+    }
 }

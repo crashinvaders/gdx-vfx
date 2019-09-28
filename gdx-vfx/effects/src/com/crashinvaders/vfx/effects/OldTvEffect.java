@@ -16,44 +16,55 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.OldTvFilterOld;
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class OldTvEffect extends VfxEffectOld implements UpdateableEffect {
+public class OldTvEffect extends ShaderVfxEffect {
 
-    private final OldTvFilterOld oldTvFilter;
+    private static final String Texture0 = "u_texture0";
+    private static final String Resolution = "u_resolution";
+    private static final String Time = "u_time";
 
-    private float time;
+    private final Vector2 resolution = new Vector2();
+    private float time = 0f;
 
     public OldTvEffect() {
-        oldTvFilter = new OldTvFilterOld();
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/old-tv.frag")));
+        rebind();
     }
 
     @Override
     public void resize(int width, int height) {
-        oldTvFilter.resize(width, height);
+        super.resize(width, height);
+        this.resolution.set(width, height);
+        rebind();
     }
 
     @Override
     public void rebind() {
-        oldTvFilter.rebind();
-    }
-
-    @Override
-    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dest) {
-        oldTvFilter.setInput(src).setOutput(dest).render(mesh);
-    }
-
-    @Override
-    public void dispose() {
-        oldTvFilter.dispose();
+        super.rebind();
+        program.begin();
+        program.setUniformi(Texture0, TEXTURE_HANDLE0);
+        program.setUniformf(Resolution, resolution);
+        program.setUniformf(Time, time);
+        program.end();
     }
 
     @Override
     public void update(float delta) {
-        this.time += delta;
-        oldTvFilter.setTime(time);
+        super.update(delta);
+        setTime(this.time + delta);
+    }
+
+    public float getTime() {
+        return time;
+    }
+
+    public void setTime(float time) {
+        this.time = time;
+        setUniform(Time, time);
     }
 }

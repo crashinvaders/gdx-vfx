@@ -14,15 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class VignettingFilter extends ShaderVfxFilter {
+public final class VignettingEffect extends ShaderVfxEffect {
 
     private static final String TEXTURE0 = "u_texture0";
     private static final String VIGNETTE_INTENSITY = "u_vignetteIntensity";
@@ -44,7 +41,7 @@ public final class VignettingFilter extends ShaderVfxFilter {
     private float saturation = 0f;
     private float saturationMul = 0f;
 
-    public VignettingFilter(boolean controlSaturation) {
+    public VignettingEffect(boolean controlSaturation) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
                 Gdx.files.classpath("shaders/vignetting.frag"),

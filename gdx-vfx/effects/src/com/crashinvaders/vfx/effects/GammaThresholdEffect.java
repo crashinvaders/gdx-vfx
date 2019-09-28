@@ -14,47 +14,51 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class FilmGrainFilter extends ShaderVfxFilter {
+/** Keeps only values brighter than the specified gamma. */
+public final class GammaThresholdEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
-    private static final String U_SEED = "u_seed";
+    private static final String U_THRESHOLD = "u_threshold";
+    private static final String U_THRESHOLD_INV = "u_thresholdInv";
 
-    private float seed = 0f;
+    private float gamma;
 
-    public FilmGrainFilter() {
+    public GammaThresholdEffect(Type type) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/film-grain.frag")));
+        		Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/gamma-threshold.frag"),
+                "#define THRESHOLD_TYPE " + type.name()));
         rebind();
     }
 
     @Override
-    public void rebind () {
+    public void rebind() {
         super.rebind();
         program.begin();
         program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
-        program.setUniformf(U_SEED, seed);
-        program.begin();
+        program.setUniformf(U_THRESHOLD, gamma);
+        program.setUniformf(U_THRESHOLD_INV, 1f / (1f - gamma));
+        program.end();
     }
 
-    @Override
-    public void update(float delta) {
-        super.update(delta);
-        float newSeedValue = (this.seed + delta) % 1f;
-        setSeed(newSeedValue);
+    public void setGamma(float gamma) {
+        this.gamma = gamma;
+        setUniform(U_THRESHOLD, gamma);
+        setUniform(U_THRESHOLD_INV, 1f / (1f - gamma));
     }
 
-    public float getSeed() {
-        return seed;
+    public float getGamma() {
+        return gamma;
     }
 
-    public void setSeed(float seed) {
-        this.seed = seed;
-        rebind();
+    public enum Type {
+        RGBA,
+        RGB,
+        ALPHA_PREMULTIPLIED,
     }
 }

@@ -20,27 +20,27 @@ package com.crashinvaders.vfx.effects;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
+import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffectOld;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferQueue;
-import com.crashinvaders.vfx.filters.CopyFilterOld;
-import com.crashinvaders.vfx.filters.MotionBlurFilterOld;
-import com.crashinvaders.vfx.filters.MotionBlurFilterOld.BlurFunction;
 
-/** A motion blur effect which draws the last frame with a lower opacity. The result is then stored as the next last frame to
- * create the trail effect.
- * @author Toni Sagrista */
-public class MotionBlurEffect extends VfxEffectOld {
-	private final MotionBlurFilterOld motionBlurFilter;
-	private final CopyFilterOld copyFilter;
+/** A motion blur effect which draws the last frame with a lower opacity.
+ * The result is then stored as the next last frame to create the trail effect. */
+public class MotionBlurEffect extends CompositeVfxEffect {
+
+	private final MixEffect mixFilter;
+	private final CopyEffect copyFilter;
+
 	private final VfxFrameBufferQueue localBuffer;
 
-	public MotionBlurEffect(Pixmap.Format pixelFormat, BlurFunction blurFunction, float blurOpacity) {
-		motionBlurFilter = new MotionBlurFilterOld(blurFunction);
-		motionBlurFilter.setBlurOpacity(blurOpacity);
+	private boolean firstFrameRendered = false;
 
-		copyFilter = new CopyFilterOld();
+	public MotionBlurEffect(Pixmap.Format pixelFormat, MixEffect.Method mixMethod, float blurFactor) {
+		mixFilter = register(new MixEffect(mixMethod));
+		mixFilter.setMixFactor(blurFactor);
+
+		copyFilter = register(new CopyEffect());
 
 		localBuffer = new VfxFrameBufferQueue(pixelFormat,
 				// On WebGL (GWT) we cannot render from/into the same texture simultaneously.
@@ -50,36 +50,36 @@ public class MotionBlurEffect extends VfxEffectOld {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		motionBlurFilter.resize(width, height);
-		copyFilter.resize(width, height);
-		localBuffer.resize(width, height);
-	}
-
-	public MotionBlurEffect setBlurOpacity(float blurOpacity) {
-		motionBlurFilter.setBlurOpacity(blurOpacity);
-		return this;
-	}
-
-	@Override
 	public void dispose() {
-		motionBlurFilter.dispose();
-		copyFilter.dispose();
+		super.dispose();
 		localBuffer.dispose();
 	}
 
 	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		localBuffer.resize(width, height);
+		firstFrameRendered = false;
+	}
+
+	@Override
 	public void rebind() {
-		motionBlurFilter.rebind();
-		copyFilter.rebind();
+		super.rebind();
 		localBuffer.rebind();
 	}
 
 	@Override
-	public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
+	public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
 		VfxFrameBuffer prevFrame = this.localBuffer.changeToNext();
-		motionBlurFilter.setInput(src).setOutput(prevFrame).render(mesh);
-		motionBlurFilter.setLastFrameTexture(prevFrame.getFbo().getColorBufferTexture());
-		copyFilter.setInput(prevFrame).setOutput(dst).render(mesh);
+		if (!firstFrameRendered) {
+			// Mix filter requires two frames to render, so we gonna skip the first call.
+			copyFilter.render(context, pingPongBuffer.getSrcBuffer(), prevFrame);
+			pingPongBuffer.swap();
+			firstFrameRendered = true;
+			return;
+		}
+
+		mixFilter.render(context, prevFrame, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+		copyFilter.render(context, pingPongBuffer.getDstBuffer(), prevFrame);
 	}
 }

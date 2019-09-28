@@ -14,19 +14,28 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
-public abstract class AbstractVfxFilter implements VfxFilter {
+import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-    private boolean disabled;
+public class CopyEffect extends ShaderVfxEffect {
 
-    @Override
-    public boolean isDisabled() {
-        return disabled;
+    private static final String U_TEXTURE0 = "u_texture0";
+
+    public CopyEffect() {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/copy.frag")));
+        rebind();
     }
 
     @Override
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    public void rebind() {
+        super.rebind();
+        setUniform(U_TEXTURE0, TEXTURE_HANDLE0);
     }
 }

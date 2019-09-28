@@ -16,40 +16,28 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.FisheyeDistortionFilterOld;
+import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
- * Fisheye effect
+ * Fisheye distortion filter
  * @author tsagrista
+ * @author metaphore
  */
-public final class FisheyeEffect extends VfxEffectOld {
+public class FisheyeEffect extends ShaderVfxEffect {
 
-    private final FisheyeDistortionFilterOld distort;
+    private static final String U_TEXTURE0 = "u_texture0";
 
     public FisheyeEffect() {
-        distort = new FisheyeDistortionFilterOld();
-    }
-
-    @Override
-    public void dispose() {
-        distort.dispose();
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/fisheye.frag")));
+        rebind();
     }
 
     @Override
     public void rebind() {
-        distort.rebind();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        distort.resize(width, height);
-    }
-
-    @Override
-    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        distort.setInput(src).setOutput(dst).render(mesh);
+        super.rebind();
+        setUniform(U_TEXTURE0, TEXTURE_HANDLE0);
     }
 }

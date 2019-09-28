@@ -16,120 +16,271 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.framebuffer.RegularPingPongBuffer;
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.gl.VfxGLUtils;
-import com.crashinvaders.vfx.filters.CopyFilterOld;
-import com.crashinvaders.vfx.filters.GaussianBlurFilterOld;
 
-public class GaussianBlurEffect extends VfxEffectOld {
+public final class GaussianBlurEffect extends AbstractVfxEffect {
 
-    private final PingPongBuffer pingPongBuffer;
-    private final CopyFilterOld copy;
-    private final GaussianBlurFilterOld blur;
+    private enum Tap {
+        Tap3x3(1),
+        Tap5x5(2),
+        // Tap7x7(3),
+        ;
 
-    private boolean blending = false;
-    private int sfactor, dfactor;
+        public final int radius;
 
-    // To keep track of the first render call.
-    private boolean firstRender = true;
-
-    public GaussianBlurEffect() {
-        this(8, GaussianBlurFilterOld.BlurType.Gaussian5x5);
+        Tap(int radius) {
+            this.radius = radius;
+        }
     }
 
-    public GaussianBlurEffect(int blurPasses, GaussianBlurFilterOld.BlurType blurType) {
-        pingPongBuffer = new RegularPingPongBuffer(Pixmap.Format.RGBA8888);
+    public enum BlurType {
+        Gaussian3x3(Tap.Tap3x3),
+        Gaussian3x3b(Tap.Tap3x3), // R=5 (11x11, policy "higher-then-discard")
+        Gaussian5x5(Tap.Tap5x5),
+        Gaussian5x5b(Tap.Tap5x5), // R=9 (19x19, policy "higher-then-discard")
+        ;
 
-        copy = new CopyFilterOld();
+        public final Tap tap;
 
-        blur = new GaussianBlurFilterOld();
-        blur.setPasses(blurPasses);
-        blur.setType(blurType);
+        BlurType(Tap tap) {
+            this.tap = tap;
+        }
+    }
+
+    private BlurType type;
+    private float amount = 1f;
+    private int passes = 1;
+
+    private float invWidth, invHeight;
+    private Convolve2DEffect convolve;
+
+    public GaussianBlurEffect() {
+        this(BlurType.Gaussian5x5);
+    }
+
+    public GaussianBlurEffect(BlurType blurType) {
+        this.setType(blurType);
     }
 
     @Override
     public void dispose() {
-        pingPongBuffer.dispose();
-        blur.dispose();
-        copy.dispose();
+        convolve.dispose();
     }
 
     @Override
     public void resize(int width, int height) {
-        pingPongBuffer.resize(width, height);
-        blur.resize(width, height);
-        copy.resize(width, height);
+        this.invWidth = 1f / (float) width;
+        this.invHeight = 1f / (float) height;
+
+        convolve.resize(width, height);
+        computeBlurWeightings();
     }
 
     @Override
     public void rebind() {
-        pingPongBuffer.rebind();
-        blur.rebind();
-        copy.rebind();
+        convolve.rebind();
+        computeBlurWeightings();
     }
 
     @Override
-    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        if (blur.getPasses() < 1) {
-            // Do not apply blur filter.
-            copy.setInput(src).setOutput(dst).render(mesh);
-            return;
+    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+        for (int i = 0; i < this.passes; i++) {
+            convolve.render(context, pingPongBuffer);
+
+            if (i < this.passes - 1) {
+                pingPongBuffer.swap();
+            }
         }
-
-        boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-
-        pingPongBuffer.begin();
-        copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
-        pingPongBuffer.swap();
-        // Blur filter performs multiple passes of mixing ping-pong buffers and expects src and dst to have valid data.
-        // So for the first run we just make both src and dst buffers identical.
-        if (firstRender) {
-            firstRender = false;
-            copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
-            pingPongBuffer.swap();
-        }
-        blur.render(mesh, pingPongBuffer);
-        pingPongBuffer.end();
-
-        if (blending || blendingWasEnabled) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-        }
-
-        if (blending) {
-            // TODO support for Gdx.gl.glBlendFuncSeparate(sfactor, dfactor, GL20.GL_ONE, GL20.GL_ONE );
-            Gdx.gl.glBlendFunc(sfactor, dfactor);
-        }
-
-        copy.setInput(pingPongBuffer.getDstTexture())
-                .setOutput(dst)
-                .render(mesh);
     }
 
-    public GaussianBlurEffect enableBlending(int sfactor, int dfactor) {
-        this.blending = true;
-        this.sfactor = sfactor;
-        this.dfactor = dfactor;
-        return this;
+    @Override
+    public void update(float delta) {
+        // Do nothing.
     }
 
-    public void disableBlending() {
-        this.blending = false;
+    public BlurType getType() {
+        return type;
     }
 
-    public GaussianBlurEffect setBlurPasses(int blurPasses) {
-        blur.setPasses(blurPasses);
-        return this;
+    public void setType(BlurType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Blur type cannot be null.");
+        }
+        if (this.type != type) {
+            this.type = type;
+
+            // Instantiate new matching convolve filter instance.
+            if (convolve != null) {
+                convolve.dispose();
+            }
+            convolve = new Convolve2DEffect(this.type.tap.radius);
+
+            computeBlurWeightings();
+        }
     }
 
-    public int getBlurPasses() {
-        return blur.getPasses();
+    /** Warning: Not all blur types support custom amounts at this time */
+    public float getAmount() {
+        return amount;
+    }
+
+    /** Warning: Not all blur types support custom amounts at this time */
+    public void setAmount(float amount) {
+        this.amount = amount;
+        computeBlurWeightings();
+    }
+
+    public int getPasses() {
+        return passes;
+    }
+
+    public void setPasses(int passes) {
+        if (passes < 1) throw new IllegalArgumentException("Passes should be greater than 0.");
+
+        this.passes = passes;
+    }
+
+    private void computeBlurWeightings() {
+        boolean hasData = true;
+
+        float[] outWeights = convolve.getWeights();
+        float[] outOffsetsH = convolve.getOffsetsHor();
+        float[] outOffsetsV = convolve.getOffsetsVert();
+
+        float dx = this.invWidth;
+        float dy = this.invHeight;
+
+        switch (this.type) {
+            case Gaussian3x3:
+            case Gaussian5x5:
+                computeKernel(this.type.tap.radius, this.amount, outWeights);
+                computeOffsets(this.type.tap.radius, this.invWidth, this.invHeight, outOffsetsH, outOffsetsV);
+                break;
+
+            case Gaussian3x3b:
+                // Weights and offsets are computed from a binomial distribution
+                // and reduced to be used *only* with bilinearly-filtered texture lookups
+                // with radius = 1f
+
+                // Weights
+                outWeights[0] = 0.352941f;
+                outWeights[1] = 0.294118f;
+                outWeights[2] = 0.352941f;
+
+                // Horizontal offsets
+                outOffsetsH[0] = -1.33333f;
+                outOffsetsH[1] = 0f;
+                outOffsetsH[2] = 0f;
+                outOffsetsH[3] = 0f;
+                outOffsetsH[4] = 1.33333f;
+                outOffsetsH[5] = 0f;
+
+                // Vertical offsets
+                outOffsetsV[0] = 0f;
+                outOffsetsV[1] = -1.33333f;
+                outOffsetsV[2] = 0f;
+                outOffsetsV[3] = 0f;
+                outOffsetsV[4] = 0f;
+                outOffsetsV[5] = 1.33333f;
+
+                // Scale offsets from binomial space to screen space
+                for (int i = 0; i < convolve.getLength() * 2; i++) {
+                    outOffsetsH[i] *= dx;
+                    outOffsetsV[i] *= dy;
+                }
+
+                break;
+
+            case Gaussian5x5b:
+
+                // Weights and offsets are computed from a binomial distribution
+                // and reduced to be used *only* with bilinearly-filtered texture lookups
+                // with radius = 2f
+
+                // weights
+                outWeights[0] = 0.0702703f;
+                outWeights[1] = 0.316216f;
+                outWeights[2] = 0.227027f;
+                outWeights[3] = 0.316216f;
+                outWeights[4] = 0.0702703f;
+
+                // Horizontal offsets
+                outOffsetsH[0] = -3.23077f;
+                outOffsetsH[1] = 0f;
+                outOffsetsH[2] = -1.38462f;
+                outOffsetsH[3] = 0f;
+                outOffsetsH[4] = 0f;
+                outOffsetsH[5] = 0f;
+                outOffsetsH[6] = 1.38462f;
+                outOffsetsH[7] = 0f;
+                outOffsetsH[8] = 3.23077f;
+                outOffsetsH[9] = 0f;
+
+                // Vertical offsets
+                outOffsetsV[0] = 0f;
+                outOffsetsV[1] = -3.23077f;
+                outOffsetsV[2] = 0f;
+                outOffsetsV[3] = -1.38462f;
+                outOffsetsV[4] = 0f;
+                outOffsetsV[5] = 0f;
+                outOffsetsV[6] = 0f;
+                outOffsetsV[7] = 1.38462f;
+                outOffsetsV[8] = 0f;
+                outOffsetsV[9] = 3.23077f;
+
+                // Scale offsets from binomial space to screen space
+                for (int i = 0; i < convolve.getLength() * 2; i++) {
+                    outOffsetsH[i] *= dx;
+                    outOffsetsV[i] *= dy;
+                }
+
+                break;
+            default:
+                hasData = false;
+                break;
+        }
+
+        if (hasData) {
+            convolve.rebind();
+        }
+    }
+
+    private void computeKernel(int blurRadius, float blurAmount, float[] outKernel) {
+        int radius = blurRadius;
+
+        // float sigma = (float)radius / amount;
+        float sigma = blurAmount;
+
+        float twoSigmaSquare = 2.0f * sigma * sigma;
+        float sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
+        float total = 0.0f;
+        float distance = 0.0f;
+        int index = 0;
+
+        for (int i = -radius; i <= radius; ++i) {
+            distance = i * i;
+            index = i + radius;
+            outKernel[index] = (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
+            total += outKernel[index];
+        }
+
+        int size = (radius * 2) + 1;
+        for (int i = 0; i < size; ++i) {
+            outKernel[i] /= total;
+        }
+    }
+
+    private void computeOffsets(int blurRadius, float dx, float dy, float[] outOffsetH, float[] outOffsetV) {
+        int radius = blurRadius;
+
+        final int X = 0, Y = 1;
+        for (int i = -radius, j = 0; i <= radius; ++i, j += 2) {
+            outOffsetH[j + X] = i * dx;
+            outOffsetH[j + Y] = 0;
+
+            outOffsetV[j + X] = 0;
+            outOffsetV[j + Y] = i * dy;
+        }
     }
 }

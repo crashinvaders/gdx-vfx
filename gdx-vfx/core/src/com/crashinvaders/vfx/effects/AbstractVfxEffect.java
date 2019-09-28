@@ -14,31 +14,19 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
-import com.badlogic.gdx.Gdx;
-import com.crashinvaders.vfx.VfxFilterOld;
-import com.crashinvaders.vfx.gl.VfxGLUtils;
+public abstract class AbstractVfxEffect implements VfxEffect {
 
-/**
- * Fisheye distortion filter
- * @author tsagrista
- * @author metaphore
- */
-public class FisheyeFilter extends ShaderVfxFilter {
+    private boolean disabled;
 
-    private static final String U_TEXTURE0 = "u_texture0";
-
-    public FisheyeFilter() {
-        super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/fisheye.frag")));
-        rebind();
+    @Override
+    public boolean isDisabled() {
+        return disabled;
     }
 
     @Override
-    public void rebind() {
-        super.rebind();
-        setUniform(U_TEXTURE0, TEXTURE_HANDLE0);
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

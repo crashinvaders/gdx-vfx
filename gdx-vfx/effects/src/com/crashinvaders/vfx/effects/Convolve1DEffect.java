@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class Convolve1DFilter extends ShaderVfxFilter {
+public final class Convolve1DEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE = "u_texture0";
     private static final String U_SAMPLE_WEIGHTS = "u_sampleWeights";
@@ -29,15 +29,15 @@ public final class Convolve1DFilter extends ShaderVfxFilter {
     public float[] weights;
     public float[] offsets;
 
-    public Convolve1DFilter(int length) {
+    public Convolve1DEffect(int length) {
         this(length, new float[length], new float[length * 2]);
     }
 
-    public Convolve1DFilter(int length, float[] weightsData) {
+    public Convolve1DEffect(int length, float[] weightsData) {
         this(length, weightsData, new float[length * 2]);
     }
 
-    public Convolve1DFilter(int length, float[] weightsData, float[] offsets) {
+    public Convolve1DEffect(int length, float[] weightsData, float[] offsets) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
                 Gdx.files.classpath("shaders/convolve-1d.frag"),

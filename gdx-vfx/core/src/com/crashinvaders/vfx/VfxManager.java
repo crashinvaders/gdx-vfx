@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.crashinvaders.vfx.filters.VfxFilter;
+import com.crashinvaders.vfx.effects.VfxEffect;
 import com.crashinvaders.vfx.framebuffer.*;
 import com.crashinvaders.vfx.utils.PrioritizedArray;
 
@@ -32,15 +32,15 @@ import com.crashinvaders.vfx.utils.PrioritizedArray;
  * Provides a way to beginCapture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to
  * screen.
  * <p>
- * Effects can be added or removed via {@link #addEffect(VfxFilter)} and {@link #removeEffect(VfxFilter)}.
+ * Effects can be added or removed via {@link #addEffect(VfxEffect)} and {@link #removeEffect(VfxEffect)}.
  *
  * @author metaphore
  */
 public final class VfxManager implements Disposable {
 
-    private final PrioritizedArray<VfxFilter> effectsAll = new PrioritizedArray<>();
+    private final PrioritizedArray<VfxEffect> effectsAll = new PrioritizedArray<>();
     /** Maintains a per-frame updated list of enabled effects */
-    private final Array<VfxFilter> effectsEnabled = new Array<>();
+    private final Array<VfxEffect> effectsEnabled = new Array<>();
 
     /** A mesh that is shared among basic filters to draw to full screen. */
 //    private final ScreenQuadMesh screenQuadMesh = new ScreenQuadMesh();
@@ -151,14 +151,14 @@ public final class VfxManager implements Disposable {
      * The order of the inserted effects IS important, since effects will be applied in a FIFO fashion,
      * the first added is the first being applied.
      * <p>
-     * For more control over the order supply the effect with a priority - {@link #addEffect(VfxFilter, int)}.
-     * @see #addEffect(VfxFilter, int)
+     * For more control over the order supply the effect with a priority - {@link #addEffect(VfxEffect, int)}.
+     * @see #addEffect(VfxEffect, int)
      */
-    public void addEffect(VfxFilter effect) {
+    public void addEffect(VfxEffect effect) {
         addEffect(effect, 0);
     }
 
-    public void addEffect(VfxFilter effect, int priority) {
+    public void addEffect(VfxEffect effect, int priority) {
         effectsAll.add(effect, priority);
         effect.resize(width, height);
     }
@@ -166,7 +166,7 @@ public final class VfxManager implements Disposable {
     /**
      * Removes the specified effect from the effect chain.
      */
-    public void removeEffect(VfxFilter effect) {
+    public void removeEffect(VfxEffect effect) {
         effectsAll.remove(effect);
     }
 
@@ -180,7 +180,7 @@ public final class VfxManager implements Disposable {
     /**
      * Changes the order of the effect in the effect chain.
      */
-    public void setEffectPriority(VfxFilter effect, int priority) {
+    public void setEffectPriority(VfxEffect effect, int priority) {
         effectsAll.setPriority(effect, priority);
     }
 
@@ -271,7 +271,7 @@ public final class VfxManager implements Disposable {
         if (disabled) return;
         if (!hasCaptured) return;
 
-        Array<VfxFilter> effectChain = updateEnabledEffectList();
+        Array<VfxEffect> effectChain = updateEnabledEffectList();
 
         applyingEffects = true;
         int count = effectChain.size;
@@ -288,7 +288,7 @@ public final class VfxManager implements Disposable {
             pingPongBuffer.swap(); // Swap buffers to get captured result in src buffer.
             pingPongBuffer.begin();
             for (int i = 0; i < count; i++) {
-                VfxFilter effect = effectChain.get(i);
+                VfxEffect effect = effectChain.get(i);
                 effect.render(context, pingPongBuffer);
                 if (i < count - 1) {
                     pingPongBuffer.swap();
@@ -345,11 +345,11 @@ public final class VfxManager implements Disposable {
         if (blendingEnabled) { Gdx.gl.glDisable(GL20.GL_BLEND); }
     }
 
-    private Array<VfxFilter> updateEnabledEffectList() {
+    private Array<VfxEffect> updateEnabledEffectList() {
         // Build up active effects
         effectsEnabled.clear();
         for (int i = 0; i < effectsAll.size(); i++) {
-            VfxFilter effect = effectsAll.get(i);
+            VfxEffect effect = effectsAll.get(i);
             if (!effect.isDisabled()) {
                 effectsEnabled.add(effect);
             }

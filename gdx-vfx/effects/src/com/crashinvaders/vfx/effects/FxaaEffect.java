@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 tsagrista
+ * Copyright 2019 metaphore
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,56 +16,81 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.FxaaFilterOld;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-/** Implements the fast approximate anti-aliasing. Very fast and useful for combining with other post-processing effects.
- * @author Toni Sagrista */
-public final class FxaaEffect extends VfxEffectOld {
+/**
+ * Implements the fast approximate anti-aliasing.
+ * Very fast and useful for combining with other post-processing effects.
+ * @author Toni Sagrista
+ * @author metaphore
+ */
+public final class FxaaEffect extends ShaderVfxEffect {
 
-	private final FxaaFilterOld fxaaFilter;
+	private static final String U_TEXTURE0 = "u_texture0";
+	private static final String U_VIEWPORT_INVERSE = "u_viewportInverse";
+	private static final String U_FXAA_REDUCE_MIN = "u_fxaaReduceMin";
+	private static final String U_FXAA_REDUCE_MUL = "u_fxaaReduceMul";
+	private static final String U_FXAA_SPAN_MAX = "u_fxaaSpanMax";
 
-    public FxaaEffect() {
-        this(1f/128f, 1f/8f, 8f, true);
-    }
+	private final Vector2 viewportInverse = new Vector2();
+	private float fxaaReduceMin;
+	private float fxaaReduceMul;
+	private float fxaaSpanMax;
 
-    public FxaaEffect(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha) {
-        fxaaFilter = new FxaaFilterOld(fxaaReduceMin, fxaaReduceMul, fxaaSpanMax, supportAlpha);
-    }
+	public FxaaEffect() {
+		this(1f/128f, 1f/8f, 8f, true);
+	}
 
-    @Override
-    public void dispose() {
-        fxaaFilter.dispose();
-    }
+	public FxaaEffect(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha) {
+		super(VfxGLUtils.compileShader(
+				Gdx.files.classpath("shaders/screenspace.vert"),
+				Gdx.files.classpath("shaders/fxaa.frag"),
+				supportAlpha ? "#define SUPPORT_ALPHA" : ""));
+		this.fxaaReduceMin = fxaaReduceMin;
+		this.fxaaReduceMul = fxaaReduceMul;
+		this.fxaaSpanMax = fxaaSpanMax;
+		rebind();
+	}
 
-    @Override
-    public void rebind() {
-        fxaaFilter.rebind();
-    }
+	@Override
+	public void rebind() {
+		super.rebind();
+		program.begin();
+		program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
+		program.setUniformf(U_VIEWPORT_INVERSE, viewportInverse);
+		program.setUniformf(U_FXAA_REDUCE_MIN, fxaaReduceMin);
+		program.setUniformf(U_FXAA_REDUCE_MUL, fxaaReduceMul);
+		program.setUniformf(U_FXAA_SPAN_MAX, fxaaSpanMax);
+		program.end();
+	}
 
-    @Override
-    public void resize(int width, int height) {
-        fxaaFilter.resize(width, height);
-    }
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		this.viewportInverse.set(1f / width, 1f / height);
+		setUniform(U_VIEWPORT_INVERSE, this.viewportInverse);
+	}
 
-    @Override
-    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        fxaaFilter.setInput(src).setOutput(dst).render(mesh);
-    }
+	/** Sets the parameter. The default value is 1/128.
+	 * @param value */
+	public void setReduceMin (float value) {
+		this.fxaaReduceMin = value;
+		setUniform(U_FXAA_REDUCE_MIN, this.fxaaReduceMin);
+	}
 
-    /** Sets the span max parameter. The default value is 8.
-     * @param value */
-    public void setSpanMax(float value) {
-        fxaaFilter.setSpanMax(value);
-    }
+	/** Sets the parameter. The default value is 1/8.
+	 * @param value */
+	public void setReduceMul (float value) {
+		this.fxaaReduceMul = value;
+		setUniform(U_FXAA_REDUCE_MUL, this.fxaaReduceMul);
+	}
 
-    public void setReduceMin(float value) {
-        fxaaFilter.setReduceMin(value);
-    }
-
-    public void setReduceMul(float value) {
-        fxaaFilter.setReduceMul(value);
-    }
+	/** Sets the parameter. The default value is 8;
+	 * @param value */
+	public void setSpanMax(float value) {
+		this.fxaaSpanMax = value;
+		setUniform(U_FXAA_SPAN_MAX, this.fxaaSpanMax);
+	}
 }

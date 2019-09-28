@@ -16,64 +16,71 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.filters.NoiseFilterOld;
+import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class NoiseEffect extends VfxEffectOld implements UpdateableEffect {
+public class NoiseEffect extends ShaderVfxEffect {
 
-    private final NoiseFilterOld filter;
+    private static final String U_TEXTURE0 = "u_texture0";
+    private static final String U_AMOUNT = "u_amount";
+    private static final String U_SPEED = "u_speed";
+    private static final String U_TIME = "u_time";
 
-    private float time;
-
-    public NoiseEffect() {
-        this(0.35f, 2f);
-    }
+    private float amount;
+    private float speed;
+    private float time = 0f;
 
     public NoiseEffect(float amount, float speed) {
-        filter = new NoiseFilterOld(amount, speed);
-    }
-
-    public float getAmount() {
-        return filter.getAmount();
-    }
-
-    public void setAmount(float amount) {
-        filter.setAmount(amount);
-    }
-
-    public float getSpeed() {
-        return filter.getSpeed();
-    }
-
-    public void setSpeed(float speed) {
-        filter.setSpeed(speed);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        filter.resize(width, height);
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/noise.frag")));
+        this.amount = amount;
+        this.speed = speed;
+        rebind();
     }
 
     @Override
     public void rebind() {
-        filter.rebind();
-    }
-
-    @Override
-    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        filter.setInput(src).setOutput(dst).render(mesh);
-    }
-
-    @Override
-    public void dispose() {
-        filter.dispose();
+        super.rebind();
+        program.begin();
+        program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
+        program.setUniformf(U_AMOUNT, amount);
+        program.setUniformf(U_SPEED, speed);
+        program.setUniformf(U_TIME, time);
+        program.end();
     }
 
     @Override
     public void update(float delta) {
-        this.time += delta;
-        filter.setTime(time);
+        super.update(delta);
+        setTime(this.time + delta);
+    }
+
+    public float getTime() {
+        return time;
+    }
+
+    public void setTime(float time) {
+        this.time = time;
+        setUniform(U_TIME, time);
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+        setUniform(U_AMOUNT, amount);
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+        setUniform(U_SPEED, speed);
     }
 }
+

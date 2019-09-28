@@ -14,12 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBufferPool;
 
 /**
  * Encapsulates a separable 2D convolution kernel filter
@@ -27,20 +25,20 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBufferPool;
  * @author bmanuel
  * @author metaphore
  */
-public final class Convolve2DFilter extends AbstractVfxFilter {
+public final class Convolve2DEffect extends AbstractVfxEffect {
 
     private final int radius;
     private final int length; // NxN taps filter, w/ N=length
     private final float[] weights, offsetsHor, offsetsVert;
 
-    private Convolve1DFilter hor, vert;
+    private Convolve1DEffect hor, vert;
 
-    public Convolve2DFilter(int radius) {
+    public Convolve2DEffect(int radius) {
         this.radius = radius;
         length = (radius * 2) + 1;
 
-        hor = new Convolve1DFilter(length);
-        vert = new Convolve1DFilter(length, hor.weights);
+        hor = new Convolve1DEffect(length);
+        vert = new Convolve1DEffect(length, hor.weights);
 
         weights = hor.weights;
         offsetsHor = hor.offsets;

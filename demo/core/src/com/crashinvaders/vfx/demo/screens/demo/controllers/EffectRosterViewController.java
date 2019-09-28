@@ -32,7 +32,6 @@ import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
-import com.crashinvaders.vfx.filters.*;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.LmlParser;
 
@@ -54,100 +53,110 @@ public class EffectRosterViewController extends LmlViewController {
     public void onViewCreated(Group sceneRoot) {
         super.onViewCreated(sceneRoot);
 
+        // Bloom
+        {
+            BloomEffect filter = new BloomEffect();
+            effectsRoster.add(new EffectEntryModel("Bloom", filter));
+        }
         // Copy
         {
-            CopyFilter filter = new CopyFilter();
+            CopyEffect filter = new CopyEffect();
             effectsRoster.add(new EffectEntryModel("Copy", filter));
         }
         // Radial Distortion
         {
-            RadialDistortionFilter filter = new RadialDistortionFilter();
+            RadialDistortionEffect filter = new RadialDistortionEffect();
             filter.setZoom(0.9f);
             filter.setDistortion(0.3f);
             effectsRoster.add(new EffectEntryModel("Radial Distortion", filter));
         }
         // Gamma Threshold
         {
-            GammaThresholdFilter filter = new GammaThresholdFilter(GammaThresholdFilter.Type.RGB);
+            GammaThresholdEffect filter = new GammaThresholdEffect(GammaThresholdEffect.Type.RGB);
             filter.setGamma(0.9f);
             effectsRoster.add(new EffectEntryModel("Gamma Threshold", filter));
         }
         // Zoom
         {
-            ZoomFilter filter = new ZoomFilter();
+            ZoomEffect filter = new ZoomEffect();
             filter.setZoom(0.9f);
             effectsRoster.add(new EffectEntryModel("Zoom", filter));
         }
         // Vignetting
         {
-            VignettingFilter filter = new VignettingFilter(false);
+            VignettingEffect filter = new VignettingEffect(false);
             effectsRoster.add(new EffectEntryModel("Vignetting", filter));
         }
         // CRT
         {
-            CrtFilter filter = new CrtFilter(CrtFilter.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f);
-            filter.setSizeSource(CrtFilter.SizeSource.VIEWPORT);
+            CrtEffect filter = new CrtEffect(CrtEffect.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f);
+            filter.setSizeSource(CrtEffect.SizeSource.VIEWPORT);
             effectsRoster.add(new EffectEntryModel("CRT", filter));
         }
         // FXAA
         {
-            FxaaFilter filter = new FxaaFilter();
+            FxaaEffect filter = new FxaaEffect();
             effectsRoster.add(new EffectEntryModel("FXAA", filter));
         }
         // NFAA
         {
-            NfaaFilter filter = new NfaaFilter(false);
+            NfaaEffect filter = new NfaaEffect(false);
             effectsRoster.add(new EffectEntryModel("NFAA", filter));
         }
         // Lens Flare
         {
-            LensFlareFilter filter = new LensFlareFilter();
+            LensFlareEffect filter = new LensFlareEffect();
             effectsRoster.add(new EffectEntryModel("Lens Flare", filter));
         }
         // Fisheye
         {
-            FisheyeFilter filter = new FisheyeFilter();
+            FisheyeEffect filter = new FisheyeEffect();
             effectsRoster.add(new EffectEntryModel("Fisheye", filter));
         }
         // Film Grain
         {
-            FilmGrainFilter filter = new FilmGrainFilter();
+            FilmGrainEffect filter = new FilmGrainEffect();
             effectsRoster.add(new EffectEntryModel("Film Grain", filter));
         }
-        // Motion Blur
+        // Motion Blur (MIX)
         {
-            MotionBlurFilter filter = new MotionBlurFilter(Pixmap.Format.RGBA8888, MixFilter.Method.MIX, 0.8f);
-            effectsRoster.add(new EffectEntryModel("Motion Blur", filter));
+            MotionBlurEffect filter = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MIX, 0.8f);
+            effectsRoster.add(new EffectEntryModel("Motion Blur (MIX)", filter));
+        }
+        // Motion Blur (MAX)
+        {
+            MotionBlurEffect filter = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MAX, 0.8f);
+            effectsRoster.add(new EffectEntryModel("Motion Blur (MAX)", filter));
         }
         // Noise
         {
-            NoiseFilter filter = new NoiseFilter(0.35f, 2f);
+            NoiseEffect filter = new NoiseEffect(0.35f, 2f);
             effectsRoster.add(new EffectEntryModel("Noise", filter));
         }
         // Old TV
         {
-            OldTvFilter filter = new OldTvFilter();
+            OldTvEffect filter = new OldTvEffect();
             effectsRoster.add(new EffectEntryModel("Old TV", filter));
         }
         // Levels
         {
-            LevelsFilter filter = new LevelsFilter();
+            LevelsEffect filter = new LevelsEffect();
             filter.setHue(0.95f);
             effectsRoster.add(new EffectEntryModel("Levels", filter));
         }
         // Chrom. Aberration
         {
-            ChromaticAberrationFilter filter = new ChromaticAberrationFilter(12);
+            ChromaticAberrationEffect filter = new ChromaticAberrationEffect(12);
             effectsRoster.add(new EffectEntryModel("Chrom. Aberration", filter));
         }
         // Radial Blur
         {
-            RadialBlurFilter filter = new RadialBlurFilter(8);
+            RadialBlurEffect filter = new RadialBlurEffect(8);
             effectsRoster.add(new EffectEntryModel("Radial Blur", filter));
         }
         // Gaussian Blur
         {
-            GaussianBlurFilter filter = new GaussianBlurFilter(GaussianBlurFilter.BlurType.Gaussian5x5);
+            GaussianBlurEffect filter = new GaussianBlurEffect(GaussianBlurEffect.BlurType.Gaussian5x5);
             filter.setPasses(8);
             effectsRoster.add(new EffectEntryModel("Gaussian Blur", filter));
         }
@@ -207,15 +216,6 @@ public class EffectRosterViewController extends LmlViewController {
         super.dispose();
     }
 
-    @Override
-    public void update(float delta) {
-        super.update(delta);
-
-        for (int i = 0; i < effectsChain.size; i++) {
-            effectsChain.getValueAt(i).update(delta);
-        }
-    }
-
     private void addEffectToChain(final EffectEntryModel effectModel) {
         if (effectsChain.containsKey(effectModel)) {
             // If the effect is already in the chain, re-add it to the end of the list.
@@ -247,9 +247,9 @@ public class EffectRosterViewController extends LmlViewController {
 
     private static class EffectEntryModel implements Disposable {
         private final String name;
-        private final VfxFilter effect;
+        private final VfxEffect effect;
 
-        public EffectEntryModel(String name, VfxFilter effect) {
+        public EffectEntryModel(String name, VfxEffect effect) {
             this.name = name;
             this.effect = effect;
         }
@@ -263,7 +263,7 @@ public class EffectRosterViewController extends LmlViewController {
             return name;
         }
 
-        public VfxFilter getEffect() {
+        public VfxEffect getEffect() {
             return effect;
         }
     }
@@ -273,29 +273,16 @@ public class EffectRosterViewController extends LmlViewController {
         @LmlActor Label lblName;
 
         private final EffectEntryModel model;
-        private final UpdateableEffect updateableEffect;
         private final Group viewRoot;
 
         EffectEntryViewController(LmlParser lmlParser, EffectEntryModel model) {
             this.model = model;
-
-            if (model.effect instanceof UpdateableEffect) {
-                this.updateableEffect = (UpdateableEffect) model.effect;
-            } else {
-                this.updateableEffect = null;
-            }
 
             // Create view.
             viewRoot = LmlUtils.parseLmlTemplate(lmlParser, this, Gdx.files.internal("lml/screen-demo/effect-list-item.lml"));
             viewRoot.setUserObject(this);
 
             updateViewFromModel();
-        }
-
-        public void update(float delta) {
-            if (updateableEffect != null) {
-                updateableEffect.update(delta);
-            }
         }
 
         public void updateViewFromModel() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -27,7 +27,7 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 /** Base class for any shader based single-pass filter. */
 @SuppressWarnings("unchecked")
-public abstract class ShaderVfxFilter extends AbstractVfxFilter {
+public abstract class ShaderVfxEffect extends AbstractVfxEffect {
 
     public static final int TEXTURE_HANDLE0 = 0;
     public static final int TEXTURE_HANDLE1 = 1;
@@ -36,7 +36,7 @@ public abstract class ShaderVfxFilter extends AbstractVfxFilter {
 
     protected final ShaderProgram program;
 
-    public ShaderVfxFilter(ShaderProgram program) {
+    public ShaderVfxEffect(ShaderProgram program) {
         this.program = program;
     }
 
@@ -62,17 +62,21 @@ public abstract class ShaderVfxFilter extends AbstractVfxFilter {
 
     @Override
     public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        boolean manualBufferBind = !pingPongBuffer.isCapturing();
-        if (manualBufferBind) { pingPongBuffer.begin(); }
+        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    }
+
+    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+        boolean manualBufferBind = !dst.isDrawing();
+        if (manualBufferBind) { dst.begin(); }
 
         // Bind src buffer's texture as a primary one.
-        pingPongBuffer.getSrcTexture().bind(TEXTURE_HANDLE0);
+        src.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE0);
 
         program.begin();
         context.getViewportMesh().render(program);
         program.end();
 
-        if (manualBufferBind) { pingPongBuffer.end(); }
+        if (manualBufferBind) { dst.end(); }
     }
 
     public ShaderProgram getProgram() {

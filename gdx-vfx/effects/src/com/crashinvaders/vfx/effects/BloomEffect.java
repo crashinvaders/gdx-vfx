@@ -19,81 +19,135 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.crashinvaders.vfx.framebuffer.RegularPingPongBuffer;
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.effects.GaussianBlurEffect.BlurType;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
-import com.crashinvaders.vfx.VfxEffectOld;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
-import com.crashinvaders.vfx.filters.GaussianBlurFilterOld;
-import com.crashinvaders.vfx.filters.GaussianBlurFilterOld.BlurType;
-import com.crashinvaders.vfx.filters.CombineFilterOld;
-import com.crashinvaders.vfx.filters.ThresholdFilterOld;
 
-public final class BloomEffect extends VfxEffectOld {
+public final class BloomEffect extends CompositeVfxEffect {
 
-    private final PingPongBuffer pingPongBuffer;
-
-    private final GaussianBlurFilterOld blur;
-    private final ThresholdFilterOld threshold;
-    private final CombineFilterOld combine;
-
-    private Settings settings;
+    private final CopyEffect copy;
+    private final GaussianBlurEffect blur;
+    private final GammaThresholdEffect threshold;
+    private final CombineEffect combine;
 
     private boolean blending = false;
     private int sfactor, dfactor;
 
-    public BloomEffect(Pixmap.Format bufferFormat) {
-        this(bufferFormat, new Settings("default", 10, 0.85f, 1f, .85f, 1.1f, .85f));
+    public BloomEffect() {
+        this(new Settings(10, 0.85f, 1f, .85f, 1.1f, .85f));
     }
 
-    public BloomEffect(Pixmap.Format bufferFormat, Settings settings) {
-        pingPongBuffer = new RegularPingPongBuffer(bufferFormat);
+    public BloomEffect(Settings settings) {
+        copy = register(new CopyEffect());
+        blur = register(new GaussianBlurEffect());
+        threshold = register(new GammaThresholdEffect(GammaThresholdEffect.Type.RGBA));
+        combine = register(new CombineEffect());
 
-        blur = new GaussianBlurFilterOld();
-        threshold = new ThresholdFilterOld();
-        combine = new CombineFilterOld();
-
-        setSettings(settings);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        pingPongBuffer.resize(width, height);
-
-        blur.resize(width, height);
-        threshold.resize(width, height);
-        combine.resize(width, height);
+        applySettings(settings);
     }
 
     @Override
-    public void dispose() {
-        combine.dispose();
-        threshold.dispose();
-        blur.dispose();
-        pingPongBuffer.dispose();
+    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+        // Preserve the input buffer data.
+        VfxFrameBuffer origSrc = context.getBufferPool().obtain();
+        copy.render(context, pingPongBuffer.getSrcBuffer(), origSrc);
+
+        boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+        // Threshold / high-pass filter
+        // Only areas with pixels >= threshold are blit to smaller FBO.
+        threshold.render(context, pingPongBuffer);
+        pingPongBuffer.swap();
+
+        // Blur pass
+        blur.render(context, pingPongBuffer);
+        pingPongBuffer.swap();
+
+        if (blending || blendingWasEnabled) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+        }
+
+        if (blending) {
+            // TODO support for Gdx.gl.glBlendFuncSeparate(sfactor, dfactor, GL20.GL_ONE, GL20.GL_ONE );
+            Gdx.gl.glBlendFunc(sfactor, dfactor);
+        }
+
+        // Mix original scene and blurred result).
+        combine.render(context, origSrc, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+
+        context.getBufferPool().free(origSrc);
+    }
+
+    public float getBaseIntensity() {
+        return combine.getSource1Intensity();
     }
 
     public void setBaseIntensity(float intensity) {
         combine.setSource1Intensity(intensity);
     }
 
+    public float getBaseSaturation() {
+        return combine.getSource1Saturation();
+    }
+
     public void setBaseSaturation(float saturation) {
         combine.setSource1Saturation(saturation);
+    }
+
+    public float getBloomIntensity() {
+        return combine.getSource2Intensity();
     }
 
     public void setBloomIntensity(float intensity) {
         combine.setSource2Intensity(intensity);
     }
 
+    public float getBloomSaturation() {
+        return combine.getSource2Saturation();
+    }
+
     public void setBloomSaturation(float saturation) {
         combine.setSource2Saturation(saturation);
     }
 
+    public int getBlurPasses() {
+        return blur.getPasses();
+    }
+
+    public void setBlurPasses(int passes) {
+        blur.setPasses(passes);
+    }
+
+    public float getBlurAmount() {
+        return blur.getAmount();
+    }
+
+    public void setBlurAmount(float amount) {
+        blur.setAmount(amount);
+    }
+
+    public boolean isBlendingEnabled() {
+        return blending;
+    }
+
+    public float getThreshold() {
+        return threshold.getGamma();
+    }
+
+    public int getBlendingSourceFactor() {
+        return sfactor;
+    }
+
+    public int getBlendingDestFactor() {
+        return dfactor;
+    }
+
     public void setThreshold(float gamma) {
-        threshold.setTreshold(gamma);
+        threshold.setGamma(gamma);
     }
 
     public void enableBlending(int sfactor, int dfactor) {
@@ -106,13 +160,15 @@ public final class BloomEffect extends VfxEffectOld {
         this.blending = false;
     }
 
+    public BlurType getBlurType() {
+        return blur.getType();
+    }
+
     public void setBlurType(BlurType type) {
         blur.setType(type);
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
-
+    public void applySettings(Settings settings) {
         // Setup threshold filter
         setThreshold(settings.bloomThreshold);
 
@@ -128,106 +184,7 @@ public final class BloomEffect extends VfxEffectOld {
         setBlurType(settings.blurType);
     }
 
-    public void setBlurPasses(int passes) {
-        blur.setPasses(passes);
-    }
-
-    public void setBlurAmount(float amount) {
-        blur.setAmount(amount);
-    }
-
-    public float getThreshold() {
-        return threshold.getThreshold();
-    }
-
-    public float getBaseIntensity() {
-        return combine.getSource1Intensity();
-    }
-
-    public float getBaseSaturation() {
-        return combine.getSource1Saturation();
-    }
-
-    public float getBloomIntensity() {
-        return combine.getSource2Intensity();
-    }
-
-    public float getBloomSaturation() {
-        return combine.getSource2Saturation();
-    }
-
-    public boolean isBlendingEnabled() {
-        return blending;
-    }
-
-    public int getBlendingSourceFactor() {
-        return sfactor;
-    }
-
-    public int getBlendingDestFactor() {
-        return dfactor;
-    }
-
-    public BlurType getBlurType() {
-        return blur.getType();
-    }
-
-    public Settings getSettings() {
-        return settings;
-    }
-
-    public int getBlurPasses() {
-        return blur.getPasses();
-    }
-
-    public float getBlurAmount() {
-        return blur.getAmount();
-    }
-
-    @Override
-    public void render(ViewportQuadMesh mesh, final VfxFrameBuffer src, final VfxFrameBuffer dst) {
-        Texture texSrc = src.getFbo().getColorBufferTexture();
-
-        boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-
-        pingPongBuffer.begin();
-        {
-            // Threshold / high-pass filter
-            // Only areas with pixels >= threshold are blit to smaller FBO
-            threshold.setInput(texSrc).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
-            pingPongBuffer.swap();
-
-            // Blur pass
-            blur.render(mesh, pingPongBuffer);
-        }
-        pingPongBuffer.end();
-
-        if (blending || blendingWasEnabled) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-        }
-
-        if (blending) {
-            // TODO support for Gdx.gl.glBlendFuncSeparate(sfactor, dfactor, GL20.GL_ONE, GL20.GL_ONE );
-            Gdx.gl.glBlendFunc(sfactor, dfactor);
-        }
-
-        // Mix original scene and blurred threshold, modulate via set(Base|BloomEffect)(Saturation|Intensity)
-        combine.setInput(texSrc, pingPongBuffer.getDstTexture())
-                .setOutput(dst)
-                .render(mesh);
-    }
-
-    @Override
-    public void rebind() {
-        blur.rebind();
-        threshold.rebind();
-        combine.rebind();
-        pingPongBuffer.rebind();
-    }
-
     public static class Settings {
-        public final String name;
 
         public final BlurType blurType;
         public final int blurPasses;
@@ -239,9 +196,15 @@ public final class BloomEffect extends VfxEffectOld {
         public final float baseIntensity;
         public final float baseSaturation;
 
-        public Settings(String name, BlurType blurType, int blurPasses, float blurAmount, float bloomThreshold,
+        public Settings(int blurPasses, float bloomThreshold, float baseIntensity, float baseSaturation,
+                        float bloomIntensity, float bloomSaturation) {
+            this(BlurType.Gaussian5x5b, blurPasses, 0, bloomThreshold, baseIntensity, baseSaturation,
+                    bloomIntensity,
+                    bloomSaturation);
+        }
+
+        public Settings(BlurType blurType, int blurPasses, float blurAmount, float bloomThreshold,
                         float baseIntensity, float baseSaturation, float bloomIntensity, float bloomSaturation) {
-            this.name = name;
             this.blurType = blurType;
             this.blurPasses = blurPasses;
             this.blurAmount = blurAmount;
@@ -253,15 +216,7 @@ public final class BloomEffect extends VfxEffectOld {
             this.bloomSaturation = bloomSaturation;
         }
 
-        public Settings(String name, int blurPasses, float bloomThreshold, float baseIntensity, float baseSaturation,
-                        float bloomIntensity, float bloomSaturation) {
-            this(name, BlurType.Gaussian5x5b, blurPasses, 0, bloomThreshold, baseIntensity, baseSaturation,
-                    bloomIntensity,
-                    bloomSaturation);
-        }
-
         public Settings(Settings other) {
-            this.name = other.name;
             this.blurType = other.blurType;
             this.blurPasses = other.blurPasses;
             this.blurAmount = other.blurAmount;

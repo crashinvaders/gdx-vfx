@@ -15,13 +15,13 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialBlurFilter extends ShaderVfxFilter {
+public final class RadialBlurEffect extends ShaderVfxEffect {
 
     private static String U_TEXTURE = "u_texture0";
     private static String U_BLUR_DIV = "u_blurDiv";
@@ -36,7 +36,7 @@ public final class RadialBlurFilter extends ShaderVfxFilter {
     private float originY = 0.5f;
     private float zoom = 1f;
 
-    public RadialBlurFilter(int passes) {
+    public RadialBlurEffect(int passes) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/radial-blur.vert"),
                 Gdx.files.classpath("shaders/radial-blur.frag"),

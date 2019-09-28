@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialDistortionFilter extends ShaderVfxFilter {
+public final class RadialDistortionEffect extends ShaderVfxEffect {
 
 	private static final String U_TEXTURE0 = "u_texture0";
 	private static final String U_DISTORTION = "distortion";
@@ -28,7 +28,7 @@ public final class RadialDistortionFilter extends ShaderVfxFilter {
 	private float zoom = 1f;
 	private float distortion = 0.3f;
 
-	public RadialDistortionFilter() {
+	public RadialDistortionEffect() {
 		super(VfxGLUtils.compileShader(
 				Gdx.files.classpath("shaders/screenspace.vert"),
 				Gdx.files.classpath("shaders/radial-distortion.frag")));

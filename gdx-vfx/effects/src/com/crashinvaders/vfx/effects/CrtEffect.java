@@ -16,49 +16,87 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.CrtFilterOld;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class CrtEffect extends VfxEffectOld {
+public class CrtEffect extends ShaderVfxEffect {
+    private static final Vector2 tmpVec = new Vector2();
 
-    private final CrtFilterOld crtFilter;
+    private static final String U_TEXTURE0 = "u_texture0";
+    private static final String U_RESOLUTION = "u_resolution";
+
+    private final Vector2 viewportSize = new Vector2();
+    private SizeSource sizeSource = SizeSource.VIEWPORT;
 
     public CrtEffect() {
-        crtFilter = new CrtFilterOld();
+        this(LineStyle.HORIZONTAL_HARD, 1.3f, 0.5f);
     }
 
-    public CrtEffect(CrtFilterOld.LineStyle lineStyle, float scanLineBrightness0, float scanLineBrightness1) {
-        crtFilter = new CrtFilterOld(lineStyle, scanLineBrightness0, scanLineBrightness1);
+    /** Brightness is a value between [0..2] (default is 1.0). */
+    public CrtEffect(LineStyle lineStyle, float brightnessMin, float brightnessMax) {
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/crt.frag"),
+                "#define SL_BRIGHTNESS_MIN " + brightnessMin + "\n" +
+                "#define SL_BRIGHTNESS_MAX " + brightnessMax + "\n" +
+                "#define LINE_TYPE " + lineStyle.ordinal()));
+        rebind();
+    }
+
+    @Override
+    public void rebind () {
+        super.rebind();
+        program.begin();
+        program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
+        switch (sizeSource) {
+            case VIEWPORT:
+                program.setUniformf(U_RESOLUTION, viewportSize);
+                break;
+            case SCREEN:
+                program.setUniformf(U_RESOLUTION, tmpVec.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+                break;
+        }
+        program.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        crtFilter.resize(width, height);
+        super.resize(width, height);
+        this.viewportSize.set(width, height);
+        rebind();
     }
 
-    @Override
-    public void rebind() {
-        crtFilter.rebind();
+    public SizeSource getSizeSource() {
+        return sizeSource;
     }
 
-    @Override
-    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        crtFilter.setInput(src).setOutput(dst).render(mesh);
+    /** Set shader resolution parameter source.
+     * @see SizeSource */
+    public void setSizeSource(SizeSource sizeSource) {
+        if (sizeSource == null) {
+            throw new IllegalArgumentException("Size source cannot be null.");
+        }
+        if (this.sizeSource == sizeSource) {
+            return;
+        }
+        this.sizeSource = sizeSource;
+        rebind();
     }
 
-    @Override
-    public void dispose() {
-        crtFilter.dispose();
+    public enum LineStyle {
+        CROSSLINE_HARD,
+        VERTICAL_HARD,
+        HORIZONTAL_HARD,
+        VERTICAL_SMOOTH,
+        HORIZONTAL_SMOOTH,
     }
 
-    public CrtFilterOld.SizeSource getSizeSource() {
-        return crtFilter.getSizeSource();
-    }
-
-    public CrtEffect setSizeSource(CrtFilterOld.SizeSource sizeSource) {
-        crtFilter.setSizeSource(sizeSource);
-        return this;
+    /** Shader resolution parameter source. */
+    public enum SizeSource {
+        /** Resolution will be defined by the application internal viewport. */
+        VIEWPORT,
+        /** Resolution will be defined by the application window size. */
+        SCREEN,
     }
 }

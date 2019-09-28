@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.filters;
+package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,7 +23,7 @@ import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class CombineFilter extends ShaderVfxFilter {
+public final class CombineEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_TEXTURE1 = "u_texture1";
@@ -32,10 +32,9 @@ public final class CombineFilter extends ShaderVfxFilter {
     private static final String U_SOURCE1_INTENSITY = "u_src1Intensity";
     private static final String U_SOURCE1_SATURATION = "u_src1Saturation";
 
-    private Texture secondTexture = null;
     private float s1i, s1s, s2i, s2s;
 
-    public CombineFilter() {
+    public CombineEffect() {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("shaders/screenspace.vert"),
                 Gdx.files.classpath("shaders/combine.frag")));
@@ -51,7 +50,7 @@ public final class CombineFilter extends ShaderVfxFilter {
         super.rebind();
         program.begin();
         program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
-        program.setUniformf(U_TEXTURE1, TEXTURE_HANDLE1);
+        program.setUniformi(U_TEXTURE1, TEXTURE_HANDLE1);
         program.setUniformf(U_SOURCE0_INTENSITY, s1i);
         program.setUniformf(U_SOURCE1_INTENSITY, s2i);
         program.setUniformf(U_SOURCE0_SATURATION, s1s);
@@ -60,28 +59,20 @@ public final class CombineFilter extends ShaderVfxFilter {
     }
 
     @Override
+    @Deprecated
     public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        if (secondTexture == null) {
-            throw new IllegalStateException("Second texture is not set. Use #setSecondInput() prior rendering.");
-        }
-        secondTexture.bind(TEXTURE_HANDLE1);
-
-        super.render(context, pingPongBuffer);
+        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
     }
 
-    public void setSecondInput(VfxFrameBuffer buffer) {
-        if (buffer != null) {
-            setSecondInput(buffer.getFbo().getColorBufferTexture());
-        } else {
-            setSecondInput((Texture) null);
-        }
+    @Override
+    @Deprecated
+    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
     }
 
-    public void setSecondInput(Texture texture) {
-        secondTexture = texture;
-        if (texture != null) {
-            setUniform(U_TEXTURE1, TEXTURE_HANDLE1);
-        }
+    public void render(VfxRenderContext context, VfxFrameBuffer src0, VfxFrameBuffer src1, VfxFrameBuffer dst) {
+        src1.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE1);
+        super.render(context, src0, dst);
     }
 
     public float getSource1Intensity() {

@@ -16,48 +16,39 @@
 
 package com.crashinvaders.vfx.effects;
 
-import com.crashinvaders.vfx.utils.ViewportQuadMesh;
-import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
-import com.crashinvaders.vfx.VfxEffectOld;
-import com.crashinvaders.vfx.filters.ChromaticAberrationFilterOld;
+import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public class ChromaticAberrationEffect extends VfxEffectOld {
+public class ChromaticAberrationEffect extends ShaderVfxEffect {
 
-    private final ChromaticAberrationFilterOld caFilter;
+    private static final String U_TEXTURE0 = "u_texture0";
+    private static final String U_MAX_DISTORTION = "u_maxDistortion";
 
-    public ChromaticAberrationEffect() {
-        this(12);
-    }
+    private float maxDistortion = 1.2f;
 
     public ChromaticAberrationEffect(int passes) {
-        caFilter = new ChromaticAberrationFilterOld(passes);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        caFilter.resize(width, height);
+        super(VfxGLUtils.compileShader(
+                Gdx.files.classpath("shaders/screenspace.vert"),
+                Gdx.files.classpath("shaders/chromatic-aberration.frag"),
+                "#define PASSES " + passes));
+        rebind();
     }
 
     @Override
     public void rebind() {
-        caFilter.rebind();
-    }
-
-    @Override
-    public void render(ViewportQuadMesh mesh, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        caFilter.setInput(src).setOutput(dst).render(mesh);
-    }
-
-    @Override
-    public void dispose() {
-        caFilter.dispose();
+        super.rebind();
+        program.begin();
+        program.setUniformi(U_TEXTURE0, TEXTURE_HANDLE0);
+        program.setUniformf(U_MAX_DISTORTION, maxDistortion);
+        program.end();
     }
 
     public float getMaxDistortion() {
-        return caFilter.getMaxDistortion();
+        return maxDistortion;
     }
 
     public void setMaxDistortion(float maxDistortion) {
-        caFilter.setMaxDistortion(maxDistortion);
+        this.maxDistortion = maxDistortion;
+        setUniform(U_MAX_DISTORTION, maxDistortion);
     }
 }
