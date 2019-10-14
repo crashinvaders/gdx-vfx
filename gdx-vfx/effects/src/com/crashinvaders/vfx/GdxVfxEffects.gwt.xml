@@ -14,6 +14,7 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/copy.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/crt.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/default.vert" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/earthquake.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/film-grain.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/fisheye.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/fxaa.frag" />
