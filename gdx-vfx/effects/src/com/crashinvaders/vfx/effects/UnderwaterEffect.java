@@ -28,7 +28,7 @@ public class UnderwaterEffect extends VfxEffect implements UpdateableEffect {
     private float time;
 
     public UnderwaterEffect() {
-        this(0.35f, 2f);
+        this(1f, 1f);
     }
 
     public UnderwaterEffect(float amount, float speed) {
