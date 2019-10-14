@@ -31,6 +31,7 @@
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/radial-distortion.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/screenspace.vert" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/threshold.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="shaders/underwater.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/vignetting.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/zoom.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="shaders/zoom.vert" />
