@@ -16,7 +16,7 @@
 
 apply plugin: 'java-library'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ 'src/' ]
 
 dependencies {
     api project(':gdx-vfx:core')

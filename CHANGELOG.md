@@ -14,4 +14,5 @@
 - `NoiseEffect` was removed due to similarities with `FilmGrainEffect`.
 - `PingPongBuffer` replaced with `VfxPingPongWrapper` which is a lightweight version and doesn't manage its own pair of `VfxFrameBuffer`, but instead works only with the provided instances.
 `VfxPingPongWrapper` can be integrated with `VfxFrameBufferPool`.
-- `VfxFrameBufferPool` that acts like a regular LibGDX `Pool`, but with a twist... It manages all the created `VfxFrameBuffer` instances internally.  
+- `VfxFrameBufferPool` that acts like a regular LibGDX `Pool`, but with a twist... It manages all the created `VfxFrameBuffer` instances internally.
+- As an alternative to `#beginCapture()`/`#endCapture()`, an input texture/buffer may be provided through `VfxManager#setCapturedInput()` methods. 

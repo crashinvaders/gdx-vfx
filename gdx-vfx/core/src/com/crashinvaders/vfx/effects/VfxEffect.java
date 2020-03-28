@@ -18,8 +18,6 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 
 public interface VfxEffect extends Disposable {
 

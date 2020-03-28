@@ -17,6 +17,7 @@
 package com.crashinvaders.vfx.framebuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.utils.ViewportQuadMesh;
@@ -78,11 +79,19 @@ public class VfxFrameBufferRenderer implements Disposable {
     }
 
     public void renderToScreen(VfxFrameBuffer srcBuf) {
-        renderToScreen(srcBuf, 0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+        renderToScreen(srcBuf.getTexture());
+    }
+
+    public void renderToScreen(Texture srcTexture) {
+        renderToScreen(srcTexture, 0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
     }
 
     public void renderToScreen(VfxFrameBuffer srcBuf, int x, int y, int width, int height) {
-        srcBuf.getFbo().getColorBufferTexture().bind(0);
+        renderToScreen(srcBuf.getTexture(), x, y, width, height);
+    }
+
+    public void renderToScreen(Texture srcTexture, int x, int y, int width, int height) {
+        srcTexture.bind(0);
 
         // Update viewport to fit the area specified.
         Gdx.graphics.getGL20().glViewport(x, y, width, height);
@@ -93,7 +102,11 @@ public class VfxFrameBufferRenderer implements Disposable {
     }
 
     public void renderToFbo(VfxFrameBuffer srcBuf, VfxFrameBuffer dstBuf) {
-        srcBuf.getFbo().getColorBufferTexture().bind(0);
+        renderToFbo(srcBuf.getTexture(), dstBuf);
+    }
+
+    public void renderToFbo(Texture srcTexture, VfxFrameBuffer dstBuf) {
+        srcTexture.bind(0);
 
         // Viewport will be set from VfxFrameBuffer#begin() method.
 

@@ -17,7 +17,6 @@
 package com.crashinvaders.vfx.demo;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.crashinvaders.vfx.common.PrioritizedInputMultiplexer;
 import com.crashinvaders.vfx.demo.screens.demo.DemoScreen;
 
@@ -31,7 +30,7 @@ public class App extends Game {
 
 	private final PrioritizedInputMultiplexer inputMultiplexer;
 
-	private DemoScreen demoScreen;
+	private Screen demoScreen;
 
 	public static App inst() {
 		if (instance == null) {

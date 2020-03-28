@@ -249,11 +249,26 @@ public final class VfxManager implements Disposable {
      * @return false if there was no capturing before that call.
      */
     public boolean endCapture() {
-        if (!capturing) return false;
+        if (!capturing) throw new IllegalStateException("The capturing is not started. Forgot to call beginCapture()?");
 
         hasCaptured = true;
         capturing = false;
         pingPongWrapper.end();
+        return true;
+    }
+
+    /** An alternative to begin/end capture stage. Updates the effect chain src buffer with the data provided. */
+    public boolean setCapturedInput(VfxFrameBuffer frameBuffer) {
+        return setCapturedInput(frameBuffer.getTexture());
+    }
+
+    /** An alternative to begin/end capture stage. Updates the effect chain src buffer with the data provided. */
+    public boolean setCapturedInput(Texture texture) {
+        if (capturing) throw new IllegalStateException("Cannot set captured input between begin/end capture.");
+
+        context.getBufferRenderer().renderToFbo(texture, pingPongWrapper.getDstBuffer());
+
+        hasCaptured = true;
         return true;
     }
 
