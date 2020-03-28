@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.ChainVfxEffect;
 import com.crashinvaders.vfx.effects.ShaderVfxEffect;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
@@ -42,8 +42,8 @@ public class CopyEffect extends ShaderVfxEffect implements ChainVfxEffect {
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+        render(context, buffers.getSrcBuffer(), buffers.getDstBuffer());
     }
 
     public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {

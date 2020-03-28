@@ -33,6 +33,7 @@ import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.crashinvaders.vfx.effects.util.CopyEffect;
+import com.crashinvaders.vfx.effects.util.GammaThresholdEffect;
 import com.crashinvaders.vfx.effects.util.MixEffect;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.LmlParser;

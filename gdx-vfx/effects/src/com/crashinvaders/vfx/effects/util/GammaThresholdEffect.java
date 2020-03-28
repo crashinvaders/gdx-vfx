@@ -14,16 +14,18 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.effects;
+package com.crashinvaders.vfx.effects.util;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.effects.ChainVfxEffect;
+import com.crashinvaders.vfx.effects.ShaderVfxEffect;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Keeps only values brighter than the specified gamma. */
-public final class GammaThresholdEffect extends ShaderVfxEffect implements ChainVfxEffect {
+public class GammaThresholdEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_THRESHOLD = "u_threshold";
@@ -50,8 +52,8 @@ public final class GammaThresholdEffect extends ShaderVfxEffect implements Chain
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+        render(context, buffers.getSrcBuffer(), buffers.getDstBuffer());
     }
 
     public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {

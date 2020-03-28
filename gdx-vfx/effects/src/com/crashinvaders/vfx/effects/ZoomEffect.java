@@ -19,12 +19,12 @@ package com.crashinvaders.vfx.effects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Simple zooming effect. */
-public final class ZoomEffect extends ShaderVfxEffect implements ChainVfxEffect {
+public class ZoomEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_OFFSET_X = "u_offsetX";
@@ -54,8 +54,8 @@ public final class ZoomEffect extends ShaderVfxEffect implements ChainVfxEffect 
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+        render(context, buffers.getSrcBuffer(), buffers.getDstBuffer());
     }
 
     public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {

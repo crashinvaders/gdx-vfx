@@ -20,24 +20,35 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 
+//TODO Update the javadocs.
 /**
  * Encapsulates a pair of {@link VfxFrameBuffer}s with the ability to swap between them.
  * <p>
+ *
  * Upon {@link #begin()} the buffer is reset to a known initial state, this is usually done just before the first usage of the buffer.
  * Subsequent {@link #swap()} calls will initiate writing to the next available buffer, effectively ping-ponging between the two.
  * Chained rendering will be possible by retrieving the
  * necessary buffers via {@link #getSrcBuffer()}, {@link #getDstBuffer()}, {@link #getSrcTexture()} or
  * {@link #getDstTexture}.
- * <p>
+ * <br/>
  * When rendering is finished, {@link #end()} should be called to stop capturing.
  * <p>
- * When the OpenGL context is lost, {@link #rebind()} should be called.
+ *
+ * {@link VfxPingPongWrapper} only wraps to provided buffers but doesn't manage them.
+ * So it's your responsibility to call {@link VfxFrameBuffer#initialize(int, int)} and {@link VfxFrameBuffer#dispose()} for them.
+ * <br/>
+ * You also may use the benefits of {@link VfxFrameBufferPool} if you have one
+ * (all the {@link com.crashinvaders.vfx.effects.ChainVfxEffect} have access to one from {@link com.crashinvaders.vfx.VfxRenderContext}).
+ * <br/>
+ * Simply use {@link VfxPingPongWrapper (VfxFrameBufferPool)} or {@link #initialize(VfxFrameBufferPool)} and the buffers will be created,
+ * resized and destroyed for you,
+ * just don't forget to call {@link VfxPingPongWrapper#reset()} when you're done with this instance.
  *
  * @author metaphore
  */
-public abstract class PingPongBuffer implements Disposable {
+public class VfxPingPongWrapper implements Pool.Poolable {
 
     protected VfxFrameBuffer bufDst;
     protected VfxFrameBuffer bufSrc;
@@ -45,38 +56,57 @@ public abstract class PingPongBuffer implements Disposable {
     /** Where capturing is started. Should be true between {@link #begin()} and {@link #end()}. */
     protected boolean capturing;
 
-    private Texture.TextureWrap wrapU = Texture.TextureWrap.ClampToEdge;
-    private Texture.TextureWrap wrapV = Texture.TextureWrap.ClampToEdge;
-    private Texture.TextureFilter filterMin = Texture.TextureFilter.Nearest;
-    private Texture.TextureFilter filterMag = Texture.TextureFilter.Nearest;
+    protected VfxFrameBufferPool bufferPool = null;
 
-    public void resize(int width, int height) {
-        this.bufDst.initialize(width, height);
-        this.bufSrc.initialize(width, height);
-        rebind();
+    public VfxPingPongWrapper() {
+    }
+
+    public VfxPingPongWrapper(VfxFrameBufferPool bufferPool) {
+        initialize(bufferPool);
+    }
+
+    public VfxPingPongWrapper(VfxFrameBuffer bufDst, VfxFrameBuffer bufSrc) {
+        initialize(bufSrc, bufDst);
+    }
+
+    public VfxPingPongWrapper initialize(VfxFrameBufferPool bufferPool) {
+        this.bufferPool = bufferPool;
+        VfxFrameBuffer bufDst = bufferPool.obtain();
+        VfxFrameBuffer bufSrc = bufferPool.obtain();
+        return initialize(bufDst, bufSrc);
+    }
+
+    public VfxPingPongWrapper initialize(VfxFrameBuffer bufSrc, VfxFrameBuffer bufDst) {
+        if (capturing) {
+            throw new IllegalStateException("Ping pong buffer cannot be initialized during capturing stage. It seems the instance is already initialized.");
+        }
+        if (isInitialized()) {
+            reset();
+        }
+        this.bufSrc = bufSrc;
+        this.bufDst = bufDst;
+        return this;
     }
 
     @Override
-    public void dispose() {
-        this.bufDst.dispose();
-        this.bufSrc.dispose();
+    public void reset() {
+        if (capturing) {
+            throw new IllegalStateException("Ping pong buffer cannot be reset during capturing stage. Forgot to call end()?");
+        }
+
+        // If the buffers were create using VfxBufferPool, we shall free them properly.
+        if (bufferPool != null) {
+            bufferPool.free(bufSrc);
+            bufferPool.free(bufDst);
+            bufferPool = null;
+        }
+
+        bufSrc = null;
+        bufDst = null;
     }
 
-    /**
-     * Restores buffer OpenGL parameters. Could be useful in case of OpenGL context loss.
-     */
-    public void rebind() {
-        // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
-        if (bufDst.getFbo() != null) {
-            Texture texture = bufDst.getFbo().getColorBufferTexture();
-            texture.setWrap(wrapU, wrapV);
-            texture.setFilter(filterMin, filterMag);
-        }
-        if (bufSrc.getFbo() != null) {
-            Texture texture = bufSrc.getFbo().getColorBufferTexture();
-            texture.setWrap(wrapU, wrapV);
-            texture.setFilter(filterMin, filterMag);
-        }
+    public boolean isInitialized() {
+        return bufDst != null && bufSrc != null;
     }
 
     /**
@@ -147,49 +177,12 @@ public abstract class PingPongBuffer implements Disposable {
         return bufDst;
     }
 
-    public void setTextureParams(Texture.TextureWrap u, Texture.TextureWrap v, Texture.TextureFilter min, Texture.TextureFilter mag) {
-        wrapU = u;
-        wrapV = v;
-        filterMin = min;
-        filterMag = mag;
-
-        Texture texDst = bufDst.getFbo().getColorBufferTexture();
-        texDst.setWrap(wrapU, wrapV);
-        texDst.setFilter(filterMin, filterMag);
-
-        Texture texSrc = bufSrc.getFbo().getColorBufferTexture();
-        texSrc.setWrap(wrapU, wrapV);
-        texSrc.setFilter(filterMin, filterMag);
-    }
-
-    /** @see VfxFrameBuffer#addRenderer(VfxFrameBuffer.Renderer) ) */
-    public void addRenderer(VfxFrameBuffer.Renderer renderer) {
-        bufDst.addRenderer(renderer);
-        bufSrc.addRenderer(renderer);
-    }
-
-    /** @see VfxFrameBuffer#removeRenderer(VfxFrameBuffer.Renderer) () */
-    public void removeRenderer(VfxFrameBuffer.Renderer renderer) {
-        bufDst.removeRenderer(renderer);
-        bufSrc.removeRenderer(renderer);
-    }
-
-    /** @see VfxFrameBuffer#clearRenderers() */
-    public void clearRenderers() {
-        bufDst.clearRenderers();
-        bufSrc.clearRenderers();
-    }
-
-    /**
-     * Cleans up managed {@link VfxFrameBuffer}s' with specified color.
-     */
+    /** Cleans up managed {@link VfxFrameBuffer}s' with the color specified. */
     public void cleanUpBuffers(Color clearColor) {
         cleanUpBuffers(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     }
 
-    /**
-     * Cleans up managed {@link VfxFrameBuffer}s' with specified color.
-     */
+    /** Cleans up managed {@link VfxFrameBuffer}s' with the color specified. */
     public void cleanUpBuffers(float r, float g, float b, float a) {
         final boolean wasCapturing = this.capturing;
 

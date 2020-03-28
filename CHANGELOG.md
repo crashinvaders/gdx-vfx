@@ -12,3 +12,6 @@
 - The concept of _Filters_ was eliminated, there are only _Effects_ now. Although not every effect is made for `VfxManager` chaining render (read below).
 - Any effect that wants to participate in `VfxManager`'s effects chain, should implement `ChainVfxEffect` interface. A good example of non-chain effect is `CopyEffect` or `MixEffect`, they are more like utility effect units, provide specific render capabilities and can take part in complex effect pipelines (e.g. `CompositeVfxEffect`).   
 - `NoiseEffect` was removed due to similarities with `FilmGrainEffect`.
+- `PingPongBuffer` replaced with `VfxPingPongWrapper` which is a lightweight version and doesn't manage its own pair of `VfxFrameBuffer`, but instead works only with the provided instances.
+`VfxPingPongWrapper` can be integrated with `VfxFrameBufferPool`.
+- `VfxFrameBufferPool` that acts like a regular LibGDX `Pool`, but with a twist... It manages all the created `VfxFrameBuffer` instances internally.  

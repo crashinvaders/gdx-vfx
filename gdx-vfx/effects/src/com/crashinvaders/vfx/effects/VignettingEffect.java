@@ -18,11 +18,11 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class VignettingEffect extends ShaderVfxEffect implements ChainVfxEffect {
+public class VignettingEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static final String TEXTURE0 = "u_texture0";
     private static final String VIGNETTE_INTENSITY = "u_vignetteIntensity";
@@ -72,8 +72,8 @@ public final class VignettingEffect extends ShaderVfxEffect implements ChainVfxE
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+        render(context, buffers.getSrcBuffer(), buffers.getDstBuffer());
     }
 
     public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {

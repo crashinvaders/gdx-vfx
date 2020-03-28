@@ -17,10 +17,8 @@
 package com.crashinvaders.vfx.scene2d;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.crashinvaders.vfx.VfxManager;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 public class VfxWidgetGroup extends WidgetGroup {
@@ -90,13 +89,16 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        final VfxPingPongWrapper buffers = vfxManager.getPingPongWrapper();
+
         batch.end();
 
         performPendingResize();
 
         vfxManager.cleanUpBuffers();
 
-        vfxManager.getPingPongBuffer().addRenderer(rendererAdapter);
+        buffers.getSrcBuffer().addRenderer(rendererAdapter);
+        buffers.getDstBuffer().addRenderer(rendererAdapter);
         vfxManager.beginCapture();
 
         batch.begin();
@@ -107,7 +109,8 @@ public class VfxWidgetGroup extends WidgetGroup {
         batch.end();
 
         vfxManager.endCapture();
-        vfxManager.getPingPongBuffer().removeRenderer(rendererAdapter);
+        buffers.getSrcBuffer().removeRenderer(rendererAdapter);
+        buffers.getDstBuffer().removeRenderer(rendererAdapter);
 
         vfxManager.applyEffects();
 
@@ -217,7 +220,6 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     private class CustomRendererAdapter implements VfxFrameBuffer.Renderer {
         private final Matrix4 preservedProjection = new Matrix4();
-
         private final Matrix4 ownProjection = new Matrix4();
 
         private Batch batch;

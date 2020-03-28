@@ -36,7 +36,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
@@ -44,7 +44,7 @@ import com.crashinvaders.vfx.gl.VfxGLUtils;
  * Lens flare effect.
  * @author Toni Sagrista
  **/
-public final class LensFlareEffect extends ShaderVfxEffect implements ChainVfxEffect {
+public class LensFlareEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_LIGHT_POSITION = "u_lightPosition";
@@ -84,8 +84,8 @@ public final class LensFlareEffect extends ShaderVfxEffect implements ChainVfxEf
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+        render(context, buffers.getSrcBuffer(), buffers.getDstBuffer());
     }
 
     public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {

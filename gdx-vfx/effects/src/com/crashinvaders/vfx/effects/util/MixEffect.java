@@ -20,13 +20,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.ShaderVfxEffect;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Mixes two frames with a factor of {@link #mixFactor}.
  * Second texture should be provided via {@link #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer)} overload. */
-public final class MixEffect extends ShaderVfxEffect {
+public class MixEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_TEXTURE1 = "u_texture1";

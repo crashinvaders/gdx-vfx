@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.util.CopyEffect;
 import com.crashinvaders.vfx.effects.util.MixEffect;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferQueue;
 
@@ -71,17 +71,17 @@ public class MotionBlurEffect extends CompositeVfxEffect implements ChainVfxEffe
 	}
 
 	@Override
-	public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+	public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
 		VfxFrameBuffer prevFrame = this.localBuffer.changeToNext();
 		if (!firstFrameRendered) {
 			// Mix filter requires two frames to render, so we gonna skip the first call.
-			copyFilter.render(context, pingPongBuffer.getSrcBuffer(), prevFrame);
-			pingPongBuffer.swap();
+			copyFilter.render(context, buffers.getSrcBuffer(), prevFrame);
+			buffers.swap();
 			firstFrameRendered = true;
 			return;
 		}
 
-		mixFilter.render(context, pingPongBuffer.getSrcBuffer(), prevFrame, pingPongBuffer.getDstBuffer());
-		copyFilter.render(context, pingPongBuffer.getDstBuffer(), prevFrame);
+		mixFilter.render(context, buffers.getSrcBuffer(), prevFrame, buffers.getDstBuffer());
+		copyFilter.render(context, buffers.getDstBuffer(), prevFrame);
 	}
 }

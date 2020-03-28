@@ -18,11 +18,11 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class GaussianBlurEffect extends AbstractVfxEffect implements ChainVfxEffect {
+public class GaussianBlurEffect extends AbstractVfxEffect implements ChainVfxEffect {
 
     private enum Tap {
         Tap3x3(1),
@@ -87,12 +87,12 @@ public final class GaussianBlurEffect extends AbstractVfxEffect implements Chain
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
         for (int i = 0; i < this.passes; i++) {
-            convolve.render(context, pingPongBuffer);
+            convolve.render(context, buffers);
 
             if (i < this.passes - 1) {
-                pingPongBuffer.swap();
+                buffers.swap();
             }
         }
     }
@@ -325,8 +325,8 @@ public final class GaussianBlurEffect extends AbstractVfxEffect implements Chain
         }
 
         @Override
-        public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-            render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+        public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+            render(context, buffers.getSrcBuffer(), buffers.getDstBuffer());
         }
 
         public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
@@ -365,10 +365,10 @@ public final class GaussianBlurEffect extends AbstractVfxEffect implements Chain
         }
 
         @Override
-        public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-            hor.render(context, pingPongBuffer);
-            pingPongBuffer.swap();
-            vert.render(context, pingPongBuffer);
+        public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+            hor.render(context, buffers);
+            buffers.swap();
+            vert.render(context, buffers);
         }
 
         public int getRadius() {

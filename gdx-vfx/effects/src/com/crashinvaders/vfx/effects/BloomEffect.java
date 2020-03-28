@@ -21,12 +21,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.GaussianBlurEffect.BlurType;
+import com.crashinvaders.vfx.effects.util.CombineEffect;
 import com.crashinvaders.vfx.effects.util.CopyEffect;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.effects.util.GammaThresholdEffect;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class BloomEffect extends CompositeVfxEffect implements ChainVfxEffect {
+public class BloomEffect extends CompositeVfxEffect implements ChainVfxEffect {
 
     private final CopyEffect copy;
     private final GaussianBlurEffect blur;
@@ -50,22 +52,22 @@ public final class BloomEffect extends CompositeVfxEffect implements ChainVfxEff
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
         // Preserve the input buffer data.
         VfxFrameBuffer origSrc = context.getBufferPool().obtain();
-        copy.render(context, pingPongBuffer.getSrcBuffer(), origSrc);
+        copy.render(context, buffers.getSrcBuffer(), origSrc);
 
         boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         // High-pass filter
         // Only areas with pixels >= threshold are blit.
-        threshold.render(context, pingPongBuffer);
-        pingPongBuffer.swap();
+        threshold.render(context, buffers);
+        buffers.swap();
 
         // Blur pass
-        blur.render(context, pingPongBuffer);
-        pingPongBuffer.swap();
+        blur.render(context, buffers);
+        buffers.swap();
 
         if (blending || blendingWasEnabled) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -77,7 +79,7 @@ public final class BloomEffect extends CompositeVfxEffect implements ChainVfxEff
         }
 
         // Mix original scene and blurred result).
-        combine.render(context, origSrc, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+        combine.render(context, origSrc, buffers.getSrcBuffer(), buffers.getDstBuffer());
 
         context.getBufferPool().free(origSrc);
     }

@@ -14,15 +14,15 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.effects;
+package com.crashinvaders.vfx.effects.util;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.effects.ShaderVfxEffect;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class CombineEffect extends ShaderVfxEffect {
+public class CombineEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_TEXTURE1 = "u_texture1";

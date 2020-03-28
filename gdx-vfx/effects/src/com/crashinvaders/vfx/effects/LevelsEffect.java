@@ -33,12 +33,12 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxRenderContext;
-import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Controls levels of brightness and contrast. */
-public final class LevelsEffect extends ShaderVfxEffect implements ChainVfxEffect {
+public class LevelsEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static final String Texture = "u_texture0";
     private static final String Brightness = "u_brightness";
@@ -74,8 +74,8 @@ public final class LevelsEffect extends ShaderVfxEffect implements ChainVfxEffec
     }
 
     @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public void render(VfxRenderContext context, VfxPingPongWrapper buffers) {
+        render(context, buffers.getSrcBuffer(), buffers.getDstBuffer());
     }
 
     public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {

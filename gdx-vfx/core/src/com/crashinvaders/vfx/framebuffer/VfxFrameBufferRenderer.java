@@ -77,12 +77,14 @@ public class VfxFrameBufferRenderer implements Disposable {
         shader.end();
     }
 
-    public void renderToScreen(VfxFrameBuffer input) {
-        renderToScreen(input, 0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+    public void renderToScreen(VfxFrameBuffer srcBuf) {
+        renderToScreen(srcBuf, 0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
     }
 
-    public void renderToScreen(VfxFrameBuffer input, int x, int y, int width, int height) {
-        input.getFbo().getColorBufferTexture().bind(0);
+    public void renderToScreen(VfxFrameBuffer srcBuf, int x, int y, int width, int height) {
+        srcBuf.getFbo().getColorBufferTexture().bind(0);
+
+        // Update viewport to fit the area specified.
         Gdx.graphics.getGL20().glViewport(x, y, width, height);
 
         shader.begin();
@@ -90,16 +92,16 @@ public class VfxFrameBufferRenderer implements Disposable {
         shader.end();
     }
 
-    public void renderToFbo(VfxFrameBuffer input, VfxFrameBuffer output) {
-        input.getFbo().getColorBufferTexture().bind(0);
+    public void renderToFbo(VfxFrameBuffer srcBuf, VfxFrameBuffer dstBuf) {
+        srcBuf.getFbo().getColorBufferTexture().bind(0);
 
         // Viewport will be set from VfxFrameBuffer#begin() method.
 
-        output.begin();
+        dstBuf.begin();
         shader.begin();
         mesh.render(shader);
         shader.end();
-        output.end();
+        dstBuf.end();
     }
 
     public ViewportQuadMesh getMesh() {
