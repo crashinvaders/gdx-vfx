@@ -18,6 +18,9 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /**
@@ -25,7 +28,7 @@ import com.crashinvaders.vfx.gl.VfxGLUtils;
  * @author Toni Sagrista
  * @author metaphore
  */
-public final class NfaaEffect extends ShaderVfxEffect {
+public final class NfaaEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_VIEWPORT_INVERSE = "u_viewportInverse";
@@ -53,5 +56,17 @@ public final class NfaaEffect extends ShaderVfxEffect {
         super.resize(width, height);
         this.viewportInverse.set(1f / width, 1f / height);
         setUniform(U_VIEWPORT_INVERSE, this.viewportInverse);
+    }
+
+    @Override
+    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    }
+
+    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+        // Bind src buffer's texture as a primary one.
+        src.getTexture().bind(TEXTURE_HANDLE0);
+        // Apply shader effect and render result to dst buffer.
+        renderShader(context, dst);
     }
 }

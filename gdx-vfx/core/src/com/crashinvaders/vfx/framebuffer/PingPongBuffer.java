@@ -23,18 +23,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
- * Encapsulates a framebuffer with the ability to ping-pong between two buffers.
+ * Encapsulates a pair of {@link VfxFrameBuffer}s with the ability to swap between them.
  * <p>
- * Upon {@link #begin()} the buffer is reset to a known initial state, this is usually done just before the first usage of the
- * buffer.
+ * Upon {@link #begin()} the buffer is reset to a known initial state, this is usually done just before the first usage of the buffer.
+ * Subsequent {@link #swap()} calls will initiate writing to the next available buffer, effectively ping-ponging between the two.
+ * Chained rendering will be possible by retrieving the
+ * necessary buffers via {@link #getSrcBuffer()}, {@link #getDstBuffer()}, {@link #getSrcTexture()} or
+ * {@link #getDstTexture}.
  * <p>
- * Subsequent {@link #swap()} calls will initiate writing to the next available buffer, returning the previously used one,
- * effectively ping-ponging between the two. Until {@link #end()} is called, chained rendering will be possible by retrieving the
- * necessary buffers via {@link #getSrcTexture()}, {@link #getSrcBuffer()}, {@link #getDstTexture()} or
- * {@link #getDstBuffer}.
+ * When rendering is finished, {@link #end()} should be called to stop capturing.
  * <p>
- * When finished, {@link #end()} should be called to stop capturing. When the OpenGL context is lost, {@link #rebind()} should be
- * called.
+ * When the OpenGL context is lost, {@link #rebind()} should be called.
  *
  * @author metaphore
  */

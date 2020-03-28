@@ -97,6 +97,10 @@ public class VfxFrameBuffer implements Disposable {
         return fbo;
     }
 
+    public Texture getTexture() {
+        return fbo == null ? null : fbo.getColorBufferTexture();
+    }
+
     public void initialize(int width, int height) {
         if (initialized) { dispose(); }
 

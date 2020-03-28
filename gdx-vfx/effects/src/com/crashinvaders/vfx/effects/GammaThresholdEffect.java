@@ -17,10 +17,13 @@
 package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
+import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
 /** Keeps only values brighter than the specified gamma. */
-public final class GammaThresholdEffect extends ShaderVfxEffect {
+public final class GammaThresholdEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
     private static final String U_THRESHOLD = "u_threshold";
@@ -44,6 +47,18 @@ public final class GammaThresholdEffect extends ShaderVfxEffect {
         program.setUniformf(U_THRESHOLD, gamma);
         program.setUniformf(U_THRESHOLD_INV, 1f / (1f - gamma));
         program.end();
+    }
+
+    @Override
+    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    }
+
+    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+        // Bind src buffer's texture as a primary one.
+        src.getTexture().bind(TEXTURE_HANDLE0);
+        // Apply shader effect and render result to dst buffer.
+        renderShader(context, dst);
     }
 
     public void setGamma(float gamma) {

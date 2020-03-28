@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.crashinvaders.vfx.effects;
+package com.crashinvaders.vfx.effects.util;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.effects.ShaderVfxEffect;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
@@ -52,21 +52,10 @@ public final class MixEffect extends ShaderVfxEffect {
         program.end();
     }
 
-    @Override
-    @Deprecated
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
-    }
-
-    @Override
-    @Deprecated
-    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
-    }
-
     public void render(VfxRenderContext context, VfxFrameBuffer src0, VfxFrameBuffer src1, VfxFrameBuffer dst) {
-        src1.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE1);
-        super.render(context, src0, dst);
+        src0.getTexture().bind(TEXTURE_HANDLE0);
+        src1.getTexture().bind(TEXTURE_HANDLE1);
+        renderShader(context, dst);
     }
 
     public float getMixFactor() {

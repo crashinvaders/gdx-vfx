@@ -16,10 +16,13 @@
 
 package com.crashinvaders.vfx.effects;
 
+import com.badlogic.gdx.Gdx;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
+import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class GaussianBlurEffect extends AbstractVfxEffect {
+public final class GaussianBlurEffect extends AbstractVfxEffect implements ChainVfxEffect {
 
     private enum Tap {
         Tap3x3(1),
@@ -281,6 +284,111 @@ public final class GaussianBlurEffect extends AbstractVfxEffect {
 
             outOffsetV[j + X] = 0;
             outOffsetV[j + Y] = i * dy;
+        }
+    }
+
+    public static final class Convolve1DEffect extends ShaderVfxEffect implements ChainVfxEffect {
+
+        private static final String U_TEXTURE = "u_texture0";
+        private static final String U_SAMPLE_WEIGHTS = "u_sampleWeights";
+        private static final String U_SAMPLE_OFFSETS = "u_sampleOffsets";
+
+        public int length;
+        public float[] weights;
+        public float[] offsets;
+
+        public Convolve1DEffect(int length) {
+            this(length, new float[length], new float[length * 2]);
+        }
+
+        public Convolve1DEffect(int length, float[] weightsData) {
+            this(length, weightsData, new float[length * 2]);
+        }
+
+        public Convolve1DEffect(int length, float[] weightsData, float[] offsets) {
+            super(VfxGLUtils.compileShader(
+                    Gdx.files.classpath("shaders/screenspace.vert"),
+                    Gdx.files.classpath("shaders/convolve-1d.frag"),
+                    "#define LENGTH " + length));
+            setWeights(length, weightsData, offsets);
+            rebind();
+        }
+
+        @Override
+        public void rebind() {
+            super.rebind();
+            program.begin();
+            program.setUniformi(U_TEXTURE, TEXTURE_HANDLE0);
+            program.setUniform2fv(U_SAMPLE_OFFSETS, offsets, 0, length * 2); // LibGDX asks for number of floats, NOT number of elements.
+            program.setUniform1fv(U_SAMPLE_WEIGHTS, weights, 0, length);
+            program.end();
+        }
+
+        @Override
+        public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+            render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+        }
+
+        public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+            // Bind src buffer's texture as a primary one.
+            src.getTexture().bind(TEXTURE_HANDLE0);
+            // Apply shader effect.
+            renderShader(context, dst);
+        }
+
+        public void setWeights(int length, float[] weights, float[] offsets) {
+            this.weights = weights;
+            this.length = length;
+            this.offsets = offsets;
+        }
+    }
+
+    /** Encapsulates a separable 2D convolution kernel filter. */
+    public static final class Convolve2DEffect extends CompositeVfxEffect implements ChainVfxEffect {
+
+        private final int radius;
+        private final int length; // NxN taps filter, w/ N=length
+        private final float[] weights, offsetsHor, offsetsVert;
+
+        private Convolve1DEffect hor, vert;
+
+        public Convolve2DEffect(int radius) {
+            this.radius = radius;
+            length = (radius * 2) + 1;
+
+            hor = register(new Convolve1DEffect(length));
+            vert = register(new Convolve1DEffect(length, hor.weights));
+
+            weights = hor.weights;
+            offsetsHor = hor.offsets;
+            offsetsVert = vert.offsets;
+        }
+
+        @Override
+        public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+            hor.render(context, pingPongBuffer);
+            pingPongBuffer.swap();
+            vert.render(context, pingPongBuffer);
+        }
+
+        public int getRadius() {
+            return radius;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public float[] getWeights() {
+            return weights;
+        }
+
+        public float[] getOffsetsHor() {
+            return offsetsHor;
+        }
+
+        public float[] getOffsetsVert() {
+            return offsetsVert;
         }
     }
 }

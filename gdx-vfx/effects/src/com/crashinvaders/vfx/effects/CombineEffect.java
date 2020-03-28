@@ -17,7 +17,6 @@
 package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
@@ -58,21 +57,10 @@ public final class CombineEffect extends ShaderVfxEffect {
         program.end();
     }
 
-    @Override
-    @Deprecated
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
-    }
-
-    @Override
-    @Deprecated
-    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
-        throw new UnsupportedOperationException("Use #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer) overload.");
-    }
-
     public void render(VfxRenderContext context, VfxFrameBuffer src0, VfxFrameBuffer src1, VfxFrameBuffer dst) {
-        src1.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE1);
-        super.render(context, src0, dst);
+        src0.getTexture().bind(TEXTURE_HANDLE0);
+        src1.getTexture().bind(TEXTURE_HANDLE1);
+        renderShader(context, dst);
     }
 
     public float getSource1Intensity() {

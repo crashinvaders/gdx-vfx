@@ -19,16 +19,17 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.effects.util.CopyEffect;
+import com.crashinvaders.vfx.effects.util.MixEffect;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferQueue;
 
 /** A motion blur effect which draws the last frame with a lower opacity.
  * The result is then stored as the next last frame to create the trail effect. */
-public class MotionBlurEffect extends CompositeVfxEffect {
+public class MotionBlurEffect extends CompositeVfxEffect implements ChainVfxEffect {
 
 	private final MixEffect mixFilter;
 	private final CopyEffect copyFilter;

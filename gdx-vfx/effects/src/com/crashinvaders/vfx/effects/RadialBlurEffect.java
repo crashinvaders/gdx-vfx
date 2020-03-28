@@ -19,9 +19,12 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
+import com.crashinvaders.vfx.VfxRenderContext;
+import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
+import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class RadialBlurEffect extends ShaderVfxEffect {
+public final class RadialBlurEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     private static String U_TEXTURE = "u_texture0";
     private static String U_BLUR_DIV = "u_blurDiv";
@@ -55,6 +58,18 @@ public final class RadialBlurEffect extends ShaderVfxEffect {
         program.setUniformf(U_OFFSET_Y, originY);
         program.setUniformf(U_ZOOM, zoom);
         program.end();
+    }
+
+    @Override
+    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
+        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    }
+
+    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+        // Bind src buffer's texture as a primary one.
+        src.getTexture().bind(TEXTURE_HANDLE0);
+        // Apply shader effect and render result to dst buffer.
+        renderShader(context, dst);
     }
 
     public float getOriginX() {

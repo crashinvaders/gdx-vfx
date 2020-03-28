@@ -19,14 +19,14 @@ package com.crashinvaders.vfx.effects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.GaussianBlurEffect.BlurType;
+import com.crashinvaders.vfx.effects.util.CopyEffect;
 import com.crashinvaders.vfx.framebuffer.PingPongBuffer;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-public final class BloomEffect extends CompositeVfxEffect {
+public final class BloomEffect extends CompositeVfxEffect implements ChainVfxEffect {
 
     private final CopyEffect copy;
     private final GaussianBlurEffect blur;
@@ -58,8 +58,8 @@ public final class BloomEffect extends CompositeVfxEffect {
         boolean blendingWasEnabled = VfxGLUtils.isGLEnabled(GL20.GL_BLEND);
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-        // Threshold / high-pass filter
-        // Only areas with pixels >= threshold are blit to smaller FBO.
+        // High-pass filter
+        // Only areas with pixels >= threshold are blit.
         threshold.render(context, pingPongBuffer);
         pingPongBuffer.swap();
 

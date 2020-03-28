@@ -32,6 +32,8 @@ import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
+import com.crashinvaders.vfx.effects.util.CopyEffect;
+import com.crashinvaders.vfx.effects.util.MixEffect;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.LmlParser;
 
@@ -243,9 +245,9 @@ public class EffectRosterViewController extends LmlViewController {
 
     private static class EffectEntryModel implements Disposable {
         private final String name;
-        private final VfxEffect effect;
+        private final ChainVfxEffect effect;
 
-        public EffectEntryModel(String name, VfxEffect effect) {
+        public EffectEntryModel(String name, ChainVfxEffect effect) {
             this.name = name;
             this.effect = effect;
         }
@@ -259,7 +261,7 @@ public class EffectRosterViewController extends LmlViewController {
             return name;
         }
 
-        public VfxEffect getEffect() {
+        public ChainVfxEffect getEffect() {
             return effect;
         }
     }

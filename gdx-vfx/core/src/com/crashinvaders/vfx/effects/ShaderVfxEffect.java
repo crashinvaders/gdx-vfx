@@ -33,6 +33,10 @@ public abstract class ShaderVfxEffect extends AbstractVfxEffect {
     public static final int TEXTURE_HANDLE1 = 1;
     public static final int TEXTURE_HANDLE2 = 2;
     public static final int TEXTURE_HANDLE3 = 3;
+    public static final int TEXTURE_HANDLE4 = 4;
+    public static final int TEXTURE_HANDLE5 = 5;
+    public static final int TEXTURE_HANDLE6 = 6;
+    public static final int TEXTURE_HANDLE7 = 7;
 
     protected final ShaderProgram program;
 
@@ -60,27 +64,19 @@ public abstract class ShaderVfxEffect extends AbstractVfxEffect {
         // Do nothing by default.
     }
 
-    @Override
-    public void render(VfxRenderContext context, PingPongBuffer pingPongBuffer) {
-        render(context, pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
+    public ShaderProgram getProgram() {
+        return program;
     }
 
-    public void render(VfxRenderContext context, VfxFrameBuffer src, VfxFrameBuffer dst) {
+    protected void renderShader(VfxRenderContext context, VfxFrameBuffer dst) {
         boolean manualBufferBind = !dst.isDrawing();
         if (manualBufferBind) { dst.begin(); }
-
-        // Bind src buffer's texture as a primary one.
-        src.getFbo().getColorBufferTexture().bind(TEXTURE_HANDLE0);
 
         program.begin();
         context.getViewportMesh().render(program);
         program.end();
 
         if (manualBufferBind) { dst.end(); }
-    }
-
-    public ShaderProgram getProgram() {
-        return program;
     }
 
     /**
