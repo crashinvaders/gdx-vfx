@@ -1,4 +1,4 @@
-[current]
+[0.5.0]
 - GWT module launcher no longer should make a call to `GwtVfxGlExtension#initialize()`. Revisit GWT integration guide on the wiki page.
 - Filters/effects cleanup. Some getters/setters were renamed.
 - `VfxManager` no longer cleans up the buffers when begin capture. You should make an explicit call to `VfxManager#cleanUpBuffers()` in order to reset previous result before start capturing a new frame.
