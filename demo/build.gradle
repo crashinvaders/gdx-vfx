@@ -30,9 +30,12 @@ buildscript {
     }
 }
 
-allprojects {
+subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
+
+    version = '1.0'
+    ext.appName = 'gdx-vfx'
 }
 
 configure(subprojects - project(':demo:android')) {
@@ -43,9 +46,4 @@ configure(subprojects - project(':demo:android')) {
 
     sourceSets.main.java.srcDirs = ["src"]
     sourceSets.main.resources.srcDirs = ["src"]
-}
-
-subprojects {
-    version = '1.0'
-    ext.appName = 'gdx-vfx'
 }

@@ -16,12 +16,11 @@
 
 apply plugin: 'java'
 
-sourceSets.main.java.srcDirs = ['src/']
-sourceSets.main.resources.srcDirs += ['resources/']
-sourceSets.main.resources.srcDirs += ["$rootDir/demo/assets/"]
-
 ext.mainClassName = "com.crashinvaders.vfx.demo.desktop.DesktopLauncher"
 ext.assetsDir = new File("../assets")
+
+sourceSets.main.java.srcDirs = ['src/']
+sourceSets.main.resources.srcDirs = ['resources/', project.assetsDir]
 
 dependencies {
     runtime files('resources')
