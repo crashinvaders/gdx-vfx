@@ -24,8 +24,8 @@ subprojects {
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     ext {
-        projectVersion = '0.5.0'
-        snapshotVersion = true
+        projectVersion = '0.4.3'
+        snapshotVersion = false
         libVersion = "$projectVersion${snapshotVersion ? '-SNAPSHOT' : ''}"
     }
 
