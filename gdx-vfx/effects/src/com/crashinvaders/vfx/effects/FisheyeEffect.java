@@ -33,8 +33,8 @@ public class FisheyeEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public FisheyeEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/fisheye.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/fisheye.frag")));
         rebind();
     }
 

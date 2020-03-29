@@ -307,8 +307,8 @@ public class GaussianBlurEffect extends AbstractVfxEffect implements ChainVfxEff
 
         public Convolve1DEffect(int length, float[] weightsData, float[] offsets) {
             super(VfxGLUtils.compileShader(
-                    Gdx.files.classpath("shaders/screenspace.vert"),
-                    Gdx.files.classpath("shaders/convolve-1d.frag"),
+                    Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                    Gdx.files.classpath("gdxvfx/shaders/convolve-1d.frag"),
                     "#define LENGTH " + length));
             setWeights(length, weightsData, offsets);
             rebind();

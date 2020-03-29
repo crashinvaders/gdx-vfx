@@ -37,8 +37,8 @@ public class ZoomEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public ZoomEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/zoom.vert"),
-                Gdx.files.classpath("shaders/zoom.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/zoom.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/zoom.frag")));
         rebind();
     }
 

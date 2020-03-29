@@ -36,8 +36,8 @@ public class MixEffect extends ShaderVfxEffect {
 
     public MixEffect(Method method) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/mix.frag"),
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/mix.frag"),
                 "#define METHOD " + method.name()));
         rebind();
     }

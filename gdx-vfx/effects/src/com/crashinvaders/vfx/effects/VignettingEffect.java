@@ -46,8 +46,8 @@ public class VignettingEffect extends ShaderVfxEffect implements ChainVfxEffect 
 
     public VignettingEffect(boolean controlSaturation) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/vignetting.frag"),
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/vignetting.frag"),
                 (controlSaturation ? "#define CONTROL_SATURATION" : "")));
         this.saturationEnabled = controlSaturation;
         rebind();

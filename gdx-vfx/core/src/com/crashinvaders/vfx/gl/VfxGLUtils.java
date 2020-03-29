@@ -36,6 +36,14 @@ public class VfxGLUtils {
     private static final ByteBuffer tmpByteBuffer = BufferUtils.newByteBuffer(32);
     private static final VfxGlViewport tmpViewport = new VfxGlViewport();
 
+    /** The code that is always added to the vertex shader code.
+     * Note that this is added as-is, you should include a newline (`\n`) if needed. */
+    public static String prependVertexCode = "";
+
+    /** The code that is always added to every fragment shader code.
+     * Note that this is added as-is, you should include a newline (`\n`) if needed. */
+    public static String prependFragmentCode = "";
+
     //TODO Remove this after https://github.com/libgdx/libgdx/issues/4688 gets resolved
     /** This field is used to provide custom GL calls implementation. */
     public static VfxGlExtension glExtension;
@@ -90,10 +98,12 @@ public class VfxGLUtils {
         sb.append("...");
         Gdx.app.log(TAG, sb.toString());
 
-        String vpSrc = vertexFile.readString();
-        String fpSrc = fragmentFile.readString();
+        String prependVert = prependVertexCode + defines;
+        String prependFrag = prependFragmentCode + defines;
+        String srcVert = vertexFile.readString();
+        String srcFrag = fragmentFile.readString();
 
-        ShaderProgram shader = new ShaderProgram(defines + "\n" + vpSrc, defines + "\n" + fpSrc);
+        ShaderProgram shader = new ShaderProgram(prependVert + "\n" + srcVert, prependFrag + "\n" + srcFrag);
 
         if (!shader.isCompiled()) {
             throw new GdxRuntimeException("Shader compile error: " + vertexFile.name() + "/" + fragmentFile.name() + "\n" + shader.getLog());

@@ -59,8 +59,8 @@ public class LensFlareEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public LensFlareEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/lens-flare.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/lens-flare.frag")));
         rebind();
     }
 

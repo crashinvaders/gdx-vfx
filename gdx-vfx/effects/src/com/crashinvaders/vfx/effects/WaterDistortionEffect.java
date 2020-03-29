@@ -35,8 +35,8 @@ public class WaterDistortionEffect extends ShaderVfxEffect implements ChainVfxEf
 
     public WaterDistortionEffect(float amount, float speed) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/water-distortion.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/water-distortion.frag")));
         this.amount = amount;
         this.speed = speed;
         rebind();

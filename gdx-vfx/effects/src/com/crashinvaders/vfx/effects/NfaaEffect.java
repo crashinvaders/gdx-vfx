@@ -37,8 +37,8 @@ public class NfaaEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public NfaaEffect(boolean supportAlpha) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/nfaa.frag"),
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/nfaa.frag"),
                 supportAlpha ? "#define SUPPORT_ALPHA" : ""));
     }
 

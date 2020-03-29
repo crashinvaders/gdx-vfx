@@ -35,8 +35,8 @@ public class GammaThresholdEffect extends ShaderVfxEffect implements ChainVfxEff
 
     public GammaThresholdEffect(Type type) {
         super(VfxGLUtils.compileShader(
-        		Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/gamma-threshold.frag"),
+        		Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+				Gdx.files.classpath("gdxvfx/shaders/gamma-threshold.frag"),
                 "#define THRESHOLD_TYPE " + type.name()));
         rebind();
     }

@@ -33,8 +33,8 @@ public class RadialDistortionEffect extends ShaderVfxEffect implements ChainVfxE
 
 	public RadialDistortionEffect() {
 		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/radial-distortion.frag")));
+				Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+				Gdx.files.classpath("gdxvfx/shaders/radial-distortion.frag")));
 		rebind();
 	}
 

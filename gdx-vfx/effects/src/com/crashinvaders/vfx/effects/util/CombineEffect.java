@@ -36,8 +36,8 @@ public class CombineEffect extends ShaderVfxEffect {
 
     public CombineEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/combine.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/combine.frag")));
         s1i = 1f;
         s2i = 1f;
         s1s = 1f;

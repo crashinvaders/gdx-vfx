@@ -31,8 +31,8 @@ public class ChromaticAberrationEffect extends ShaderVfxEffect implements ChainV
 
     public ChromaticAberrationEffect(int passes) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/chromatic-aberration.frag"),
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/chromatic-aberration.frag"),
                 "#define PASSES " + passes));
         rebind();
     }

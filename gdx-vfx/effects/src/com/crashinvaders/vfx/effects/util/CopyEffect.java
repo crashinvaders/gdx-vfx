@@ -30,8 +30,8 @@ public class CopyEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public CopyEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/copy.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/copy.frag")));
         rebind();
     }
 

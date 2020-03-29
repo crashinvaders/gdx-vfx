@@ -55,8 +55,8 @@ public class LevelsEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public LevelsEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/levels.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/levels.frag")));
         rebind();
     }
 

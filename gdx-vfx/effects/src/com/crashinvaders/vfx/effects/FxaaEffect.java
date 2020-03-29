@@ -48,8 +48,8 @@ public class FxaaEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
 	public FxaaEffect(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha) {
 		super(VfxGLUtils.compileShader(
-				Gdx.files.classpath("shaders/screenspace.vert"),
-				Gdx.files.classpath("shaders/fxaa.frag"),
+				Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+				Gdx.files.classpath("gdxvfx/shaders/fxaa.frag"),
 				supportAlpha ? "#define SUPPORT_ALPHA" : ""));
 		this.fxaaReduceMin = fxaaReduceMin;
 		this.fxaaReduceMul = fxaaReduceMul;

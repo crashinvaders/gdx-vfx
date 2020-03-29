@@ -33,8 +33,8 @@ public class FilmGrainEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public FilmGrainEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/film-grain.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/film-grain.frag")));
         rebind();
     }
 

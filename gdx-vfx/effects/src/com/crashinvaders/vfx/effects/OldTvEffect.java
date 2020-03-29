@@ -34,8 +34,8 @@ public class OldTvEffect extends ShaderVfxEffect implements ChainVfxEffect {
 
     public OldTvEffect() {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/screenspace.vert"),
-                Gdx.files.classpath("shaders/old-tv.frag")));
+                Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/old-tv.frag")));
         rebind();
     }
 

@@ -41,8 +41,8 @@ public class RadialBlurEffect extends ShaderVfxEffect implements ChainVfxEffect 
 
     public RadialBlurEffect(int passes) {
         super(VfxGLUtils.compileShader(
-                Gdx.files.classpath("shaders/radial-blur.vert"),
-                Gdx.files.classpath("shaders/radial-blur.frag"),
+                Gdx.files.classpath("gdxvfx/shaders/radial-blur.vert"),
+                Gdx.files.classpath("gdxvfx/shaders/radial-blur.frag"),
                 "#define PASSES " + passes));
         this.passes = passes;
         rebind();
