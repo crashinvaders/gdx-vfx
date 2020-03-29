@@ -44,7 +44,7 @@ public class VfxViewController extends LmlViewController {
         return canvasRoot;
     }
 
-    @LmlAction Actor createCanvas() {
+    @LmlAction("createCanvas") Actor createCanvas() {
         canvasRoot = new WidgetGroup();
         canvasRoot.setName("canvasRoot");
         canvasRoot.setFillParent(true);

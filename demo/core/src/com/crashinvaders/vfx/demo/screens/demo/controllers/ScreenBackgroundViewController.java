@@ -57,7 +57,7 @@ public class ScreenBackgroundViewController implements ViewController, ActionCon
 
     }
 
-    @LmlAction Drawable createCheckerboardDrawable() {
+    @LmlAction("createCheckerboardDrawable") Drawable createCheckerboardDrawable() {
         Texture texture = assets.get("bg-transparency-tile.png");
         return new TiledDrawable(new TextureRegion(texture));
     }

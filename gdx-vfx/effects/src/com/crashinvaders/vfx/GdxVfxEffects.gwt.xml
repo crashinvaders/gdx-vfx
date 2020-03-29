@@ -25,7 +25,7 @@
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/radial-blur.vert" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/radial-distortion.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/screenspace.vert" />
-	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/threshold.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/gamma-threshold.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/water-distortion.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/vignetting.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/zoom.frag" />

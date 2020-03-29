@@ -244,7 +244,7 @@ public class EffectRosterViewController extends LmlViewController {
 
     public static class EffectEntryViewController {
 
-        @LmlActor Label lblName;
+        @LmlActor("lblName") Label lblName;
 
         private final EffectEntryModel model;
         private final Group viewRoot;

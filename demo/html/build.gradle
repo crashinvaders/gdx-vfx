@@ -14,8 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
-
 apply plugin: 'java'
 apply plugin: "gwt"
 apply plugin: "war"
@@ -34,10 +32,10 @@ gwt {
     devModules 'com.crashinvaders.vfx.demo.GdxDefinitionSuperdev'
     project.webAppDirName = 'webapp'
 
-    compiler {
-        strict = true
-        disableCastChecking = true
-    }
+    compiler.strict = true
+    compiler.disableCastChecking = true
+
+    logLevel = 'INFO'
 }
 
 dependencies {
@@ -50,29 +48,26 @@ dependencies {
     implementation "com.github.czyzby:gdx-kiwi:$lmlVersion:sources"
 }
 
-task startHttpServer () {
+def HttpFileServer server = null
+def httpFilePort = 8080
+task startHttpServer() {
     dependsOn draftCompileGwt
-
     String output = project.buildDir.path + "/gwt/draftOut"
-
     doLast {
         copy {
             from "webapp"
             into output
         }
-
         copy {
             from "war"
             into output
         }
-
-        HttpFileServer server = new SimpleHttpFileServerFactory().start(new File(output), 22088)
-
-        println "Server started in directory " + server.getContentRoot() + ", http://localhost:" + server.getPort()
+        server = new SimpleHttpFileServerFactory().start(new File(output), httpFilePort)
+        println "Server started in directory ${server.getContentRoot()}, http://localhost:${server.getPort()}/index.html"
     }
 }
 
-task superDev (type: GwtSuperDev) {
+task superDev(type: org.wisepersist.gradle.plugins.gwt.GwtSuperDev) {
     dependsOn startHttpServer
     doFirst {
         gwt.modules = gwt.devModules

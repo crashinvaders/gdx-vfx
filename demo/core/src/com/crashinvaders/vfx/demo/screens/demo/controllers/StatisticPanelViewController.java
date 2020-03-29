@@ -30,8 +30,8 @@ import com.github.czyzby.lml.annotation.LmlActor;
 
 public class StatisticPanelViewController extends LmlViewController {
 
-    @LmlActor Label lblFboSize;
-    @LmlActor Label lblFps;
+    @LmlActor("lblFboSize") Label lblFboSize;
+    @LmlActor("lblFps") Label lblFps;
 
     private VfxManager vfxManager;;
 

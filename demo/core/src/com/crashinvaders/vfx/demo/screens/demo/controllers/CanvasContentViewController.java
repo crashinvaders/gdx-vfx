@@ -159,7 +159,7 @@ public class CanvasContentViewController extends LmlViewController {
         }
     }
 
-    @LmlAction void transformVfxCanvas() {
+    @LmlAction("transformVfxCanvas") void transformVfxCanvas() {
         Actor widgetPanel = widgetsRoot.findActor("cwRightPanel");
         widgetPanel.clearActions();
         widgetPanel.setOrigin(Align.center);
@@ -185,12 +185,12 @@ public class CanvasContentViewController extends LmlViewController {
         ));
     }
 
-    @LmlAction void onMatchWidgetSizeChanged(CheckBox checkBox) {
+    @LmlAction("onMatchWidgetSizeChanged") void onMatchWidgetSizeChanged(CheckBox checkBox) {
         boolean checked = checkBox.isChecked();
         vfxGroup.setMatchWidgetSize(checked);
     }
 
-    @LmlAction void onTransparentBackgroundChanged(CheckBox checkBox) {
+    @LmlAction("onTransparentBackgroundChanged") void onTransparentBackgroundChanged(CheckBox checkBox) {
         boolean checked = checkBox.isChecked();
         imgBackground.setVisible(!checked);
     }
