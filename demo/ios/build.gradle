@@ -27,8 +27,8 @@ ext {
 
 dependencies {
     implementation project(":demo:core")
-    implementation "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
-    implementation "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
+    implementation "com.mobidevelop.robovm:robovm-rt:$roboVmVersion"
+    implementation "com.mobidevelop.robovm:robovm-cocoatouch:$roboVmVersion"
     implementation "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
 }

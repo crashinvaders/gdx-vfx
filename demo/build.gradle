@@ -24,9 +24,9 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'org.wisepersist:gwt-gradle-plugin:1.0.9'
-        classpath 'com.android.tools.build:gradle:3.2.0'
-        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$roboVMVersion"
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "org.wisepersist:gwt-gradle-plugin:$gwtPluginVersion"
+        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$roboVmVersion"
     }
 }
 
