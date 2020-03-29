@@ -23,6 +23,7 @@ import com.crashinvaders.vfx.effects.ShaderVfxEffect;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
+//TODO This effect feels like a duplicate of CombineEffect.
 /** Mixes two frames with a factor of {@link #mixFactor}.
  * Second texture should be provided via {@link #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer)} overload. */
 public class MixEffect extends ShaderVfxEffect {

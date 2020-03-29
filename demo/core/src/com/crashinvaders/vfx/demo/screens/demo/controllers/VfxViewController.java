@@ -16,7 +16,6 @@
 
 package com.crashinvaders.vfx.demo.screens.demo.controllers;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -25,7 +24,6 @@ import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.common.lml.CommonLmlParser;
 import com.crashinvaders.vfx.common.viewcontroller.LmlViewController;
 import com.crashinvaders.vfx.common.viewcontroller.ViewControllerManager;
-import com.crashinvaders.vfx.scene2d.IntegerRoundFillContainer;
 import com.crashinvaders.vfx.scene2d.VfxWidgetGroup;
 import com.github.czyzby.lml.annotation.LmlAction;
 
@@ -59,6 +57,6 @@ public class VfxViewController extends LmlViewController {
         vfxManager = vfxGroup.getVfxManager();
         vfxManager.setBlendingEnabled(false);
 
-        return new IntegerRoundFillContainer(vfxGroup);
+        return vfxGroup;
     }
 }

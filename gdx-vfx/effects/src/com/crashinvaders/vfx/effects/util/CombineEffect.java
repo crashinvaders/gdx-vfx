@@ -22,6 +22,7 @@ import com.crashinvaders.vfx.effects.ShaderVfxEffect;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
+//TODO This effect feels like a duplicate of MixEffect.
 public class CombineEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
