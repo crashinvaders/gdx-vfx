@@ -159,36 +159,11 @@ public class EffectRosterViewController extends LmlViewController {
             filter.setPasses(8);
             effectsRoster.add(new EffectEntryModel("Gaussian Blur", filter));
         }
-
-
-//        effectsRoster.addAll(
-//                new EffectEntryModel("Bloom", new BloomEffect(Pixmap.Format.RGBA8888)),
-//                new EffectEntryModel("CRT", new CrtEffect(CrtFilterOld.LineStyle.HORIZONTAL_SMOOTH, 1.3f, 0.8f)
-//                        .setSizeSource(CrtFilterOld.SizeSource.VIEWPORT)),
-//                new EffectEntryModel("Old TV", new OldTvEffect()),
-//                new EffectEntryModel("Noise", new NoiseEffect(0.35f, 2f)),
-//                new EffectEntryModel("Chrom. Abber.", new ChromaticAberrationEffect()),
-//                new EffectEntryModel("Film Grain", new FilmGrainEffect()),
-//                new EffectEntryModel("Gaussian Blur", new GaussianBlurEffect(8, GaussianBlurFilter.BlurType.Gaussian5x5)),
-//                new EffectEntryModel("Motion Blur (MAX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilterOld.BlurFunction.MAX, 0.75f)),
-//                new EffectEntryModel("Motion Blur (MIX)", new MotionBlurEffect(Pixmap.Format.RGBA8888, MotionBlurFilterOld.BlurFunction.MIX, 0.75f)),
-//                new EffectEntryModel("Radial Blur", new RadialBlurEffect(8)),
-//                new EffectEntryModel("Curvature", new CurvatureEffect()),
-//                new EffectEntryModel("Lens Flare", new LensFlareEffect()
-//                        .setIntensity(10f)),
-//                new EffectEntryModel("Vignette", new VignetteEffect(false)),
-//                new EffectEntryModel("Zoomer", new ZoomerEffect(1.2f)),
-//                new EffectEntryModel("FXAA", new FxaaEffect()),
-//                new EffectEntryModel("NFAA", new NfaaEffect()),
-//                new EffectEntryModel("Fisheye", new FisheyeEffect()),
-//                new EffectEntryModel("HDR", new HdrEffect(3.0f, 2.2f)),
-//                new EffectEntryModel("Levels", new LevelsEffect()
-//                        .setBrightness(0.1f)
-//                        .setSaturation(1.8f)
-//                        .setContrast(1.5f)
-//                        .setHue(0.9f)
-//                        .setGamma(1.0f))
-//        );
+        // Underwater
+        {
+            WaterDistortionEffect filter = new WaterDistortionEffect(1f, 1f);
+            effectsRoster.add(new EffectEntryModel("Water Distortion", filter));
+        }
 
         vfxManager = getController(VfxViewController.class).getVfxManager();
 
