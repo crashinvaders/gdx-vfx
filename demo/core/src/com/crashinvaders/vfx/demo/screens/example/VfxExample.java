@@ -1,62 +1,5 @@
-![Logo](https://i.imgur.com/kVBGQHx.png)
+package com.crashinvaders.vfx.demo.screens.example;
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.crashinvaders.vfx/gdx-vfx-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.crashinvaders.vfx%22%20AND%20a:%22gdx-vfx-core%22)
-[![Build Status](https://travis-ci.org/crashinvaders/gdx-vfx.svg?branch=master)](https://travis-ci.org/crashinvaders/gdx-vfx)
-
-Flexible post-processing shader visual effects for LibGDX. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), with lots of improvements and heavy refactoring.
-The goal is to focus on stability, offer lightweight integration and provide simple effect implementation mechanism.
-
-The library is in Beta, code is poorly documented. Some goodies might be missing and more cool stuff is to be implemented soon.
-
-Read more about the library at the [wiki introduction page](https://github.com/crashinvaders/gdx-vfx/wiki/Library-overview).
-
-# Demo
-
-Visit https://crashinvaders.github.io/gdx-vfx
-
-Or clone and play with the demo locally:
-```
-git clone https://github.com/crashinvaders/gdx-vfx.git
-cd gdx-vfx
-./gradlew demo:desktop:run
-```
-
-![Alt Text](https://imgur.com/dCsVhoo.gif)
-
-
-# How to use
-
-### 1. Add the library to the project
-
-#### Maven dependency
-The library's stable releases are available through maven central repo.
-
-Add it in your root `build.gradle` at the end of repositories:
-```gradle
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-}
-```
-
-Add the dependency:
-```gradle
-dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.4.3'
-    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.4.3'    // Optional, if you need standard filter/effects.
-}
-```
-
-#### HTML/GWT support
-If your project has a GWT module, please consider reading [this wiki page](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Integration).
-
-#### Other options
-There are number of ways to incorporate the library into the project. If you're looking for the other appoach, please read the full [integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/General-Library-Integration).
-
-### 2. Sample code
-
-```java
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -143,6 +86,3 @@ public class VfxExample extends ApplicationAdapter {
         shapeRenderer.dispose();
     }
 }
-```
-
-![Result](https://i.imgur.com/XjBynGw.png)

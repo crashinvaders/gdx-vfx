@@ -19,6 +19,7 @@ package com.crashinvaders.vfx.demo;
 import com.badlogic.gdx.*;
 import com.crashinvaders.vfx.common.PrioritizedInputMultiplexer;
 import com.crashinvaders.vfx.demo.screens.demo.DemoScreen;
+import com.crashinvaders.vfx.demo.screens.example.ExampleScreen;
 
 public class App extends Game {
 
@@ -30,7 +31,7 @@ public class App extends Game {
 
 	private final PrioritizedInputMultiplexer inputMultiplexer;
 
-	private Screen demoScreen;
+	private Screen mainScreen;
 
 	public static App inst() {
 		if (instance == null) {
@@ -52,14 +53,15 @@ public class App extends Game {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		demoScreen = new DemoScreen();
-		setScreen(demoScreen);
+		mainScreen = new DemoScreen();
+//		mainScreen = new ExampleScreen();
+		setScreen(mainScreen);
 	}
 	
 	@Override
 	public void dispose () {
 		super.dispose();
-		demoScreen.dispose();
+		mainScreen.dispose();
 	}
 
 	//region Accessors
