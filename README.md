@@ -49,7 +49,7 @@ dependencies {
 ```
 
 #### HTML/GWT support
-If your project has a GWT module, please consider reading [this wiki page](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Integration).
+If your project has a GWT module, please consider reading [this wiki page](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Library-Integration).
 
 #### Other options
 There are number of ways to incorporate the library into the project. If you're looking for the other appoach, please read the full [integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/General-Library-Integration).
