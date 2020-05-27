@@ -16,6 +16,7 @@
 
 package com.crashinvaders.vfx.effects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -121,6 +122,18 @@ public abstract class ShaderVfxEffect extends AbstractVfxEffect {
      * If you need to update multiple uniforms, please consider calling methods directly from {@link ShaderProgram}.
      */
     protected void setUniform(String uniformName, Vector3 value) {
+        program.begin();
+        program.setUniformf(uniformName, value);
+        program.end();
+    }
+
+    /**
+     * Updates shader's uniform of vec4 type.
+     * <p/>
+     * <b>NOTE:</b> This is an utility method that will bind/unbind the shader program internally on every call.
+     * If you need to update multiple uniforms, please consider calling methods directly from {@link ShaderProgram}.
+     */
+    protected void setUniform(String uniformName, Color value) {
         program.begin();
         program.setUniformf(uniformName, value);
         program.end();
