@@ -29,13 +29,32 @@ import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
+/**
+ * A widget group that manages {@link VfxManager} internally and applies the effects to the child actors.
+ * <p>
+ * The group renders all the children into internal {@link VfxFrameBuffer},
+ * pass it to the {@link VfxManager} instance for processing and then renders the result to the screen.
+ * <p>
+ * All the internal VFX related instances are managed by the widget itself and should not be disposed or resized manually.
+ * However you're still responsible for all the {@link com.crashinvaders.vfx.effects.VfxEffect effects}' lifecyle and shall dispose them as usual.
+ * <p>
+ * While working with VFX effects within {@link Stage} actor hierarchy keep in mind
+ * that not every effect made to support transparency and there might be issues.
+ */
 public class VfxWidgetGroup extends WidgetGroup {
 
     private final VfxManager vfxManager;
     private final CustomRendererAdapter rendererAdapter;
     private boolean initialized = false;
     private boolean resizePending = false;
+
+    /** If true, the internal {@link VfxManager} will be resized to match {@link VfxWidgetGroup}'s size.
+     * Means framebuffer pixels will correspond to the virtual units of stage's viewport. */
     private boolean matchWidgetSize = false;
+
+    /** Whether internal {@link VfxManager} instance should be updated
+     * with {@link com.badlogic.gdx.scenes.scene2d.Actor#act(float)} calls. */
+    private boolean updateManager = true;
 
     public VfxWidgetGroup(Pixmap.Format pixelFormat) {
         vfxManager = new VfxManager(pixelFormat);
@@ -47,19 +66,27 @@ public class VfxWidgetGroup extends WidgetGroup {
         return vfxManager;
     }
 
+    /** @see #matchWidgetSize */
     public boolean isMatchWidgetSize() {
         return matchWidgetSize;
     }
 
-    /**
-     * @param matchWidgetSize if true, the internal {@link VfxManager} will be resized
-     *                        to match {@link VfxWidgetGroup}'s size (stage units and not screen pixels).
-     */
+    /** @see #matchWidgetSize */
     public void setMatchWidgetSize(boolean matchWidgetSize) {
         if (this.matchWidgetSize == matchWidgetSize) return;
 
         this.matchWidgetSize = matchWidgetSize;
         resizePending = true;
+    }
+
+    /** @see #updateManager */
+    public boolean isUpdateManager() {
+        return updateManager;
+    }
+
+    /** @see #updateManager */
+    public void setUpdateManager(boolean updateManager) {
+        this.updateManager = updateManager;
     }
 
     @Override
@@ -83,8 +110,10 @@ public class VfxWidgetGroup extends WidgetGroup {
     public void act(float delta) {
         super.act(delta);
 
-        // Update effects chain.
-        vfxManager.update(delta);
+        if (updateManager) {
+            // Update effects chain.
+            vfxManager.update(delta);
+        }
     }
 
     @Override
@@ -151,16 +180,18 @@ public class VfxWidgetGroup extends WidgetGroup {
         }
     }
 
+    /** VfxWidgetGroup doesn't support culling area. Any calls to it will be ignored. */
     @Deprecated
     @Override
     public void setCullingArea(Rectangle cullingArea) {
-        throw new UnsupportedOperationException("VfxWidgetGroup doesn't support culling area.");
+//        throw new UnsupportedOperationException("VfxWidgetGroup doesn't support culling area.");
     }
 
+    /** VfxWidgetGroup doesn't support transform. Any calls to the method be ignored. */
     @Deprecated
     @Override
     public void setTransform(boolean transform) {
-        throw new UnsupportedOperationException("VfxWidgetGroup doesn't support transform.");
+//        throw new UnsupportedOperationException("VfxWidgetGroup doesn't support transform.");
     }
 
     private void initialize() {
