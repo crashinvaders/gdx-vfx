@@ -40,7 +40,7 @@ public class ViewportQuadMesh {
 	}
 
 	public ViewportQuadMesh(VertexAttribute... vertexAttributes) {
-		mesh = new Mesh(VertexDataType.VertexArray, true, 4, 0, vertexAttributes);
+		mesh = new Mesh(true, 4, 0, vertexAttributes);
 		mesh.setVertices(verts);
 	}
 
