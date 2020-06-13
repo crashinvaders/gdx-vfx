@@ -26,7 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 
 /**
@@ -44,7 +43,6 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 public class VfxWidgetGroup extends WidgetGroup {
 
     private final VfxManager vfxManager;
-    private final VfxManager.ScreenCaptureHelper captureHelper;
     private final CustomRendererAdapter rendererAdapter;
     private boolean initialized = false;
     private boolean resizePending = false;
@@ -59,7 +57,6 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     public VfxWidgetGroup(Pixmap.Format pixelFormat) {
         vfxManager = new VfxManager(pixelFormat);
-        captureHelper = vfxManager.getCaptureHelper();
         rendererAdapter = new CustomRendererAdapter();
         super.setTransform(false);
     }
@@ -120,9 +117,9 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        final VfxPingPongWrapper buffers = vfxManager.getPingPongWrapper();
-
         //TODO Check if there any effect before start capturing/processing.
+
+        VfxFrameBuffer captureBuffer = vfxManager.getResultBuffer();
 
         batch.end();
 
@@ -130,9 +127,8 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         vfxManager.cleanUpBuffers();
 
-        buffers.getSrcBuffer().addRenderer(rendererAdapter);
-        buffers.getDstBuffer().addRenderer(rendererAdapter);
-        captureHelper.beginCapture();
+        captureBuffer.addRenderer(rendererAdapter);
+        vfxManager.beginInputCapture();
 
         batch.begin();
 
@@ -141,24 +137,12 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         batch.end();
 
-        captureHelper.endCapture();
-        buffers.getSrcBuffer().removeRenderer(rendererAdapter);
-        buffers.getDstBuffer().removeRenderer(rendererAdapter);
-
-        vfxManager.useAsInputScene(captureHelper);
+        vfxManager.endInputCapture();
+        captureBuffer.removeRenderer(rendererAdapter);
 
         vfxManager.applyEffects();
 
         batch.begin();
-
-//        // If something was captured, render result to the screen.
-//        if (vfxManager.hasProcessedScene()) {
-//            Color color = getColor();
-//            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-//            batch.draw(vfxManager.getResultBuffer().getFbo().getColorBufferTexture(),
-//                    getX(), getY(), getWidth(), getHeight(),
-//                    0f, 0f, 1f, 1f);
-//        }
 
         // Render result to the screen.
         Color color = getColor();
@@ -170,7 +154,7 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     @Override
     protected void drawChildren(Batch batch, float parentAlpha) {
-        boolean capturing = captureHelper.isCapturing();
+        boolean capturing = vfxManager.isCapturing();
 
         if (capturing) {
             // Imitate "transform" child drawing for when capturing into VfxManager.

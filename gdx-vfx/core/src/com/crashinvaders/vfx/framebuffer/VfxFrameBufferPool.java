@@ -18,6 +18,7 @@ package com.crashinvaders.vfx.framebuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -38,6 +39,11 @@ public class VfxFrameBufferPool implements Disposable {
     private int height;
     private Pixmap.Format pixelFormat;
 
+    private Texture.TextureWrap textureWrapU = Texture.TextureWrap.ClampToEdge;
+    private Texture.TextureWrap textureWrapV = Texture.TextureWrap.ClampToEdge;
+    private Texture.TextureFilter textureFilterMin = Texture.TextureFilter.Nearest;
+    private Texture.TextureFilter textureFilterMag = Texture.TextureFilter.Nearest;
+
     private boolean disposed = false;
 
     public VfxFrameBufferPool() {
@@ -56,7 +62,10 @@ public class VfxFrameBufferPool implements Disposable {
     @Override
     public void dispose() {
         if (managedBuffers.size != freeBuffers.size) {
-            Gdx.app.error(TAG, "At the moment of disposal, the pool still has some managed buffers unfreed. Someone's using them and hasn't freed?");
+            int unfreedBufferAmount = managedBuffers.size - freeBuffers.size;
+            Gdx.app.error(TAG, "At the moment of disposal, " +
+                    "the pool still has some managed buffers unfreed (" + unfreedBufferAmount +"). " +
+                    "Someone's using them and hasn't freed?");
         }
 
         disposed = true;
@@ -130,6 +139,11 @@ public class VfxFrameBufferPool implements Disposable {
     /** Called when a buffer is freed to clear the state of the buffer for possible later reuse. */
     protected void resetBuffer(VfxFrameBuffer buffer) {
         buffer.clearRenderers();
+
+        // Reset texture params to the default ones.
+        Texture texture = buffer.getTexture();
+        texture.setWrap(textureWrapU, textureWrapV);
+        texture.setFilter(textureFilterMin, textureFilterMag);
     }
 
     protected boolean validateBuffer(VfxFrameBuffer buffer) {
@@ -156,6 +170,23 @@ public class VfxFrameBufferPool implements Disposable {
                     buffer.initialize(width, height);
                 }
             }
+        }
+    }
+
+    public void setTextureParams(Texture.TextureWrap textureWrapU,
+                                 Texture.TextureWrap textureWrapV,
+                                 Texture.TextureFilter textureFilterMin,
+                                 Texture.TextureFilter textureFilterMag) {
+        this.textureWrapU = textureWrapU;
+        this.textureWrapV = textureWrapV;
+        this.textureFilterMin = textureFilterMin;
+        this.textureFilterMag = textureFilterMag;
+
+        // Update the free textures'.
+        for (int i = 0; i < freeBuffers.size; i++) {
+            Texture texture = freeBuffers.get(i).getTexture();
+            texture.setWrap(textureWrapU, textureWrapV);
+            texture.setFilter(textureFilterMin, textureFilterMag);
         }
     }
 }

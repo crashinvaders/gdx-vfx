@@ -49,13 +49,8 @@ public class VfxExample extends ApplicationAdapter {
         // Clean up internal buffers, as we don't need any information from the last render.
         vfxManager.cleanUpBuffers();
 
-        // VfxManager processes an image data that shall be provided as a texture or a frame buffer.
-        // We want to process dynamically drawn content thus we need to capture it.
-        // VfxManager provides us with a simple off-screen buffer capture helper for that case.
-        VfxManager.ScreenCaptureHelper captureHelper = vfxManager.getCaptureHelper();
-
         // Begin render to an off-screen buffer.
-        captureHelper.beginCapture();
+        vfxManager.beginInputCapture();
 
         // Here's where game render should happen.
         // For demonstration purposes we just render some simple geometry.
@@ -67,10 +62,7 @@ public class VfxExample extends ApplicationAdapter {
         shapeRenderer.end();
 
         // End render to an off-screen buffer.
-        captureHelper.endCapture();
-
-        // Setup the captured result as an input for VfxManager.
-        vfxManager.useAsInputScene(captureHelper);
+        vfxManager.endInputCapture();
 
         // Apply the effects chain to the captured frame.
         // In our case, only one effect (gaussian blur) will be applied.

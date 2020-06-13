@@ -136,7 +136,7 @@ public class VfxFrameBuffer implements Disposable {
         return initialized;
     }
 
-    /** @return true means {@link VfxFrameBuffer#begin()} was called */
+    /** @return true means {@link VfxFrameBuffer#begin()} has been called */
     public boolean isDrawing() {
         return drawing;
     }
@@ -172,7 +172,7 @@ public class VfxFrameBuffer implements Disposable {
     public void begin() {
         bufferNesting++;
 
-        if (!initialized) throw new IllegalStateException("BatchedFboWrapper must be initialized first");
+        if (!initialized) throw new IllegalStateException("VfxFrameBuffer must be initialized first");
         if (drawing) throw new IllegalStateException("Already drawing");
 
         drawing = true;
@@ -188,7 +188,7 @@ public class VfxFrameBuffer implements Disposable {
     public void end() {
         bufferNesting--;
 
-        if (!initialized) throw new IllegalStateException("BatchedFboWrapper must be initialized first");
+        if (!initialized) throw new IllegalStateException("VfxFrameBuffer must be initialized first");
         if (!drawing) throw new IllegalStateException("Is not drawing");
 
         if (getBoundFboHandle() != fbo.getFramebufferHandle()) {

@@ -1,7 +1,6 @@
 [0.5.0]
 - GWT module launcher no longer should make a call to `GwtVfxGlExtension#initialize()`. Revisit GWT integration guide on the wiki page.
 - Filters/effects cleanup. Some getters/setters were renamed.
-- `VfxManager` no longer cleans up the buffers when begin capture. You should make an explicit call to `VfxManager#cleanUpBuffers()` in order to reset previous result before start capturing a new frame.
 - `VfxManager#render()` method was broken down into separate stages (methods):
     1. `VfxManager#applyEffects()` applies the effect chain to the captured result.
     2. `VfxManager#renderToScreen()`/`VfxManager#renderToFbo()` methods are now responsible for rendering the result. You also have an option to retrieve the current result using `VfxManager#getResultBuffer()` and perform custom drawing (e.g. render buffer's texture using `SpriteBatch`).
@@ -15,5 +14,10 @@
 - `PingPongBuffer` replaced with `VfxPingPongWrapper` which is a lightweight version and doesn't manage its own pair of `VfxFrameBuffer`, but instead works only with the provided instances.
 `VfxPingPongWrapper` can be integrated with `VfxFrameBufferPool`.
 - `VfxFrameBufferPool` that acts like a regular LibGDX `Pool`, but with a twist... It manages all the created `VfxFrameBuffer` instances internally.
-- As an alternative to `#beginCapture()`/`#endCapture()`, an input texture/buffer may be provided through `VfxManager#setCapturedInput()` methods.
+- `VfxManager`'s `#beginCapture()`/`#endCapture()` have been renamed to `#beginInputCapture()`/`#endInputCapture()`.
+- As an alternative to `#beginSceneCapture()`/`#endSceneCapture()`, 
+an input texture/buffer may be supplied through `VfxManager#useAsInput()` methods.
+- `VfxManager` no longer cleans up the buffers when begin input capture. 
+You should make an explicit call to `VfxManager#cleanUpBuffers()` 
+in order to reset previous result before start capturing/providing a new frame.
 - `IntegerRoundFillContainer` was removed as `VfxWidgetGroup` supersets its functionality.

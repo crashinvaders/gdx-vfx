@@ -17,6 +17,7 @@
 package com.crashinvaders.vfx;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Disposable;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferPool;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBufferRenderer;
@@ -27,6 +28,7 @@ public class VfxRenderContext implements Disposable {
     private final VfxFrameBufferPool bufferPool;
     private final VfxFrameBufferRenderer bufferRenderer;
     private final Pixmap.Format pixelFormat;
+
     private int bufferWidth;
     private int bufferHeight;
 
