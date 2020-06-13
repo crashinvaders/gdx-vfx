@@ -44,6 +44,7 @@ import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 public class VfxWidgetGroup extends WidgetGroup {
 
     private final VfxManager vfxManager;
+    private final VfxManager.ScreenCaptureHelper captureHelper;
     private final CustomRendererAdapter rendererAdapter;
     private boolean initialized = false;
     private boolean resizePending = false;
@@ -58,6 +59,7 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     public VfxWidgetGroup(Pixmap.Format pixelFormat) {
         vfxManager = new VfxManager(pixelFormat);
+        captureHelper = vfxManager.getCaptureHelper();
         rendererAdapter = new CustomRendererAdapter();
         super.setTransform(false);
     }
@@ -120,6 +122,8 @@ public class VfxWidgetGroup extends WidgetGroup {
     public void draw(Batch batch, float parentAlpha) {
         final VfxPingPongWrapper buffers = vfxManager.getPingPongWrapper();
 
+        //TODO Check if there any effect before start capturing/processing.
+
         batch.end();
 
         performPendingResize();
@@ -128,7 +132,7 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         buffers.getSrcBuffer().addRenderer(rendererAdapter);
         buffers.getDstBuffer().addRenderer(rendererAdapter);
-        vfxManager.beginCapture();
+        captureHelper.beginCapture();
 
         batch.begin();
 
@@ -137,27 +141,36 @@ public class VfxWidgetGroup extends WidgetGroup {
 
         batch.end();
 
-        vfxManager.endCapture();
+        captureHelper.endCapture();
         buffers.getSrcBuffer().removeRenderer(rendererAdapter);
         buffers.getDstBuffer().removeRenderer(rendererAdapter);
+
+        vfxManager.useAsInputScene(captureHelper);
 
         vfxManager.applyEffects();
 
         batch.begin();
 
-        // If something was captured, render result to the screen.
-        if (vfxManager.hasResult()) {
-            Color color = getColor();
-            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-            batch.draw(vfxManager.getResultBuffer().getFbo().getColorBufferTexture(),
-                    getX(), getY(), getWidth(), getHeight(),
-                    0f, 0f, 1f, 1f);
-        }
+//        // If something was captured, render result to the screen.
+//        if (vfxManager.hasProcessedScene()) {
+//            Color color = getColor();
+//            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+//            batch.draw(vfxManager.getResultBuffer().getFbo().getColorBufferTexture(),
+//                    getX(), getY(), getWidth(), getHeight(),
+//                    0f, 0f, 1f, 1f);
+//        }
+
+        // Render result to the screen.
+        Color color = getColor();
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        batch.draw(vfxManager.getResultBuffer().getFbo().getColorBufferTexture(),
+                getX(), getY(), getWidth(), getHeight(),
+                0f, 0f, 1f, 1f);
     }
 
     @Override
     protected void drawChildren(Batch batch, float parentAlpha) {
-        boolean capturing = vfxManager.isCapturing();
+        boolean capturing = captureHelper.isCapturing();
 
         if (capturing) {
             // Imitate "transform" child drawing for when capturing into VfxManager.

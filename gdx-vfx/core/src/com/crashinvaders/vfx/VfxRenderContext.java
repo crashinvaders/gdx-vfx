@@ -24,11 +24,11 @@ import com.crashinvaders.vfx.utils.ViewportQuadMesh;
 
 public class VfxRenderContext implements Disposable {
 
-   private final VfxFrameBufferPool bufferPool;
-   private final VfxFrameBufferRenderer bufferRenderer;
-   private final Pixmap.Format pixelFormat;
-   private int bufferWidth;
-   private int bufferHeight;
+    private final VfxFrameBufferPool bufferPool;
+    private final VfxFrameBufferRenderer bufferRenderer;
+    private final Pixmap.Format pixelFormat;
+    private int bufferWidth;
+    private int bufferHeight;
 
     public VfxRenderContext(Pixmap.Format pixelFormat, int bufferWidth, int bufferHeight) {
         this.bufferPool = new VfxFrameBufferPool(pixelFormat, bufferWidth, bufferHeight, 8);

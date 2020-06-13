@@ -68,7 +68,7 @@ import com.crashinvaders.vfx.gl.VfxGlViewport;
  * @author metaphore
  */
 public class VfxFrameBuffer implements Disposable {
-    /** Current depth of buffer nesting rendering (keeps track of how many buffers currently activated). */
+    /** Current depth of buffer nesting rendering (keeps track of how many buffers are currently activated). */
     private static int bufferNesting = 0;
     /** @see #bufferNesting */
     public static int getBufferNesting() { return bufferNesting; }
