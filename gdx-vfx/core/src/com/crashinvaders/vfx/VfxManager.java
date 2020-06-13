@@ -37,9 +37,9 @@ import com.crashinvaders.vfx.utils.PrioritizedArray;
  */
 public final class VfxManager implements Disposable {
 
-    private final PrioritizedArray<ChainVfxEffect> effectsAll = new PrioritizedArray<>();
-    /** Maintains a per-frame updated list of enabled effects */
-    private final Array<ChainVfxEffect> effectsEnabled = new Array<>(); //TODO Get rid of this.
+    private final PrioritizedArray<ChainVfxEffect> effects = new PrioritizedArray<>();
+    private final Array<ChainVfxEffect> tmpEffectArray = new Array<>(); // Utility array instance.
+
     private final VfxRenderContext context;
 
     private final VfxPingPongWrapper pingPongWrapper;
@@ -153,23 +153,23 @@ public final class VfxManager implements Disposable {
     }
 
     public void addEffect(ChainVfxEffect effect, int priority) {
-        effectsAll.add(effect, priority);
+        effects.add(effect, priority);
         effect.resize(width, height);
     }
 
     /** Removes the specified effect from the effect chain. */
     public void removeEffect(ChainVfxEffect effect) {
-        effectsAll.remove(effect);
+        effects.remove(effect);
     }
 
     /** Removes all effects from the effect chain. */
     public void removeAllEffects() {
-        effectsAll.clear();
+        effects.clear();
     }
 
     /** Changes the order of the effect in the effect chain. */
     public void setEffectPriority(ChainVfxEffect effect, int priority) {
-        effectsAll.setPriority(effect, priority);
+        effects.setPriority(effect, priority);
     }
 
     /** Cleans up the {@link VfxPingPongWrapper}'s buffers with {@link Color#CLEAR}. */
@@ -191,22 +191,23 @@ public final class VfxManager implements Disposable {
 
         context.resize(width, height);
 
-        for (int i = 0; i < effectsAll.size(); i++) {
-            effectsAll.get(i).resize(width, height);
+        for (int i = 0; i < effects.size(); i++) {
+            effects.get(i).resize(width, height);
         }
     }
 
+    //TODO Do we need this method?
     public void rebind() {
         context.rebind();
 
-        for (int i = 0; i < effectsAll.size(); i++) {
-            effectsAll.get(i).rebind();
+        for (int i = 0; i < effects.size(); i++) {
+            effects.get(i).rebind();
         }
     }
 
     public void update(float delta) {
-        for (int i = 0; i < effectsAll.size(); i++) {
-            effectsAll.get(i).update(delta);
+        for (int i = 0; i < effects.size(); i++) {
+            effects.get(i).update(delta);
         }
     }
 
@@ -255,39 +256,43 @@ public final class VfxManager implements Disposable {
 
         if (disabled) return;
 
-        Array<ChainVfxEffect> effectChain = updateEnabledEffectList();
+        Array<ChainVfxEffect> effectChain = filterEnabledEffects(tmpEffectArray);
+        if (effectChain.size == 0) {
+            effectChain.clear();
+            return;
+        }
 
         applyingEffects = true;
-        int count = effectChain.size;
-        if (count > 0) {
-            // Enable blending to preserve buffer's alpha values.
-            if (blendingEnabled) {
-                Gdx.gl.glEnable(GL20.GL_BLEND);
-            }
 
-            Gdx.gl.glDisable(GL20.GL_CULL_FACE);
-            Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+        // Enable blending to preserve buffer's alpha values.
+        if (blendingEnabled) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+        }
 
-            pingPongWrapper.swap(); // Swap buffers to get the input buffer in the src buffer.
-            pingPongWrapper.begin();
+        Gdx.gl.glDisable(GL20.GL_CULL_FACE);
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 
-            // Render the effect chain.
-            for (int i = 0; i < count; i++) {
-                ChainVfxEffect effect = effectChain.get(i);
-                effect.render(context, pingPongWrapper);
-                if (i < count - 1) {
-                    pingPongWrapper.swap();
-                }
-            }
-            pingPongWrapper.end();
+        pingPongWrapper.swap(); // Swap buffers to get the input buffer in the src buffer.
+        pingPongWrapper.begin();
 
-            // Ensure default texture unit #0 is active.
-            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-
-            if (blendingEnabled) {
-                Gdx.gl.glDisable(GL20.GL_BLEND);
+        // Render the effect chain.
+        for (int i = 0; i < effectChain.size; i++) {
+            ChainVfxEffect effect = effectChain.get(i);
+            effect.render(context, pingPongWrapper);
+            if (i < effectChain.size - 1) {
+                pingPongWrapper.swap();
             }
         }
+        effectChain.clear();
+        pingPongWrapper.end();
+
+        // Ensure default texture unit #0 is active.
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+
+        if (blendingEnabled) {
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
+
         applyingEffects = false;
     }
 
@@ -324,16 +329,22 @@ public final class VfxManager implements Disposable {
         if (blendingEnabled) { Gdx.gl.glDisable(GL20.GL_BLEND); }
     }
 
-    //TODO Remove this method and use SnapshotArray instead.
-    private Array<ChainVfxEffect> updateEnabledEffectList() {
-        // Build up active effects
-        effectsEnabled.clear();
-        for (int i = 0; i < effectsAll.size(); i++) {
-            ChainVfxEffect effect = effectsAll.get(i);
-            if (!effect.isDisabled()) {
-                effectsEnabled.add(effect);
+    public boolean anyEnabledEffects() {
+        for (int i = 0; i < effects.size(); i++) {
+            if (!effects.get(i).isDisabled()) {
+                return true;
             }
         }
-        return effectsEnabled;
+        return false;
+    }
+
+    private Array<ChainVfxEffect> filterEnabledEffects(Array<ChainVfxEffect> out) {
+        for (int i = 0; i < effects.size(); i++) {
+            ChainVfxEffect effect = effects.get(i);
+            if (!effect.isDisabled()) {
+                out.add(effect);
+            }
+        }
+        return out;
     }
 }

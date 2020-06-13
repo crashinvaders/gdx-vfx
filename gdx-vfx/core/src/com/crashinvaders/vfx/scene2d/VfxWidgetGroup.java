@@ -117,7 +117,13 @@ public class VfxWidgetGroup extends WidgetGroup {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //TODO Check if there any effect before start capturing/processing.
+        validate();
+
+//        //TODO Check if there are any active effects before start capturing/processing.
+//        if (!vfxManager.anyEnabledEffects()) {
+//            this.drawChildren(batch, parentAlpha);
+//            return;
+//        }
 
         VfxFrameBuffer captureBuffer = vfxManager.getResultBuffer();
 
