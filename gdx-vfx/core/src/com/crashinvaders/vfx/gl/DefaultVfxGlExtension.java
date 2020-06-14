@@ -17,7 +17,6 @@
 package com.crashinvaders.vfx.gl;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

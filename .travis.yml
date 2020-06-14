@@ -8,17 +8,20 @@ android:
     - android-sdk-license-.+
     - google-gdk-license-.+
   
-jdk: oraclejdk8
+jdk: openjdk8
 
 branches:
   only:
     - master
 
 # Cache gradle dependencies (should be faster to download them from cache)
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - $HOME/.gradle/wrapper
-  - $HOME/.gradle/caches/modules-2/files-2.1
+  - $HOME/.gradle/wrapper/
+  - $HOME/.gradle/caches/
 
 # Setup environment
 before_install:
@@ -30,4 +33,4 @@ script:
 
 after_success:
   # Deploy snapshot version to Maven Central repo.
-  - ./gradlew uploadSnapshotArchivesAll
+  - ./gradlew uploadSnapshotArchivesAll --info

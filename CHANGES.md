@@ -1,5 +1,6 @@
 [0.5.0]
-- GWT module launcher no longer should make a call to `GwtVfxGlExtension#initialize()`. Revisit GWT integration guide on the wiki page.
+- GWT module launcher no longer should make a call to `GwtVfxGlExtension#initialize()`. 
+Please revisit GWT integration guide on the wiki page.
 - Filters/effects cleanup. Some getters/setters were renamed.
 - `VfxManager#render()` method was broken down into separate stages (methods):
     1. `VfxManager#applyEffects()` applies the effect chain to the captured result.
