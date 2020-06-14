@@ -1,4 +1,4 @@
-###[Version 0.5.0](#0.5.0)
+## [0.5.0]
 
 - GWT module launcher no longer should make a call to `GwtVfxGlExtension#initialize()`. 
 Please revisit GWT integration guide on the wiki page.
