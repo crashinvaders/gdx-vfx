@@ -6,9 +6,11 @@
 Flexible post-processing shader visual effects for LibGDX. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), with lots of improvements and heavy refactoring.
 The goal is to focus on stability, offer lightweight integration and provide simple effect implementation mechanism.
 
-The library is in Beta, code is poorly documented. Some goodies might be missing and more cool stuff is to be implemented soon.
+The library is in Beta, the code is poorly documented. Some goodies might be missing and more cool stuff is to be implemented soon.
 
 Read more about the library at the [wiki introduction page](https://github.com/crashinvaders/gdx-vfx/wiki/Library-overview).
+
+All the major changes are listed in the [CHANGES.md](https://github.com/crashinvaders/gdx-vfx/blob/master/CHANGES.md) file.
 
 # Demo
 
@@ -22,7 +24,6 @@ cd gdx-vfx
 ```
 
 ![Alt Text](https://imgur.com/dCsVhoo.gif)
-
 
 # How to use
 
@@ -43,18 +44,27 @@ allprojects {
 Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.4.3'
-    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.4.3'    // Optional, if you need standard filter/effects.
+    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.0'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.0'    // Optional, if you need standard filter/effects.
 }
 ```
 
 #### HTML/GWT support
-If your project has a GWT module, please consider reading [this wiki page](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Library-Integration).
+The library is fully HTML/GWT compatible, but requires extra dependency to be included to GWT module in order to work properly.  
+Please consider reading [GWT integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Library-Integration).
+```gradle
+dependencies {
+    implementation 'com.crashinvaders.vfx:gdx-vfx-gwt:0.5.0'
+}
+```
 
-#### Other options
-There are number of ways to incorporate the library into the project. If you're looking for the other appoach, please read the full [integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/General-Library-Integration).
+#### Other integration options
+There are number of ways to incorporate the library into the project. 
+If you're looking for snapshot version artifacts or another approach, please read the [general integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/General-Library-Integration).
 
 ### 2. Sample code
+
+A simple example of a LibGDX application that applies gaussian blur effect to a geometry drawn with `ShapeRenderer`.
 
 ```java
 import com.badlogic.gdx.ApplicationAdapter;
@@ -82,7 +92,7 @@ public class VfxExample extends ApplicationAdapter {
 
         // Create and add an effect.
         // VfxEffect derivative classes serve as controllers for the effects.
-        // and provide some public properties to configure and control them.
+        // They provide public properties to configure and control them.
         vfxEffect = new GaussianBlurEffect();
         vfxManager.addEffect(vfxEffect);
     }
@@ -107,7 +117,7 @@ public class VfxExample extends ApplicationAdapter {
         vfxManager.cleanUpBuffers();
 
         // Begin render to an off-screen buffer.
-        vfxManager.beginCapture();
+        vfxManager.beginInputCapture();
 
         // Here's where game render should happen.
         // For demonstration purposes we just render some simple geometry.
@@ -119,10 +129,10 @@ public class VfxExample extends ApplicationAdapter {
         shapeRenderer.end();
 
         // End render to an off-screen buffer.
-        vfxManager.endCapture();
+        vfxManager.endInputCapture();
 
         // Apply the effects chain to the captured frame.
-        // In our case the only one effect (gaussian blur) will be applied.
+        // In our case, only one effect (gaussian blur) will be applied.
         vfxManager.applyEffects();
 
         // Render result to the screen.
@@ -131,18 +141,20 @@ public class VfxExample extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        // Since VfxManager manages internal off-screen buffers,
-        // it should be disposed properly.
+        // Since VfxManager has internal frame buffers,
+        // it implements Disposable interface and thus should be utilized properly.
         vfxManager.dispose();
 
         // *** PLEASE NOTE ***
-        // VfxManager doesn't dispose attached VfxEffects
-        // on its own, you should do it manually!
+        // VfxManager doesn't dispose attached VfxEffects.
+        // This is your responsibility to manage their lifecycle.
         vfxEffect.dispose();
 
         shapeRenderer.dispose();
     }
 }
-```
+``` 
 
 ![Result](https://i.imgur.com/XjBynGw.png)
+
+_The actual example code can be found [here](https://github.com/crashinvaders/gdx-vfx/blob/master/demo/core/src/com/crashinvaders/vfx/demo/screens/example/VfxExample.java)._

@@ -25,7 +25,7 @@ public class VfxExample extends ApplicationAdapter {
 
         // Create and add an effect.
         // VfxEffect derivative classes serve as controllers for the effects.
-        // and provide some public properties to configure and control them.
+        // They provide public properties to configure and control them.
         vfxEffect = new GaussianBlurEffect();
         vfxManager.addEffect(vfxEffect);
     }
@@ -74,13 +74,13 @@ public class VfxExample extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        // Since VfxManager manages internal off-screen buffers,
-        // it should be disposed properly.
+        // Since VfxManager has internal frame buffers,
+        // it implements Disposable interface and thus should be utilized properly.
         vfxManager.dispose();
 
         // *** PLEASE NOTE ***
-        // VfxManager doesn't dispose attached VfxEffects
-        // on its own, you should do it manually!
+        // VfxManager doesn't dispose attached VfxEffects.
+        // This is your responsibility to manage their lifecycle.
         vfxEffect.dispose();
 
         shapeRenderer.dispose();

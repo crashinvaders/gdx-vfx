@@ -33,4 +33,4 @@ script:
 
 after_success:
   # Deploy snapshot version to Maven Central repo.
-  - ./gradlew uploadSnapshotArchivesAll --info
+  - ./gradlew uploadSnapshotArchivesAll
