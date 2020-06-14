@@ -56,7 +56,7 @@ void main() {
 #if LINE_TYPE == VERTICAL_SMOOTH
     // Smooth vertical line.
     float x = u_resolution.x * v_texCoords.x;
-    float factor = abs(mod(x, 2.0) - 1.0);
+    float factor = abs(mod(x, 4.0) - 2.0) / 2.0;
     float componentValue = mix(SCANLINE_BRIGHTNESS_MAX, SCANLINE_BRIGHTNESS_MIN, factor);
     color = color * vec4(componentValue, componentValue, componentValue, 1.0);
 #endif
@@ -64,7 +64,7 @@ void main() {
 #if LINE_TYPE == HORIZONTAL_SMOOTH
     // Smooth horizontal line.
     float y = u_resolution.y * v_texCoords.y;
-    float factor = abs(mod(y, 2.0) - 1.0);
+    float factor = abs(mod(y, 4.0) - 2.0) / 2.0;
     float componentValue = mix(SCANLINE_BRIGHTNESS_MAX, SCANLINE_BRIGHTNESS_MIN, factor);
     color = color * vec4(componentValue, componentValue, componentValue, 1.0);
 #endif

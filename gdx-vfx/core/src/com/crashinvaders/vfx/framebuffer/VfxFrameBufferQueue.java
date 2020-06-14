@@ -48,6 +48,7 @@ public class VfxFrameBufferQueue implements Disposable {
         for (int i = 0; i < buffers.size; i++) {
             buffers.get(i).dispose();
         }
+        buffers.clear();
     }
 
     public void resize(int width, int height) {
