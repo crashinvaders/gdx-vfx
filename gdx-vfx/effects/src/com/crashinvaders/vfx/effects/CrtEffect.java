@@ -37,7 +37,7 @@ public class CrtEffect extends ShaderVfxEffect implements ChainVfxEffect {
     }
 
     /** Brightness is a value between [0..2] (default is 1.0). */
-    public CrtEf(LineStyle lineStyle, float brightnessMin, float brightnessMax) {
+    public CrtEffect(LineStyle lineStyle, float brightnessMin, float brightnessMax) {
         super(VfxGLUtils.compileShader(
                 Gdx.files.classpath("gdxvfx/shaders/screenspace.vert"),
                 Gdx.files.classpath("gdxvfx/shaders/crt.frag"),

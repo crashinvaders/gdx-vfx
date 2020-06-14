@@ -10,6 +10,9 @@ uniform PRECISION sampler2D u_texture0;
 uniform PRECISION sampler2D u_texture1;
 uniform float u_src0Intensity;
 uniform float u_src1Intensity;
+// 0 = totally desaturated
+// 1 = saturation unchanged
+// higher = increase saturation
 uniform float u_src0Saturation;
 uniform float u_src1Saturation;
 
@@ -18,12 +21,6 @@ varying vec2 v_texCoords;
 // The constants 0.3, 0.59, and 0.11 are chosen because the
 // human eye is more sensitive to green light, and less to blue.
 const vec3 GRAYSCALE = vec3(0.3, 0.59, 0.11);
-
-// 0 = totally desaturated
-// 1 = saturation unchanged
-// higher = increase saturation
-//const float BaseSat = 1;
-//const float BloomSat = 1;
 
 vec3 adjustSaturation(vec3 color, float saturation) {
 	vec3 grey = vec3(dot(color, GRAYSCALE));

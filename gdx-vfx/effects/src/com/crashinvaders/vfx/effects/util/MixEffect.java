@@ -23,9 +23,14 @@ import com.crashinvaders.vfx.effects.ShaderVfxEffect;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-//TODO This effect feels like a duplicate of CombineEffect.
-/** Mixes two frames with a factor of {@link #mixFactor}.
- * Second texture should be provided via {@link #render(VfxRenderContext, VfxFrameBuffer, VfxFrameBuffer, VfxFrameBuffer)} overload. */
+/**
+ * Simply mixes two frames with a factor of {@link #mixFactor}.
+ * <p>
+ * Depends on {@link Method} the result will be combined with either:
+ * <br><code>max(src0, src1 * mixFactor)</code>
+ * <br> or
+ * <br><code>mix(src0, src1, mixFactor)</code>
+ */
 public class MixEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
@@ -67,7 +72,7 @@ public class MixEffect extends ShaderVfxEffect {
         setUniform(U_MIX, mixFactor);
     }
 
-    /** Defines which function will be used to mix the two frames to produce motion blur effect. */
+    /** Defines which function will be used to combine mix the two frames. */
     public enum Method {
         MAX,
         MIX;

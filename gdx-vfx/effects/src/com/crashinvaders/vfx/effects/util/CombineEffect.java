@@ -22,7 +22,12 @@ import com.crashinvaders.vfx.effects.ShaderVfxEffect;
 import com.crashinvaders.vfx.framebuffer.VfxFrameBuffer;
 import com.crashinvaders.vfx.gl.VfxGLUtils;
 
-//TODO This effect feels like a duplicate of MixEffect.
+/**
+ * Merges two frames with an option to change intensity and saturation for each.
+ * After applying saturation and intensity factors, the result frame is <code>src0 * (1.0 - src1)  + src1</code>.
+ * <p>
+ * If you're looking for rather straightforward way to mix two frames into one, have a look at {@link MixEffect}.
+ */
 public class CombineEffect extends ShaderVfxEffect {
 
     private static final String U_TEXTURE0 = "u_texture0";
