@@ -31,6 +31,7 @@ public class DesktopLauncher {
 				"gdx-vfx-icon64.png",
 				"gdx-vfx-icon128.png");
 		config.setWindowedMode(640, 480);
+		config.setWindowSizeLimits(32, 32, -1, -1);
 
 		new Lwjgl3Application(new App(), config);
 	}
