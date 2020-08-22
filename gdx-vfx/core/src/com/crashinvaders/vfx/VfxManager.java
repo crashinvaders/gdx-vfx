@@ -21,8 +21,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Scaling;
 import com.crashinvaders.vfx.effects.ChainVfxEffect;
 import com.crashinvaders.vfx.framebuffer.*;
 import com.crashinvaders.vfx.utils.PrioritizedArray;
@@ -36,6 +38,15 @@ import com.crashinvaders.vfx.utils.PrioritizedArray;
  * @author metaphore
  */
 public final class VfxManager implements Disposable {
+
+    /**
+     * The maximum side size of a frame buffer managed by any VfxManager instance.
+     * This value constrains the internal size of a VfxManager and in case width or height is greater than this value
+     * the result size values will be fitted within MAX_FRAME_BUFFER_SIDE by MAX_FRAME_BUFFER_SIDE square keeping the aspect ratio.
+     */
+    public static final int MAX_FRAME_BUFFER_SIDE = 8192;
+
+    private static final Vector2 tmpVec = new Vector2();
 
     private final PrioritizedArray<ChainVfxEffect> effects = new PrioritizedArray<>();
     private final Array<ChainVfxEffect> tmpEffectArray = new Array<>(); // Utility array instance.
@@ -186,8 +197,9 @@ public final class VfxManager implements Disposable {
     }
 
     public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
+        Vector2 constrainedSize = constrainFrameBufferSize(width, height);
+        this.width = width = (int)constrainedSize.x;
+        this.height = height = (int)constrainedSize.y;
 
         context.resize(width, height);
 
@@ -346,5 +358,26 @@ public final class VfxManager implements Disposable {
             }
         }
         return out;
+    }
+
+    public static Vector2 constrainFrameBufferSize(int width, int height) {
+        // Can't have zero or negative size.
+        if (width < 1) width = 1;
+        if (height < 1) height = 1;
+
+        if (width <= MAX_FRAME_BUFFER_SIDE &&
+                height <= MAX_FRAME_BUFFER_SIDE) {
+            return tmpVec.set(width, height);
+        }
+
+        // Fit the desired aspect ration in the maximum size square.
+        tmpVec.set(Scaling.fit.apply(
+                width,
+                height,
+                MAX_FRAME_BUFFER_SIDE,
+                MAX_FRAME_BUFFER_SIDE));
+        if (tmpVec.x < 1) tmpVec.x = 1;
+        if (tmpVec.y < 1) tmpVec.y = 1;
+        return tmpVec;
     }
 }

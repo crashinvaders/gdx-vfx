@@ -1,3 +1,9 @@
+## [0.5.1]
+
+- `VfxEffect` constrains its internal width and height on `#resize(int, int)`.
+Max side size of the internal buffers is now limited to the `VfxEffect#MAX_FRAME_BUFFER_SIDE` constant value which is 8192 by default.
+Feel free to change it according to you project requirements.
+
 ## [0.5.0]
 
 - GWT module launcher no longer should make a call to `GwtVfxGlExtension#initialize()`. 
