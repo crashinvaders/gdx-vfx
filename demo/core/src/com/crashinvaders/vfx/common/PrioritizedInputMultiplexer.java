@@ -123,9 +123,9 @@ public class PrioritizedInputMultiplexer implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
+    public boolean scrolled(float amountX, float amountY) {
 		for (int i = 0, n = processors.size(); i < n; i++)
-			if (processors.getValueAt(i).scrolled(amount)) return true;
+			if (processors.getValueAt(i).scrolled(amountX, amountY)) return true;
 		return false;
 	}
 
@@ -166,8 +166,8 @@ public class PrioritizedInputMultiplexer implements InputProcessor {
             return processor.mouseMoved(screenX, screenY);
         }
         @Override
-        public boolean scrolled(int amount) {
-            return processor.scrolled(amount);
+        public boolean scrolled(float amountX, float amountY) {
+            return processor.scrolled(amountX, amountY);
         }
 
         @Override

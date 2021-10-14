@@ -44,8 +44,8 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
     implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-    implementation "com.github.czyzby:gdx-lml:$lmlVersion:sources"
-    implementation "com.github.czyzby:gdx-kiwi:$lmlVersion:sources"
+    implementation "com.crashinvaders.lml:gdx-lml:$lmlVersion:sources"
+    implementation "com.crashinvaders.lml:gdx-kiwi:$lmlVersion:sources"
 }
 
 def HttpFileServer server = null
