@@ -12,6 +12,9 @@ Read more about the library at the [wiki introduction page](https://github.com/c
 
 All the major changes are listed in the [CHANGES.md](https://github.com/crashinvaders/gdx-vfx/blob/master/CHANGES.md) file.
 
+# Known problems in 0.5.0
+- iOS integration requires an extra step in order to make the `gdx-vfx-effects` asset files available on runtime. Please read [this thread](https://github.com/crashinvaders/gdx-vfx/issues/16#issuecomment-1003156513) for temporary workaround.
+
 # Demo
 
 Visit https://crashinvaders.github.io/gdx-vfx
