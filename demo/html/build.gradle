@@ -47,8 +47,6 @@ dependencies {
     implementation "com.crashinvaders.lml:gdx-kiwi:$lmlVersion:sources"
 }
 
-def HttpFileServer server = null
-def httpFilePort = 8080
 task startHttpServer() {
     dependsOn draftCompileGwt
     String output = project.buildDir.path + "/gwt/draftOut"
@@ -61,8 +59,12 @@ task startHttpServer() {
             from "war"
             into output
         }
-        server = new SimpleHttpFileServerFactory().start(new File(output), httpFilePort)
+
+        def server = new SimpleHttpFileServerFactory().start(new File(output), 8080)
         println "Server started in directory ${server.getContentRoot()}, http://localhost:${server.getPort()}/index.html"
+        // This helps to bind the http server lifetime to the lifetime of the task itself.
+        // https://stackoverflow.com/a/45060802/3802890
+        while(true) Thread.sleep(1000)
     }
 }
 
