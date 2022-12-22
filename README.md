@@ -12,7 +12,7 @@ Read more about the library at the [wiki introduction page](https://github.com/c
 
 All the major changes are listed in the [CHANGES.md](https://github.com/crashinvaders/gdx-vfx/blob/master/CHANGES.md) file.
 
-# Known problems in 0.5.0
+# Known problems in 0.5.1
 - iOS integration requires an extra step in order to make the `gdx-vfx-effects` asset files available on runtime. Please read [this thread](https://github.com/crashinvaders/gdx-vfx/issues/16#issuecomment-1003156513) for temporary workaround.
 
 # Demo
@@ -47,8 +47,8 @@ allprojects {
 Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.0'
-    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.0'    // Optional, if you need standard filter/effects.
+    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.1'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.1'    // Optional, if you need standard filter/effects.
 }
 ```
 
@@ -57,7 +57,7 @@ The library is fully HTML/GWT compatible, but requires extra dependency to be in
 Please consider reading [GWT integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Library-Integration).
 ```gradle
 dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-gwt:0.5.0'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-gwt:0.5.1'
 }
 ```
 
