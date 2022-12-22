@@ -51,10 +51,10 @@ if (!ossrhPassword) {
 
 allprojects {
     repositories {
+        google()
         mavenLocal()
         mavenCentral()
-        jcenter()
-        google()
+        maven { url 'https://jitpack.io' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }

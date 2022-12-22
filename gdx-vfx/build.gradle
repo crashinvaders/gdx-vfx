@@ -19,8 +19,9 @@ subprojects {
     apply plugin: "maven"
     apply plugin: 'signing'
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     ext {

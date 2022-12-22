@@ -39,7 +39,6 @@ public class HtmlLauncher extends GwtApplication {
         int w = Window.getClientWidth() - PADDING;
         int h = Window.getClientHeight() - PADDING;
         cfg = new GwtApplicationConfiguration(w, h);
-        cfg.preferFlash = false;
         cfg.disableAudio = true;
 //        cfg.useDebugGL = true;  //TODO Remove it.
         return cfg;
