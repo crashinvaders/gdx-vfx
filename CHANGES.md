@@ -1,6 +1,6 @@
 ## [0.5.1]
 
-- LibGDX version is updated to 1.9.11
+- LibGDX version is updated to 1.11.0
 
 - `VfxEffect` constrains its internal width and height on `#resize(int, int)`.
 Max side size of the internal buffers is now limited to the `VfxEffect#MAX_FRAME_BUFFER_SIDE` constant value which is 8192 by default.
