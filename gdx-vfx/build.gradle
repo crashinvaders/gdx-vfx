@@ -26,7 +26,7 @@ subprojects {
 
     ext {
         projectVersion = '0.5.1'
-        snapshotVersion = true
+        snapshotVersion = false
         libVersion = "$projectVersion${snapshotVersion ? '-SNAPSHOT' : ''}"
     }
 
