@@ -13,7 +13,7 @@
 		<include name="**/*"/>
 	</source>
 
-	<entry-point class='com.crashinvaders.vfx.demo.client.HtmlLauncher' />
+	<entry-point class='com.crashinvaders.vfx.demo.client.WebLauncher' />
 
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
 	<set-configuration-property name="gdx.assetpath" value="../assets" />

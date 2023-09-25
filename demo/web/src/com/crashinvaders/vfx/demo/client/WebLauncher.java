@@ -25,7 +25,7 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
 
-public class HtmlLauncher extends GwtApplication {
+public class WebLauncher extends GwtApplication {
 
     private static final int PADDING = 0;
     private GwtApplicationConfiguration cfg;
@@ -65,7 +65,7 @@ public class HtmlLauncher extends GwtApplication {
 
             @Override
             public void afterSetup() {
-                Gdx.app.setApplicationLogger(new GwtConsoleLogger());
+//                Gdx.app.setApplicationLogger(new GwtConsoleLogger());
                 Gdx.app.setLogLevel(LOG_DEBUG);
             }
         });

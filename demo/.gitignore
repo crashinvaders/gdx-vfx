@@ -6,7 +6,7 @@ gradle-app.setting
 /android/build/
 /core/build/
 /desktop/build/
-/html/build/
+/web/build/
 /ios/build/
 
 ## Android
@@ -22,8 +22,8 @@ gradle-app.setting
 /ios/robovm-build/
 
 ## GWT
-/html/war/
-/html/gwt-unitCache/
+/web/war/
+/web/gwt-unitCache/
 .apt_generated/
 .gwt/
 gwt-unitCache/

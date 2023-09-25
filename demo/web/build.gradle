@@ -14,9 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: "gwt"
-apply plugin: "war"
-apply plugin: "org.gretty"
+apply plugin: 'gwt'
+apply plugin: 'war'
+apply plugin: 'org.gretty'
 
 sourceSets.main.java.srcDirs += [ 'src' ]
 sourceSets.main.resources.srcDirs += ['../assets']
@@ -26,7 +26,7 @@ gwt {
     maxHeapSize = "1G"          // Default 256m is not enough for gwt compiler. GWT is HUNGRY
     minHeapSize = "1G"
 
-    src = files(file("src/")) // Needs to be in front of "modules" below.
+    src = files(file('src/')) // Needs to be in front of "modules" below.
     modules 'com.crashinvaders.vfx.demo.GdxDefinition'
     devModules 'com.crashinvaders.vfx.demo.GdxDefinitionSuperdev'
     project.webAppDirName = 'webapp'
@@ -34,7 +34,7 @@ gwt {
     compiler.strict = true
     compiler.disableCastChecking = true
 
-    logLevel = 'DEBUG'
+//    logLevel = 'DEBUG'
 }
 
 dependencies {

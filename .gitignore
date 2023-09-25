@@ -30,7 +30,7 @@ com_crashlytics_export_strings.xml
 /demo/android/bin/
 /demo/core/bin/
 /demo/desktop/bin/
-/demo/html/bin/
+/demo/web/bin/
 /demo/ios/bin/
 /demo/ios-moe/bin/
 *.tmp
@@ -42,24 +42,13 @@ com_crashlytics_export_strings.xml
 .externalToolBuilders/
 *.launch
 
-## NetBeans
-/nbproject/private/
-/gdx-vfx/core/bin/nbproject/private/
-/gdx-vfx/effects/bin/nbproject/private/
-/demo/android/nbproject/private/
-/demo/core/nbproject/private/
-/demo/desktop/nbproject/private/
-/demo/html/nbproject/private/
-/demo/ios/nbproject/private/
-/demo/ios-moe/nbproject/private/
-
 /build/
 /gdx-vfx/core/build/
 /gdx-vfx/effects/build/
 /demo/android/build/
 /demo/core/build/
 /demo/desktop/build/
-/demo/html/build/
+/demo/web/build/
 /demo/ios/build/
 /demo/ios-moe/build/
 
@@ -69,19 +58,9 @@ com_crashlytics_export_strings.xml
 /demo/android/out/
 /demo/core/out/
 /demo/desktop/out/
-/demo/html/out/
+/demo/web/out/
 /demo/ios/out/
 /demo/ios-moe/out/
-
-/nbbuild/
-/gdx-vfx/core/bin/nbbuild/
-/gdx-vfx/effects/bin/nbbuild/
-/demo/android/nbbuild/
-/demo/core/nbbuild/
-/demo/desktop/nbbuild/
-/demo/html/nbbuild/
-/demo/ios/nbbuild/
-/demo/ios-moe/nbbuild/
 
 /dist/
 /gdx-vfx/core/bin/dist/
@@ -89,22 +68,6 @@ com_crashlytics_export_strings.xml
 /demo/android/dist/
 /demo/core/dist/
 /demo/desktop/dist/
-/demo/html/dist/
+/demo/web/dist/
 /demo/ios/dist/
 /demo/ios-moe/dist/
-
-/nbdist/
-/gdx-vfx/core/bin/nbdist/
-/gdx-vfx/effects/bin/nbdist/
-/demo/android/nbdist/
-/demo/core/nbdist/
-/demo/desktop/nbdist/
-/demo/html/nbdist/
-/demo/ios/nbdist/
-/demo/ios-moe/nbdist/
-
-nbactions.xml
-nb-configuration.xml
-
-/asset-sources/ignore
-run-demo-html.bat

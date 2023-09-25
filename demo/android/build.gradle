@@ -17,7 +17,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = 'com.crashinvaders.basisu.demo'
+    namespace = 'com.crashinvaders.vfx.demo'
     // When update SDK/build version, don't forget to change the values for /.travis.yml as well.
     compileSdk = 33
     buildToolsVersion = "33.0.2"

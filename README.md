@@ -47,17 +47,17 @@ allprojects {
 Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.1'
-    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.1'    // Optional, if you need standard filter/effects.
+    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.2'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.2'    // Optional, if you need standard filter/effects.
 }
 ```
 
 #### HTML/GWT support
-The library is fully HTML/GWT compatible, but requires extra dependency to be included to GWT module in order to work properly.  
+The library is fully HTML/GWT compatible, but requires an extra dependency to be included to GWT module in order to work properly.  
 Please consider reading [GWT integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Library-Integration).
 ```gradle
 dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-gwt:0.5.1'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-gwt:0.5.2'
 }
 ```
 
