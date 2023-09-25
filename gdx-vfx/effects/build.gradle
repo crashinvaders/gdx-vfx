@@ -19,7 +19,7 @@ sourceSets.main.resources.srcDirs += ['assets/']
 
 dependencies {
     implementation project(':gdx-vfx:core')
-    runtime files('assets')
+    runtimeOnly files('assets')
 }
 
 jar {

@@ -14,20 +14,22 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: "com.android.application"
+apply plugin: 'com.android.application'
 
 android {
+    namespace = 'com.crashinvaders.basisu.demo'
     // When update SDK/build version, don't forget to change the values for /.travis.yml as well.
-    compileSdkVersion 33
+    compileSdk = 33
+    buildToolsVersion = "33.0.2"
 
     defaultConfig {
-        applicationId "com.crashinvaders.vfx.demo"
-        minSdkVersion 9
-        targetSdkVersion 33
-        versionCode 1
-        versionName project.version
-        multiDexEnabled true
-        archivesBaseName = "$project.ext.appName-$versionCode-${versionName.replace(".", "")}"
+        applicationId = 'com.crashinvaders.vfx.demo'
+        minSdk = 9
+        targetSdk = 33
+        versionCode = 2
+        versionName = project.version
+        multiDexEnabled = true
+        archivesBaseName = "$project.ext.appName-$versionCode-${versionName.replace('.', '')}"
     }
 
     sourceSets {
@@ -40,22 +42,40 @@ android {
             assets.srcDirs = ['../assets']
             jniLibs.srcDirs = ['libs']
         }
-
     }
 
     compileOptions {
-        sourceCompatibility '1.8'
-        targetCompatibility '1.8'
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    packagingOptions {
-        exclude 'META-INF/robovm/ios/robovm.xml'
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
+        all {
+            resValue 'string', 'app_name', project.appName
+        }
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    packagingOptions {
+        // Preventing from license violations (more or less):
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/license.txt'
+        pickFirst 'META-INF/LGPL2.1'
+        pickFirst 'META-INF/NOTICE.txt'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'META-INF/notice.txt'
+        // Excluding unnecessary meta-data:
+        exclude 'META-INF/robovm/ios/robovm.xml'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/dependencies.txt'
     }
 }
 
@@ -79,13 +99,13 @@ task copyAndroidNatives() {
     file("libs/x86_64/").mkdirs()
     file("libs/x86/").mkdirs()
 
-    configurations.getByName("natives").copy().files.each { jar ->
+    configurations.natives.files.each { jar ->
         def outputDir = null
         if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
         if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
         if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
         if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-        if(outputDir != null) {
+        if(outputDir != null && jar.exists()) {
             copy {
                 from zipTree(jar)
                 into outputDir

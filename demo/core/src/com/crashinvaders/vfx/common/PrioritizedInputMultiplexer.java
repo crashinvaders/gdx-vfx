@@ -115,7 +115,16 @@ public class PrioritizedInputMultiplexer implements InputProcessor {
 		return false;
 	}
 
-	@Override
+    @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        if (pointer >= maxPointers) return false;
+
+        for (int i = 0, n = processors.size(); i < n; i++)
+            if (processors.getValueAt(i).touchCancelled(screenX, screenY, pointer, button)) return true;
+        return false;
+    }
+
+    @Override
 	public boolean mouseMoved (int screenX, int screenY) {
 		for (int i = 0, n = processors.size(); i < n; i++)
 			if (processors.getValueAt(i).mouseMoved(screenX, screenY)) return true;
@@ -160,6 +169,10 @@ public class PrioritizedInputMultiplexer implements InputProcessor {
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
             return processor.touchDragged(screenX, screenY, pointer);
+        }
+        @Override
+        public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+            return processor.touchCancelled(screenX, screenY, pointer, button);
         }
         @Override
         public boolean mouseMoved(int screenX, int screenY) {

@@ -14,23 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: 'application'
+apply plugin: 'java'
 
-mainClassName = "com.crashinvaders.vfx.demo.desktop.DesktopLauncher"
-ext.assetsDir = new File("../assets")
+//ext.assetsDir = new File("../assets")
 
-sourceSets.main.resources.srcDirs += ['resources/', project.assetsDir]
-
-project.ext.lwjglVersion = "3.3.1"
-def nativePlatforms = [
-        "natives-windows",
-        "natives-windows-x86",
-        "natives-linux",
-        "natives-linux-arm32",
-        "natives-linux-arm64",
-        "natives-macos",
-        "natives-macos-arm64"
-]
+sourceSets.main.resources.srcDirs += '../assets'
+sourceSets.main.resources.srcDirs += 'resources'
 
 dependencies {
     implementation project(':demo:core')
@@ -38,86 +27,16 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 
     runtimeOnly files('resources')
-
-    //FIXME For some mystical reason lwjgl native libs are not getting packed into the output jar.
-    // This is a temporary workaround.
-    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-    implementation "org.lwjgl:lwjgl"
-    implementation "org.lwjgl:lwjgl-glfw"
-    implementation "org.lwjgl:lwjgl-jemalloc"
-    implementation "org.lwjgl:lwjgl-openal"
-    implementation "org.lwjgl:lwjgl-opengl"
-    nativePlatforms.each {
-        runtimeOnly "org.lwjgl:lwjgl::$it"
-        runtimeOnly "org.lwjgl:lwjgl-glfw::$it"
-        runtimeOnly "org.lwjgl:lwjgl-jemalloc::$it"
-        runtimeOnly "org.lwjgl:lwjgl-openal::$it"
-        runtimeOnly "org.lwjgl:lwjgl-opengl::$it"
-    }
 }
 
-def os = System.properties['os.name'].toLowerCase()
-
-run {
-//    classpath = sourceSets.main.runtimeClasspath
-//    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue true
-
-    if (os.contains('mac')) {
-        // Required to run LWJGL3 Java apps on MacOS
-        jvmArgs += "-XstartOnFirstThread"
-    }
-}
-
-task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
+task run(dependsOn: classes, type: JavaExec) {
+    main = 'com.crashinvaders.vfx.demo.desktop.DesktopLauncher'
+    classpath(sourceSets.main.runtimeClasspath)
+    classpath(sourceSets.main.resources)
     standardInput = System.in
-    workingDir = project.assetsDir
     ignoreExitValue = true
-    debug = true
-}
 
-task dist(type: Jar) {
-    from files(sourceSets.main.output.classesDirs)
-    from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
-    from files(project.assetsDir);
-
-    manifest {
-        attributes 'Main-Class': project.mainClassName
-    }
-}
-dist.dependsOn classes
-
-task generateDtd(dependsOn: classes, type: JavaExec) {
-    main = 'com.crashinvaders.vfx.demo.desktop.DtdSchemaGenerator'
-    classpath = sourceSets.main.runtimeClasspath
-    workingDir = project.rootDir
-    ignoreExitValue = true
-}
-
-jar {
-// sets the name of the .jar file this produces to the name of the game or app.
-    archiveBaseName.set(appName)
-// using 'lib' instead of the default 'libs' appears to be needed by jpackageimage.
-    destinationDirectory = file("$project.buildDir/lib")
-// the duplicatesStrategy matters starting in Gradle 7.0; this setting works.
-    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-    dependsOn configurations.runtimeClasspath
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-// these "exclude" lines remove some unnecessary duplicate files in the output JAR.
-    exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
-    dependencies {
-        exclude('META-INF/INDEX.LIST', 'META-INF/maven/**')
-    }
-// setting the manifest makes the JAR runnable.
-    manifest {
-        attributes 'Main-Class': project.mainClassName
-    }
-// this last step may help on some OSes that need extra instruction to make runnable JARs.
-    doLast {
-        file(archiveFile).setExecutable(true, false)
+    if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        jvmArgs '-XstartOnFirstThread'
     }
 }

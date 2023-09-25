@@ -1,6 +1,9 @@
+## 0.5.2
+- libGDX updated to 1.12.0
+
 ## 0.5.1
 
-- LibGDX version is updated to 1.11.0
+- libGDX version updated to 1.11.0
 - `VfxEffect` constrains its internal width and height on `#resize(int, int)`.
 Max side size of the internal buffers is now limited to the `VfxEffect#MAX_FRAME_BUFFER_SIDE` constant value which is 8192 by default.
 Feel free to change it according to your project requirements.
@@ -27,7 +30,7 @@ in order to reset previous result before start capturing/providing a new frame.
 - `NoiseEffect` was removed due to similarities with `FilmGrainEffect`.
 - `PingPongBuffer` replaced with `VfxPingPongWrapper` which is a lightweight version and doesn't manage its own pair of `VfxFrameBuffer`, but instead works only with the provided instances.
 `VfxPingPongWrapper` can be integrated with `VfxFrameBufferPool`.
-- `VfxFrameBufferPool` added. It acts like a regular LibGDX `Pool`, but with a twist... It manages the lifecycle of all the created `VfxFrameBuffer` instances internally.
+- `VfxFrameBufferPool` added. It acts like a regular libGDX `Pool`, but with a twist... It manages the lifecycle of all the created `VfxFrameBuffer` instances internally.
 - `VfxWidgetGroup` is now fully compatible with transform enabled parent/child actors (check out web demo).
 - `VfxWidgetGroup`'s internal frame buffer may be configured to resize to widget's size or to match real screen PPU.
 - `IntegerRoundFillContainer` was removed as `VfxWidgetGroup` supersets its functionality.

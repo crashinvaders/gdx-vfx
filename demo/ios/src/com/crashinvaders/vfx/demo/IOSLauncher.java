@@ -16,6 +16,7 @@
 
 package com.crashinvaders.vfx.demo;
 
+import com.badlogic.gdx.backends.iosrobovm.IOSAudio;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
 
@@ -27,7 +28,14 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new App(), config);
+        return new IOSApplication(new App(), config) {
+            @Override
+            protected IOSAudio createAudio(IOSApplicationConfiguration config) {
+                // This helps to run the demo on a simulator inside
+                // a virtualized macOS instance (with no audio support).
+                return new MockIosAudio();
+            }
+        };
     }
 
     public static void main(String[] argv) {

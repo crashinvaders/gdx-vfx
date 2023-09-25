@@ -16,23 +16,31 @@
 
 subprojects {
     apply plugin: "java-library"
-    apply plugin: "maven"
+    apply plugin: 'maven-publish'
     apply plugin: 'signing'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    compileJava.options.incremental = true
 
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     ext {
         projectVersion = '0.5.2'
-        snapshotVersion = true
-        libVersion = "$projectVersion${snapshotVersion ? '-SNAPSHOT' : ''}"
+        isSnapshot = true
     }
 
     group = "com.crashinvaders.vfx"
-    archivesBaseName = projectName
-    version = libVersion
+    version = "$projectVersion${isSnapshot ? '-SNAPSHOT' : ''}"
+
+    jar {
+        from project.sourceSets.main.output
+        from(project.sourceSets.main.allSource) {
+            include '**/*.xml'
+        }
+        archiveBaseName = project.name
+        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    }
 
     task sourcesJar(type: Jar) {
         archiveClassifier.set('sources')
@@ -44,65 +52,81 @@ subprojects {
         from javadoc.destinationDir
     }
 
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
+    java {
+        withJavadocJar()
+        withSourcesJar()
     }
 
-    signing {
-        required { !snapshotVersion && gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
-    }
-
-    uploadArchives {
+    publishing {
         repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
+            maven {
+                def urlRelease = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+                def urlSnapshot = 'https://oss.sonatype.org/content/repositories/snapshots/'
+                url = isSnapshot ? urlSnapshot : urlRelease
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
                 }
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
 
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
+                artifactId = project.name
+                from components.java
 
-                pom.project {
-                    name = projectName
-                    artifactId = projectName
-                    packaging = 'jar'
-                    description = projectDesc
-                    url = 'http://github.com/crashinvaders/gdx-vfx'
-
+                pom {
+                    name = project.name
+//                    artifactId = project.name
+                    description = project.description
+                    url = POM_URL
                     licenses {
                         license {
-                            name 'The Apache License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            name = POM_LICENCE_NAME
+                            url = POM_LICENCE_URL
+                            distribution = POM_LICENCE_DIST
                         }
                     }
-
-                    scm {
-                        connection 'scm:git:git@github.com:crashinvaders/gdx-vfx.git'
-                        developerConnection 'scm:git:git@github.com:crashinvaders/gdx-vfx.git'
-                        url 'http://github.com/crashinvaders/gdx-vfx/'
-
-                    }
-
                     developers {
                         developer {
-                            id 'metaphore'
-                            name 'Anton Chekulaev'
-                            email 'metaphore@crashinvaders.com'
+                            id = POM_DEV0_ID
+                            name = POM_DEV0_NAME
+                            email = POM_DEV0_EMAIL
                         }
+                    }
+                    scm {
+                        connection = POM_SCM_CONNECTION
+                        developerConnection = POM_SCM_DEV_CONNECTION
+                        url = POM_SCM_URL
                     }
                 }
             }
         }
     }
 
+    signing {
+        sign publishing.publications.mavenJava
+    }
+
+    // Simply using "required" in signing block doesn't work because taskGraph isn't ready yet.
+    gradle.taskGraph.whenReady {
+        tasks.withType(Sign) {
+            onlyIf { !isSnapshot }
+        }
+    }
+
+    // Invokes publish task if the version is a snapshot.
+    task publishSnapshot() {
+        if (!isSnapshot) {
+            return
+        }
+        dependsOn project.assemble
+        dependsOn project.publish
+    }
+
     // Invokes uploadArchives task if the version is a snapshot.
     task uploadSnapshotArchives() {
-        if (!snapshotVersion) {
+        if (!isSnapshot) {
             println 'Not a snapshot version.'
             return;
         }
@@ -110,3 +134,51 @@ subprojects {
         dependsOn 'uploadArchives'
     }
 }
+
+task publishAll {
+    group 'GDX VFX'
+    description 'Publish all the Maven artifacts to the public repos.'
+
+    subprojects.forEach {project ->
+        dependsOn project.build
+        dependsOn project.publish
+    }
+}
+
+task publishAllSnapshots {
+    group 'GDX VFX'
+    description 'Publish all the Maven artifacts to the public repos.' +
+            'This task will only be execute if the current version is a snapshot.'
+
+    subprojects.forEach {project ->
+        dependsOn project.build
+        dependsOn project.publishSnapshot
+    }
+}
+
+task installAll {
+    group 'GDX VFX'
+    description 'Installes all the Maven artifacts to the local Maven repo.'
+
+    subprojects.forEach {project ->
+        dependsOn project.build
+        dependsOn project.publishToMavenLocal
+    }
+}
+
+/** Checks if the property exists. If it doesn't - try to resolve it from the environment variable. */
+void resolveProperty(String propertyName, String envVariableName) {
+    if (!project.hasProperty(propertyName)) {
+        project.ext.propertyName = System.getenv(envVariableName)
+        if (!project.ext.propertyName) {
+            println "$propertyName is not defined"
+        } else {
+            println "$propertyName has been set from an environment variable."
+        }
+    }
+}
+// Setup Nexus repo and GitHub package repo credentials.
+// They usually defined in user global gradle.properties file
+// or as environment variables (Travis-CI).
+resolveProperty('ossrhUsername', 'OSSRH_USERNAME')
+resolveProperty('ossrhPassword', 'OSSRH_PASSWORD')

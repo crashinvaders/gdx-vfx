@@ -26,6 +26,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$androidPluginVersion"
         classpath "org.wisepersist:gwt-gradle-plugin:$gwtPluginVersion"
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$roboVmVersion"
+        classpath "org.gretty:gretty:$grettyVersion"
     }
 }
 
@@ -37,11 +38,11 @@ subprojects {
 configure(subprojects - project(':demo:android')) {
     apply plugin: 'java-library'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     compileJava.options.incremental = true
     compileJava.options.encoding = 'UTF-8'
 
-    sourceSets.main.java.srcDirs = ['src']
+    sourceSets.main.java.srcDirs += ['src']
 }

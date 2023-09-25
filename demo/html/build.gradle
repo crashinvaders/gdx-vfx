@@ -14,11 +14,11 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: 'java'
 apply plugin: "gwt"
 apply plugin: "war"
+apply plugin: "org.gretty"
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs += [ 'src' ]
 sourceSets.main.resources.srcDirs += ['../assets']
 
 gwt {
@@ -34,7 +34,7 @@ gwt {
     compiler.strict = true
     compiler.disableCastChecking = true
 
-    logLevel = 'INFO'
+    logLevel = 'DEBUG'
 }
 
 dependencies {
@@ -47,48 +47,87 @@ dependencies {
     implementation "com.crashinvaders.lml:gdx-kiwi:$lmlVersion:sources"
 }
 
-task startHttpServer() {
-    dependsOn draftCompileGwt
-    String output = project.buildDir.path + "/gwt/draftOut"
-    doLast {
+gretty.httpPort = 8080
+gretty.resourceBase = "${project.layout.buildDirectory.get()}/gwt/draftOut"
+gretty.contextPath = "/"
+gretty.portPropertiesFileName = "TEMP_PORTS.properties"
+
+task startHttpServer (dependsOn: [draftCompileGwt]) {
+    doFirst {
         copy {
             from "webapp"
-            into output
+            into gretty.resourceBase
         }
         copy {
             from "war"
-            into output
+            into gretty.resourceBase
         }
-
-        def server = new SimpleHttpFileServerFactory().start(new File(output), 8080)
-        println "Server started in directory ${server.getContentRoot()}, http://localhost:${server.getPort()}/index.html"
-        // This helps to bind the http server lifetime to the lifetime of the task itself.
-        // https://stackoverflow.com/a/45060802/3802890
-        while(true) Thread.sleep(1000)
     }
+}
+task beforeRun(type: org.akhikhl.gretty.AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
+    // The next line allows ports to be reused instead of
+    // needing a process to be manually terminated.
+    file("build/TEMP_PORTS.properties").delete()
+    // Somewhat of a hack; uses Gretty's support for wrapping a task in
+    // a start and then stop of a Jetty server that serves files while
+    // also running the SuperDev code server.
+    integrationTestTask 'superDev'
+
+    interactive false
 }
 
 task superDev(type: org.wisepersist.gradle.plugins.gwt.GwtSuperDev) {
-    dependsOn startHttpServer
     doFirst {
         gwt.modules = gwt.devModules
     }
 }
 
+// We delete the (temporary) war/ folder because if any extra files get into it, problems occur.
+// The war/ folder shouldn't be committed to version control.
+clean.delete += [file("war")]
+
+// This next line can be changed if you want to, for instance, always build into the
+// docs/ folder of a Git repo, which can be set to automatically publish on GitHub Pages.
+// This is relative to the html/ folder.
+var outputPath = "build/dist/"
+
 task dist(dependsOn: [clean, compileGwt]) {
     doLast {
-        file("build/dist").mkdirs()
+        // Uncomment the next line if you have changed outputPath and know that its contents
+        // should be replaced by a new dist build. Some large JS files are not cleaned up by
+        // default unless the outputPath is inside build/ (then the clean task removes them).
+        // Do not uncomment the next line if you changed outputPath to a folder that has
+        // non-generated files that you want to keep!
+        //delete(file(outputPath))
+
+        file(outputPath).mkdirs()
         copy {
-            from "build/gwt/out"
-            into "build/dist"
+            from("build/gwt/out"){
+                exclude '**/*.symbolMap' // Not used by a dist, and these can be large.
+            }
+            into outputPath
         }
         copy {
-            from "webapp"
-            into "build/dist"
+            from("webapp") {
+                exclude 'index.html' // We edit this HTML file later.
+                exclude 'refresh.png' // We don't need this button; this saves some bytes.
             }
+            into outputPath
+        }
+        copy {
+            from("webapp") {
+                // These next two lines take the index.html page and remove the superdev refresh button.
+                include 'index.html'
+                filter { String line -> line.replaceAll('<a class="superdev" .+', '') }
+                // This does not modify the original index.html, only the copy in the dist.
+                // If you decide to manually remove or comment out the superdev button from index.html, you should also
+                // either remove or comment out only the "filter" line above this.
+            }
+            into outputPath
+        }
         copy {
             from "war"
-            into "build/dist"
+            into outputPath
         }
     }
 }
@@ -101,5 +140,15 @@ task addSource {
         sourceSets.main.compileClasspath += files(project(':demo:core').sourceSets.main.allJava.srcDirs)
     }
 }
+
+task distZip(type: Zip, dependsOn: dist){
+    // This uses the output of the dist task, which removes the superdev button from index.html .
+    from(outputPath)
+    archiveBaseName.set("${appName}-dist")
+    // The result will be in html/build/ with a name containing "-dist".
+    destinationDirectory.set(file("build"))
+}
+
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
+tasks.checkGwt.dependsOn(addSource)
