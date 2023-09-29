@@ -26,8 +26,8 @@ subprojects {
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     ext {
-        projectVersion = '0.5.2'
-        isSnapshot = false
+        projectVersion = '0.5.3'
+        isSnapshot = true
     }
 
     group = "com.crashinvaders.vfx"
