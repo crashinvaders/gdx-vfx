@@ -27,7 +27,7 @@ subprojects {
 
     ext {
         projectVersion = '0.5.2'
-        isSnapshot = true
+        isSnapshot = false
     }
 
     group = "com.crashinvaders.vfx"
