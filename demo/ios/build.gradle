@@ -16,9 +16,6 @@
 
 apply plugin: "robovm"
 
-sourceSets.main.java.srcDirs += [ 'src' ]
-sourceSets.main.resources.srcDirs += ['../assets']
-
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 ext {
