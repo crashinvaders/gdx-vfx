@@ -44,5 +44,5 @@ configure(subprojects - project(':demo:android')) {
     compileJava.options.incremental = true
     compileJava.options.encoding = 'UTF-8'
 
-    sourceSets.main.java.srcDirs += ['src']
+    sourceSets.main.java.srcDirs = ['src']
 }

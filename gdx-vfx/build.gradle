@@ -143,6 +143,8 @@ task publishAll {
         dependsOn project.build
         dependsOn project.publish
     }
+
+    dependsOn rootProject.closeAndReleaseRepository
 }
 
 task publishAllSnapshots {

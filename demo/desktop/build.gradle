@@ -16,8 +16,6 @@
 
 apply plugin: 'java'
 
-//ext.assetsDir = new File("../assets")
-
 sourceSets.main.resources.srcDirs += '../assets'
 sourceSets.main.resources.srcDirs += 'resources'
 

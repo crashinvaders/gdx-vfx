@@ -16,36 +16,13 @@
 
 buildscript {
     repositories {
-        mavenCentral()
-        jcenter()
         google()
+        mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         // https://github.com/Codearte/gradle-nexus-staging-plugin#tasks
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.0"
-    }
-}
-
-apply plugin: 'io.codearte.nexus-staging'
-
-// Setup Nexus repo credentials.
-// They usually defined in user global gradle.properties file.
-// Or as environment variables (Travis-CI).
-if (!ossrhUsername) {
-    ossrhUsername = System.getenv('OSSRH_USERNAME')
-    if (!ossrhUsername) {
-        println 'ossrhUsername is not defined'
-    } else {
-        println 'ossrhUsername has been set from an environment variable.'
-    }
-}
-if (!ossrhPassword) {
-    ossrhPassword = System.getenv('OSSRH_PASSWORD')
-    if (!ossrhPassword) {
-        println 'ossrhPassword is not defined'
-    } else {
-        println 'ossrhPassword has been set from an environment variable.'
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0"
     }
 }
 
@@ -62,25 +39,28 @@ allprojects {
     }
 }
 
+// As ugly as it gets, but Nexus Staging plugin must be applied to the root project only.
+apply plugin: 'io.codearte.nexus-staging'
+
 nexusStaging {
     packageGroup = 'com.crashinvaders.vfx'
     username = ossrhUsername
     password = ossrhPassword
 }
 
-// Invokes 'build' and 'install' tasks on all projects in the correct order.
-// Prefer this over 'gradle build install' when changing the version of library.
-task installAll(dependsOn: ['gdx-vfx:core:build', 'gdx-vfx:core:install',
-                            'gdx-vfx:effects:build', 'gdx-vfx:effects:install',
-                            'gdx-vfx:gwt:build', 'gdx-vfx:gwt:install'])
-
-// Invokes 'build' and 'uploadArchives' tasks on all projects.
-task uploadArchivesAll(dependsOn: ['gdx-vfx:core:build', 'gdx-vfx:core:uploadArchives',
-                            'gdx-vfx:effects:build', 'gdx-vfx:effects:uploadArchives',
-                            'gdx-vfx:gwt:build', 'gdx-vfx:gwt:uploadArchives'])
-
-// Invokes uploadArchives task if the version is a snapshot.
-task uploadSnapshotArchivesAll(dependsOn: ['gdx-vfx:core:uploadSnapshotArchives',
-                                     'gdx-vfx:effects:uploadSnapshotArchives',
-                                     'gdx-vfx:gwt:uploadSnapshotArchives']) {
+/** Checks if the property exists. If it doesn't - try to resolve it from the environment variable. */
+void resolveProperty(String propertyName, String envVariableName) {
+    if (!project.hasProperty(propertyName)) {
+        project.ext.propertyName = System.getenv(envVariableName)
+        if (!project.ext.propertyName) {
+            println "$propertyName is not defined"
+        } else {
+            println "$propertyName has been set from an environment variable."
+        }
+    }
 }
+// Setup Nexus repo and GitHub package repo credentials.
+// They usually defined in user global gradle.properties file
+// or as environment variables (Travis-CI).
+resolveProperty('ossrhUsername', 'OSSRH_USERNAME')
+resolveProperty('ossrhPassword', 'OSSRH_PASSWORD')
