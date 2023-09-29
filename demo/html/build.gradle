@@ -1,0 +1,148 @@
+/*******************************************************************************
+ * Copyright 2019 metaphore
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+apply plugin: 'gwt'
+apply plugin: 'war'
+apply plugin: 'org.gretty'
+
+sourceSets.main.java.srcDirs += [ 'src' ]
+//sourceSets.main.resources.srcDirs += ['../assets']
+
+gwt {
+    gwtVersion = gwtLibVersion
+    maxHeapSize = "1G"          // Default 256m is not enough for gwt compiler. GWT is HUNGRY
+    minHeapSize = "1G"
+
+    src = files(file("src/")) // Needs to be in front of "modules" below.
+    modules 'com.crashinvaders.vfx.demo.GdxDefinition'
+    devModules 'com.crashinvaders.vfx.demo.GdxDefinitionSuperdev'
+    project.webAppDirName = 'webapp'
+
+    compiler.strict = true
+    compiler.disableCastChecking = true
+    compiler.style = org.docstr.gradle.plugins.gwt.Style.DETAILED    // Do not obfuscate JS output.
+
+    logLevel = 'DEBUG'
+}
+
+dependencies {
+    implementation project(":demo:core")
+    implementation project(":gdx-vfx:gwt")
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+    implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+    implementation "com.crashinvaders.lml:gdx-lml:$lmlVersion:sources"
+    implementation "com.crashinvaders.lml:gdx-kiwi:$lmlVersion:sources"
+}
+
+
+
+gretty.httpPort = 8080
+gretty.resourceBase = project.buildDir.path + "/gwt/draftOut"
+gretty.contextPath = "/"
+gretty.portPropertiesFileName = "TEMP_PORTS.properties"
+
+task startHttpServer (dependsOn: [draftCompileGwt]) {
+    doFirst {
+        copy {
+            from "webapp"
+            into gretty.resourceBase
+        }
+        copy {
+            from "war"
+            into gretty.resourceBase
+        }
+    }
+}
+task beforeRun(type: org.akhikhl.gretty.AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
+    // The next line allows ports to be reused instead of
+    // needing a process to be manually terminated.
+    file("build/TEMP_PORTS.properties").delete()
+    // Somewhat of a hack; uses Gretty's support for wrapping a task in
+    // a start and then stop of a Jetty server that serves files while
+    // also running the SuperDev code server.
+    integrationTestTask 'superDev'
+
+    interactive false
+}
+
+task superDev(type: org.docstr.gradle.plugins.gwt.GwtSuperDev) {
+    doFirst {
+        gwt.modules = gwt.devModules
+    }
+}
+
+//// We delete the (temporary) war/ folder because if any extra files get into it, problems occur.
+//// The war/ folder shouldn't be committed to version control.
+clean.delete += [file("war")]
+
+// This next line can be changed if you want to, for instance, always build into the
+// docs/ folder of a Git repo, which can be set to automatically publish on GitHub Pages.
+// This is relative to the html/ folder.
+var outputPath = "build/dist/"
+
+task dist(dependsOn: [clean, compileGwt]) {
+    doLast {
+        // Uncomment the next line if you have changed outputPath and know that its contents
+        // should be replaced by a new dist build. Some large JS files are not cleaned up by
+        // default unless the outputPath is inside build/ (then the clean task removes them).
+        // Do not uncomment the next line if you changed outputPath to a folder that has
+        // non-generated files that you want to keep!
+        //delete(file(outputPath))
+
+        file(outputPath).mkdirs()
+        copy {
+            from("build/gwt/out"){
+                exclude '**/*.symbolMap' // Not used by a dist, and these can be large.
+            }
+            into outputPath
+        }
+        copy {
+            from("webapp") {
+                exclude 'index.html' // We edit this HTML file later.
+                exclude 'refresh.png' // We don't need this button; this saves some bytes.
+            }
+            into outputPath
+        }
+        copy {
+            from("webapp") {
+                // These next two lines take the index.html page and remove the superdev refresh button.
+                include 'index.html'
+                filter { String line -> line.replaceAll('<a class="superdev" .+', '') }
+                // This does not modify the original index.html, only the copy in the dist.
+                // If you decide to manually remove or comment out the superdev button from index.html, you should also
+                // either remove or comment out only the "filter" line above this.
+            }
+            into outputPath
+        }
+        copy {
+            from "war"
+            into outputPath
+        }
+    }
+}
+
+task addSource {
+    doLast {
+        sourceSets.main.compileClasspath += files(project(':gdx-vfx:core').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':gdx-vfx:effects').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':gdx-vfx:gwt').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':demo:core').sourceSets.main.allJava.srcDirs)
+    }
+}
+tasks.compileGwt.dependsOn(addSource)
+tasks.draftCompileGwt.dependsOn(addSource)
+tasks.checkGwt.dependsOn(addSource)

@@ -24,7 +24,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$androidPluginVersion"
-        classpath "org.wisepersist:gwt-gradle-plugin:$gwtPluginVersion"
+        classpath "org.docstr:gwt-gradle-plugin:$gwtPluginVersion"
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$roboVmVersion"
         classpath "org.gretty:gretty:$grettyVersion"
     }

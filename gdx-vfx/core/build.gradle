@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-sourceSets.main.java.srcDirs += [ 'src' ]
+sourceSets.main.java.srcDirs = [ 'src' ]
 
 dependencies {
     api "com.badlogicgames.gdx:gdx:$gdxVersion"

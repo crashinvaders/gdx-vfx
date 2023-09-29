@@ -30,7 +30,7 @@ com_crashlytics_export_strings.xml
 /demo/android/bin/
 /demo/core/bin/
 /demo/desktop/bin/
-/demo/web/bin/
+/demo/html/bin/
 /demo/ios/bin/
 /demo/ios-moe/bin/
 *.tmp
@@ -48,7 +48,7 @@ com_crashlytics_export_strings.xml
 /demo/android/build/
 /demo/core/build/
 /demo/desktop/build/
-/demo/web/build/
+/demo/html/build/
 /demo/ios/build/
 /demo/ios-moe/build/
 
@@ -58,7 +58,7 @@ com_crashlytics_export_strings.xml
 /demo/android/out/
 /demo/core/out/
 /demo/desktop/out/
-/demo/web/out/
+/demo/html/out/
 /demo/ios/out/
 /demo/ios-moe/out/
 
@@ -68,6 +68,8 @@ com_crashlytics_export_strings.xml
 /demo/android/dist/
 /demo/core/dist/
 /demo/desktop/dist/
-/demo/web/dist/
+/demo/html/dist/
 /demo/ios/dist/
 /demo/ios-moe/dist/
+
+/demo/html/war
