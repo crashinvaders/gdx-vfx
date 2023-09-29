@@ -38,7 +38,7 @@ subprojects {
         from(project.sourceSets.main.allSource) {
             include '**/*.xml'
         }
-        archiveBaseName = project.name
+        archiveBaseName = project.artifactName
         duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     }
 
@@ -72,12 +72,11 @@ subprojects {
         publications {
             mavenJava(MavenPublication) {
 
-                artifactId = project.name
+                artifactId = project.artifactName
                 from components.java
 
                 pom {
-                    name = project.name
-//                    artifactId = project.name
+                    name = project.artifactName
                     description = project.description
                     url = POM_URL
                     licenses {
