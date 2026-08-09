@@ -61,7 +61,7 @@ subprojects {
         repositories {
             maven {
                 def urlRelease = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-                def urlSnapshot = 'https://oss.sonatype.org/content/repositories/snapshots/'
+                def urlSnapshot = 'https://central.sonatype.com/repository/maven-snapshots/'
                 url = isSnapshot ? urlSnapshot : urlRelease
                 credentials {
                     username ossrhUsername
