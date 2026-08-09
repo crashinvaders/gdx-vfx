@@ -103,6 +103,13 @@ subprojects {
         }
     }
 
+    // The aggregate tasks below request `build` and `publish` together. Without
+    // this ordering constraint Gradle may publish the previous (or not-yet-built)
+    // archive while the build task is still producing it.
+    tasks.matching { it.name.startsWith('publish') && it.name.contains('PublicationToMaven') }.configureEach {
+        mustRunAfter tasks.named('build')
+    }
+
     signing {
         sign publishing.publications.mavenJava
     }
