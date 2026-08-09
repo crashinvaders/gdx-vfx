@@ -28,6 +28,19 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.action;
 
 public final class ActionsExt {
 
+    static {
+        Actions.registerAction(ActAction.class, ActAction::new);
+        Actions.registerAction(CustomTargetAction.class, CustomTargetAction::new);
+        Actions.registerAction(MoveByPathAction.class, MoveByPathAction::new);
+        Actions.registerAction(OptionalAction.class, OptionalAction::new);
+        Actions.registerAction(OriginAlignAction.class, OriginAlignAction::new);
+        Actions.registerAction(PostAction.class, PostAction::new);
+        Actions.registerAction(RemoveChildAction.class, RemoveChildAction::new);
+        Actions.registerAction(TimeModulationAction.class, TimeModulationAction::new);
+        Actions.registerAction(TransformAction.class, TransformAction::new);
+        Actions.registerAction(UnfocusAction.class, UnfocusAction::new);
+    }
+
     private ActionsExt() { }
 
     /** Assign custom target actor. It will also set custom target to all descendant actions. */

@@ -27,7 +27,7 @@ class MockIosAudio implements IOSAudio {
     }
 
     @Override
-    public void willTerminate() {
+    public void dispose() {
 
     }
 

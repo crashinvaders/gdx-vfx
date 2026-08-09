@@ -1,7 +1,7 @@
 ![Logo](https://i.imgur.com/kVBGQHx.png)
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.crashinvaders.vfx/gdx-vfx-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.crashinvaders.vfx%22%20AND%20a:%22gdx-vfx-core%22)
-[![libGDX](https://img.shields.io/badge/libgdx-1.12.0-red.svg)](https://libgdx.com/)
+[![libGDX](https://img.shields.io/badge/libgdx-1.14.2-red.svg)](https://libgdx.com/)
 
 Flexible post-processing shader visual effects for LibGDX. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), with lots of improvements and heavy refactoring.
 The goal is to focus on stability, offer lightweight integration and provide simple effect implementation mechanism.
@@ -47,8 +47,8 @@ allprojects {
 Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.4'
-    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.4'    // Optional, if you need standard filter/effects.
+    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.5'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.5'    // Optional, if you need standard filter/effects.
 }
 ```
 
@@ -57,7 +57,7 @@ The library is fully HTML/GWT compatible, but requires an extra dependency to be
 Please consider reading [GWT integration guide](https://github.com/crashinvaders/gdx-vfx/wiki/GWT-HTML-Library-Integration).
 ```gradle
 dependencies {
-    implementation 'com.crashinvaders.vfx:gdx-vfx-gwt:0.5.4'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-gwt:0.5.5'
 }
 ```
 

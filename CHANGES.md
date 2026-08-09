@@ -1,3 +1,6 @@
+## 0.5.5
+- Updated to libGDX 1.14.2
+
 ## 0.5.4
 - Updated to libGDX 1.12.1
 
