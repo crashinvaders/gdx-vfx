@@ -1,7 +1,7 @@
 ![Logo](https://i.imgur.com/kVBGQHx.png)
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.crashinvaders.vfx/gdx-vfx-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.crashinvaders.vfx%22%20AND%20a:%22gdx-vfx-core%22)
-[![libGDX](https://img.shields.io/badge/libgdx-1.14.2-red.svg)](https://libgdx.com/)
+[![Maven Central](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fcrashinvaders%2Fvfx%2Fgdx-vfx-core%2Fmaven-metadata.xml&query=%2Fmetadata%2Fversioning%2Frelease&label=Maven%20Central&color=ffbe0b)](https://central.sonatype.com/artifact/com.crashinvaders.vfx/gdx-vfx-core)
+[![libGDX](https://img.shields.io/badge/libgdx-1.14.2-ffbe0b.svg)](https://libgdx.com/)
 
 Flexible post-processing shader visual effects for LibGDX. The library is based on [libgdx-contribs-postprocessing](https://github.com/manuelbua/libgdx-contribs/tree/master/postprocessing), with lots of improvements and heavy refactoring.
 The goal is to focus on stability, offer lightweight integration and provide simple effect implementation mechanism.
@@ -12,7 +12,7 @@ Read more about the library at the [wiki introduction page](https://github.com/c
 
 All the major changes are listed in the [CHANGES.md](https://github.com/crashinvaders/gdx-vfx/blob/master/CHANGES.md) file.
 
-# Known problems in 0.5.1
+# Known problems
 - iOS integration requires an extra step in order to make the `gdx-vfx-effects` asset files available on runtime. Please read [this thread](https://github.com/crashinvaders/gdx-vfx/issues/16#issuecomment-1003156513) for temporary workaround.
 
 # Demo

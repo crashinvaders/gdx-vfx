@@ -1,0 +1,234 @@
+import groovy.json.JsonSlurper
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.util.regex.Pattern
+
+/**
+ * GitHub release-draft tasks for Maven-published Java libraries.
+ *
+ * Integration: copy this file to gradle/, then apply it from the root build script:
+ *   apply from: 'gradle/github-release.gradle'
+ *   githubReleaseDraft {
+ *       githubRepository = 'owner/repository' // Optional; inferred by gh when omitted.
+ *       mavenGroup = 'com.example'
+ *       artifactIds = ['library-core']
+ *   }
+ *
+ * Defaults: v<version> tags, CHANGES.md sections headed ## <version>, and main/sources/javadoc JARs.
+ * Override tagPattern, versionFromTag, releaseNotesProvider, releaseTitle, classifiers, or
+ * mavenRepositoryUrl when the target project uses different conventions. Use
+ * artifactExtensions for modules whose primary artifact is not a JAR (such as Android AARs).
+ *
+ * Tasks: previewGitHubRelease (local metadata), verifyGitHubRelease (remote checks),
+ * and draftGitHubRelease (downloads Maven assets and creates a GitHub draft).
+ */
+
+/** Configuration for the reusable GitHub release-draft tasks. */
+class GitHubReleaseDraftExtension {
+    String tagPattern = 'v[0-9]*'
+    String gitRemote = 'origin'
+    String githubRepository
+    String mavenRepositoryUrl = 'https://repo1.maven.org/maven2'
+    String mavenGroup
+    List<String> artifactIds = []
+    List<String> classifiers = ['', 'sources', 'javadoc']
+    Map<String, String> artifactExtensions = [:]
+    File changelogFile
+    Closure<String> versionFromTag = { tag -> tag.startsWith('v') ? tag.substring(1) : tag }
+    Closure<Map<String, String>> releaseNotesProvider = { file, version ->
+        def pattern = Pattern.compile("(?ms)^(##\\s+${Pattern.quote(version)}\\s*)\\R(.*?)(?=^##\\s|\\z)")
+        def matcher = pattern.matcher(file.getText('UTF-8'))
+        if (!matcher.find() || matcher.group(2).trim().isEmpty()) {
+            throw new GradleException("No changelog entry found for version ${version} in ${file}.")
+        }
+        [header: matcher.group(1).trim(), message: matcher.group(2).trim()]
+    }
+    Closure<String> releaseTitle = { metadata -> metadata.version }
+}
+
+def config = extensions.create('githubReleaseDraft', GitHubReleaseDraftExtension)
+config.changelogFile = rootProject.file('CHANGES.md')
+
+def runReleaseCommand = { List<String> arguments, boolean ignoreFailure = false ->
+    def output = new ByteArrayOutputStream()
+    def result = project.exec {
+        commandLine arguments
+        standardOutput = output
+        errorOutput = output
+        ignoreExitValue = ignoreFailure
+    }
+    [exitValue: result.exitValue, output: output.toString('UTF-8').trim()]
+}
+
+def githubArguments = { List<String> arguments ->
+    if (config.githubRepository) {
+        arguments.addAll(['--repo', config.githubRepository])
+    }
+    arguments
+}
+
+def validateConfiguration = {
+    if (!config.mavenGroup) {
+        throw new GradleException('githubReleaseDraft.mavenGroup must be configured.')
+    }
+    if (config.artifactIds.isEmpty()) {
+        throw new GradleException('githubReleaseDraft.artifactIds must contain at least one artifact.')
+    }
+    if (!config.changelogFile?.isFile()) {
+        throw new GradleException("githubReleaseDraft.changelogFile does not exist: ${config.changelogFile}")
+    }
+}
+
+def prepareReleaseMetadata = {
+    validateConfiguration()
+
+    def latestTagResult = runReleaseCommand(['git', 'tag', '--list', config.tagPattern, '--sort=-v:refname'])
+    def tag = latestTagResult.output.readLines().find { !it.trim().isEmpty() }?.trim()
+    if (tag == null) {
+        throw new GradleException("No version tag matching ${config.tagPattern} was found.")
+    }
+
+    def version = config.versionFromTag.call(tag)
+    if (!version || version.endsWith('-SNAPSHOT')) {
+        throw new GradleException("Release tag ${tag} does not resolve to a non-snapshot version.")
+    }
+
+    def releaseNotes = config.releaseNotesProvider.call(config.changelogFile, version)
+    if (!releaseNotes?.header || !releaseNotes?.message) {
+        throw new GradleException("githubReleaseDraft.releaseNotesProvider returned incomplete notes for ${version}.")
+    }
+
+    def groupPath = config.mavenGroup.replace('.', '/')
+    def artifacts = config.artifactIds.collectMany { artifactId ->
+        config.classifiers.collect { classifier ->
+            def classifierSuffix = classifier ? "-${classifier}" : ''
+            def extension = classifier ? 'jar' : (config.artifactExtensions[artifactId] ?: 'jar')
+            def fileName = "${artifactId}-${version}${classifierSuffix}.${extension}"
+            [fileName: fileName, artifactUrl: "${config.mavenRepositoryUrl}/${groupPath}/${artifactId}/${version}/${fileName}"]
+        }
+    }
+
+    def metadata = [
+            version        : version,
+            tag            : tag,
+            commit         : runReleaseCommand(['git', 'rev-list', '-n', '1', tag]).output,
+            changelogHeader: releaseNotes.header,
+            releaseMessage : releaseNotes.message,
+            artifacts      : artifacts
+    ]
+    metadata.title = config.releaseTitle.call(metadata)
+    metadata
+}
+
+def printReleaseSummary = { metadata ->
+    logger.lifecycle('GitHub release draft preparation:')
+    logger.lifecycle("  Version: ${metadata.version}")
+    logger.lifecycle("  Tag: ${metadata.tag}")
+    logger.lifecycle("  Commit: ${metadata.commit}")
+    logger.lifecycle("  Title: ${metadata.title}")
+    logger.lifecycle("  Changelog header: ${metadata.changelogHeader}")
+    logger.lifecycle('  Release message:')
+    metadata.releaseMessage.eachLine { line -> logger.lifecycle("    ${line}") }
+    logger.lifecycle("  Attachments (${metadata.artifacts.size()}):")
+    metadata.artifacts.each { artifact -> logger.lifecycle("    ${artifact.fileName}") }
+}
+
+def verifyRemoteReleaseReadiness = { metadata ->
+    def remoteTagResult = runReleaseCommand(['git', 'ls-remote', '--exit-code', '--tags', config.gitRemote, "refs/tags/${metadata.tag}"], true)
+    if (remoteTagResult.exitValue != 0) {
+        throw new GradleException("Tag ${metadata.tag} is not pushed to ${config.gitRemote}. Push it before creating the GitHub release draft.")
+    }
+
+    def authResult = runReleaseCommand(['gh', 'auth', 'status'], true)
+    if (authResult.exitValue != 0) {
+        throw new GradleException("GitHub CLI is not authenticated. Run 'gh auth login' first.\n${authResult.output}")
+    }
+
+    def repositoryViewArguments = ['gh', 'repo', 'view']
+    if (config.githubRepository) {
+        repositoryViewArguments.add(config.githubRepository)
+    }
+    repositoryViewArguments.addAll(['--json', 'viewerPermission'])
+    def permissionResult = runReleaseCommand(repositoryViewArguments, true)
+    if (permissionResult.exitValue != 0) {
+        throw new GradleException("Unable to check GitHub repository access.\n${permissionResult.output}")
+    }
+    def viewerPermission = new JsonSlurper().parseText(permissionResult.output).viewerPermission?.toString()?.toUpperCase(Locale.ROOT)
+    if (!(viewerPermission in ['ADMIN', 'MAINTAIN', 'WRITE'])) {
+        throw new GradleException("GitHub account has insufficient repository access (${viewerPermission ?: 'none'}). Write access is required to create a release draft.")
+    }
+
+    def existingRelease = runReleaseCommand(githubArguments(['gh', 'release', 'view', metadata.tag]), true)
+    if (existingRelease.exitValue == 0) {
+        throw new GradleException("A GitHub release for ${metadata.tag} already exists; refusing to overwrite it.")
+    }
+
+    logger.lifecycle("Remote GitHub release checks passed for ${metadata.tag}.")
+}
+
+tasks.register('previewGitHubRelease') {
+    group = 'GitHub Release'
+    description = 'Prints GitHub release draft metadata without contacting GitHub or the configured Maven repository.'
+    doLast { printReleaseSummary(prepareReleaseMetadata()) }
+}
+
+tasks.register('verifyGitHubRelease') {
+    group = 'GitHub Release'
+    description = 'Validates tag and GitHub release-draft access without downloading artifacts or creating a draft.'
+    doLast {
+        def metadata = prepareReleaseMetadata()
+        printReleaseSummary(metadata)
+        verifyRemoteReleaseReadiness(metadata)
+    }
+}
+
+tasks.register('draftGitHubRelease') {
+    group = 'GitHub Release'
+    description = 'Downloads Maven artifacts and creates a GitHub release draft for the latest version tag.'
+
+    doLast {
+        def metadata = prepareReleaseMetadata()
+        printReleaseSummary(metadata)
+        verifyRemoteReleaseReadiness(metadata)
+
+        def notesFile = rootProject.layout.buildDirectory.file("github-release/${metadata.tag}-notes.md").get().asFile
+        notesFile.parentFile.mkdirs()
+        notesFile.setText(metadata.releaseMessage + System.lineSeparator(), 'UTF-8')
+
+        def assetsDirectory = rootProject.layout.buildDirectory.dir("github-release/${metadata.tag}/assets").get().asFile
+        assetsDirectory.mkdirs()
+        def assetFiles = metadata.artifacts.collect { artifact ->
+            def destination = new File(assetsDirectory, artifact.fileName)
+            def connection = (HttpURLConnection) new URL(artifact.artifactUrl).openConnection()
+            connection.connectTimeout = 15_000
+            connection.readTimeout = 30_000
+            connection.instanceFollowRedirects = true
+            try {
+                if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                    throw new GradleException("Maven artifact is unavailable (${connection.responseCode}): ${artifact.artifactUrl}")
+                }
+                connection.inputStream.withCloseable { input ->
+                    Files.copy(input, destination.toPath(), StandardCopyOption.REPLACE_EXISTING)
+                }
+            } finally {
+                connection.disconnect()
+            }
+            destination
+        }
+
+        def createArguments = githubArguments([
+                'gh', 'release', 'create', metadata.tag,
+                '--verify-tag', '--draft',
+                '--title', metadata.title,
+                '--notes-file', notesFile.absolutePath
+        ])
+        createArguments.addAll(assetFiles.collect { it.absolutePath })
+        runReleaseCommand(createArguments)
+        def draftResult = runReleaseCommand(githubArguments(['gh', 'release', 'view', metadata.tag, '--json', 'url']))
+        def draftUrl = new JsonSlurper().parseText(draftResult.output).url
+        logger.lifecycle("Created GitHub release draft for ${metadata.tag} with ${assetFiles.size()} Maven artifacts.")
+        logger.lifecycle("GitHub release draft: ${draftUrl}")
+    }
+}

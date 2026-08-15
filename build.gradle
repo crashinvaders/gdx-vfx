@@ -68,3 +68,11 @@ void resolveProperty(String propertyName, String envVariableName) {
 // or as environment variables (Travis-CI).
 resolveProperty('ossrhUsername', 'OSSRH_USERNAME')
 resolveProperty('ossrhPassword', 'OSSRH_PASSWORD')
+
+apply from: 'gradle/github-release.gradle'
+
+githubReleaseDraft {
+    githubRepository = 'crashinvaders/gdx-vfx'
+    mavenGroup = 'com.crashinvaders.vfx'
+    artifactIds = ['gdx-vfx-core', 'gdx-vfx-effects', 'gdx-vfx-gwt']
+}
