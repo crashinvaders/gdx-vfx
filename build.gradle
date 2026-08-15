@@ -40,6 +40,16 @@ allprojects {
     }
 }
 
+// TODO Migrate off this legacy setup to the "com.vanniktech.maven.publish" plugin.
+//  This whole publishing block (maven-publish + signing + nexus-staging) talks to
+//  Maven Central only through the "OSSRH Staging API" compatibility shim (visible as
+//  "(via OSSRH Staging API)" on deployments in the Central Portal UI) - a back-compat
+//  bridge in front of infrastructure Sonatype has otherwise replaced, not the modern
+//  Central Publisher API. "com.vanniktech.maven.publish" talks to the native Publisher
+//  API directly and handles signing/credentials/snapshots out of the box. Migrating is
+//  a real priority, not a someday-cleanup item.
+//  https://vanniktech.github.io/gradle-maven-publish-plugin/central/
+
 // As ugly as it gets, but Nexus Staging plugin must be applied to the root project only.
 apply plugin: 'io.codearte.nexus-staging'
 
