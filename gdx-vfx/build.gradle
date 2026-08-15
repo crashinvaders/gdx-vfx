@@ -27,7 +27,7 @@ subprojects {
 
     ext {
         projectVersion = '0.5.5'
-        isSnapshot = true
+        isSnapshot = false
     }
 
     group = "com.crashinvaders.vfx"
@@ -60,7 +60,7 @@ subprojects {
     publishing {
         repositories {
             maven {
-                def urlRelease = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+                def urlRelease = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
                 def urlSnapshot = 'https://central.sonatype.com/repository/maven-snapshots/'
                 url = isSnapshot ? urlSnapshot : urlRelease
                 credentials {

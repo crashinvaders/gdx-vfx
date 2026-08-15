@@ -44,6 +44,9 @@ allprojects {
 apply plugin: 'io.codearte.nexus-staging'
 
 nexusStaging {
+    // OSSRH shut down in 2025. Keep the legacy staging-plugin workflow through
+    // Maven Central's OSSRH Staging API compatibility endpoint.
+    serverUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/'
     packageGroup = 'com.crashinvaders.vfx'
     username = ossrhUsername
     password = ossrhPassword
