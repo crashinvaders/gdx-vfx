@@ -159,6 +159,11 @@ public class EffectRosterViewController extends LmlViewController {
             filter.setPasses(8);
             effectsRoster.add(new EffectEntryModel("Gaussian Blur", filter));
         }
+        // Dual Kawase Blur
+        {
+            DualKawaseBlurEffect filter = new DualKawaseBlurEffect(4, 1.0f);
+            effectsRoster.add(new EffectEntryModel("Dual Kawase Blur", filter));
+        }
         // Underwater
         {
             WaterDistortionEffect filter = new WaterDistortionEffect(1f, 1f);

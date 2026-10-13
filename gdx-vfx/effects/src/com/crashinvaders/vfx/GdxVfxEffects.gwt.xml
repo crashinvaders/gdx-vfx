@@ -13,6 +13,8 @@
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/copy.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/crt.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/default.vert" />
+	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/dual-kawase-down.frag" />
+	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/dual-kawase-up.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/film-grain.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/fisheye.frag" />
 	<extend-configuration-property name="gdx.files.classpath" value="gdxvfx/shaders/fxaa.frag" />
